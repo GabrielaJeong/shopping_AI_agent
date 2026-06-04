@@ -8,10 +8,11 @@
 - [x] 문서 하네스 부트스트랩 (CLAUDE.md, docs 스켈레톤, CHANGELOG, memory 인덱스, SECURITY)
 - [x] 핵심 설계 결정 기록 (DECISIONS D-001~D-007: 스택·단계전환·DB·추천파이프라인·콜드스타트·제품명·Next버전)
 - [x] 앱 스캐폴드 (Next.js 15.5.19 + React 19.1 + TypeScript + Tailwind v4 + App Router + src/, pnpm via corepack). 베이스라인 검증 green: typecheck / lint / build 통과.
+- [x] Prettier 도입(eslint 무충돌, endOfLine auto) + 검증 명령 `format:check`.
+- [x] 디자인 토큰 → Tailwind v4 `@theme` 매핑 (색·타이포·radius·shadow, `globals.css`). Pretendard CDN 연결, `layout.tsx` Geist 제거·lang=ko. `page.tsx`는 임시 토큰 미리보기(추후 대체). 빌드 CSS에 유틸리티 생성 확인 (→ D-008).
 
 ## 미구현 / 진행 중
 
-- [ ] 디자인 토큰 → Tailwind 매핑 (출처: 프로토타입 styles.css)
 - [ ] 런치 플로우 (splash → intro → login → onboarding)
 - [ ] app 4탭 (home / explore / saved / my) + 푸시 화면 (detail / list / search)
 - [ ] 핵심 시트 2종 (feedback, AI chat) — UI/mock

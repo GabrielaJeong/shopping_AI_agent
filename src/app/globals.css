@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Moodyfit 디자인 토큰 — 출처: docs/prototype-handoff/design_files/styles.css
+  warm monochrome (paper/ink) + 단일 hot red. Tailwind v4 @theme로 1:1 이식.
+  → bg-paper, text-ink, rounded-card, shadow-card, text-h1 등 유틸리티로 생성됨.
+*/
+@theme {
+  /* ── Color ── */
+  --color-paper: #f7f4ef; /* 앱 배경 */
+  --color-paper-2: #fbf8f2; /* 카드 */
+  --color-paper-3: #efe9de; /* 입력/칩/hover fill */
+  --color-paper-deep: #e6dfd0; /* pressed/deeper fill */
+  --color-ink: #3a3633; /* 주 텍스트/주 버튼/active 아이콘 */
+  --color-ink-2: #6b655e; /* 보조 텍스트 */
+  --color-ink-3: #9b948b; /* 3차 텍스트/placeholder */
+  --color-ink-soft: #c9c2b4; /* disabled/dots/clear */
+  --color-line: #e2dcd0; /* 보더 */
+  --color-line-soft: #ece7dc; /* 옅은 디바이더 */
+  --color-accent: #3a3633; /* = ink (별도 accent 색조 없음) */
+  --color-accent-soft: #ece7de; /* 선택/태그 fill, like 버튼 bg */
+  --color-accent-deep: #1f1c1a; /* primary 버튼 hover */
+  --color-hot: #c25450; /* live/up 트렌드 (muted red) */
+  --color-hot-soft: #f2dcda; /* hot 배경 틴트 */
+  --color-down: #6e8fa8; /* down 트렌드 (hot의 짝) */
+
+  /* ── Fonts ── */
+  --font-sans:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui,
+    "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --font-brand: Helvetica, Arial, "Helvetica Neue", sans-serif; /* "Moodyfit" 워드마크 */
+
+  /* ── Radius ── */
+  --radius-image: 6px;
+  --radius-chip: 6px;
+  --radius-btn: 8px;
+  --radius-card: 10px;
+  --radius-sheet: 18px; /* 바텀시트 상단 */
+
+  /* ── Shadow ── */
+  --shadow-card: 0 1px 2px rgba(58, 54, 51, 0.04), 0 4px 12px rgba(58, 54, 51, 0.04);
+  --shadow-sheet: 0 -8px 30px rgba(58, 54, 51, 0.1);
+  --shadow-elev: 0 12px 40px rgba(58, 54, 51, 0.12), 0 2px 6px rgba(58, 54, 51, 0.06);
+
+  /* ── Text scale (size / line-height / letter-spacing / weight) ── */
+  --text-display: 26px;
+  --text-display--line-height: 1.2;
+  --text-display--letter-spacing: -0.7px;
+  --text-display--font-weight: 700;
+
+  --text-h1: 22px;
+  --text-h1--line-height: 1.25;
+  --text-h1--letter-spacing: -0.5px;
+  --text-h1--font-weight: 700;
+
+  --text-h2: 18px;
+  --text-h2--line-height: 1.3;
+  --text-h2--letter-spacing: -0.4px;
+  --text-h2--font-weight: 600;
+
+  --text-h3: 15px;
+  --text-h3--line-height: 1.35;
+  --text-h3--letter-spacing: -0.3px;
+  --text-h3--font-weight: 600;
+
+  --text-body: 14px;
+  --text-body--line-height: 1.55;
+
+  --text-body-2: 13px;
+  --text-body-2--line-height: 1.5;
+
+  --text-caption: 11px;
+  --text-caption--line-height: 1.5;
+
+  --text-label: 10px;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.08em;
+  --text-label--font-weight: 500;
+
+  --text-price: 16px;
+  --text-price--line-height: 1.2;
+  --text-price--letter-spacing: -0.3px;
+  --text-price--font-weight: 600;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss06", "tnum"; /* 미세 오픈타입 + 고정폭 숫자 */
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
 }

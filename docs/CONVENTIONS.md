@@ -13,7 +13,15 @@
 
 ## 디자인 토큰 / 스타일
 
-- ( 토큰 출처 = 프로토타입 `styles.css`. Tailwind 토큰 매핑 규칙은 스캐폴드 후 확정 )
+- **출처**: 프로토타입 `docs/prototype-handoff/design_files/styles.css` = 토큰의 단일 진실. 색/타이포/radius/shadow를 임의 값으로 하드코딩하지 말 것.
+- **정의 위치**: `src/app/globals.css`의 `@theme` 블록 (Tailwind v4 CSS-first). `tailwind.config.*`는 만들지 않는다 (→ D-008).
+- **네이밍 → 유틸리티**:
+  - 색 `--color-paper / paper-2 / paper-3 / paper-deep / ink / ink-2 / ink-3 / ink-soft / line / line-soft / accent / accent-soft / accent-deep / hot / hot-soft / down` → `bg-*` `text-*` `border-*`.
+  - radius `--radius-image|chip|btn|card|sheet` → `rounded-*`. shadow `--shadow-card|sheet|elev` → `shadow-*`.
+  - 텍스트 `--text-display|h1|h2|h3|body|body-2|caption|label|price` (size + `--line-height`/`--letter-spacing`/`--font-weight` 모디파이어) → `text-*`. `label`은 `uppercase`를 함께.
+- **간격**: Tailwind 기본 스케일(4px step) 사용. 화면 좌우 패딩 20px = `px-5`, 6px = `gap-1.5`, 10px = `gap-2.5`.
+- **폰트**: 본문 `font-sans`(Pretendard), 워드마크 `font-brand`(Helvetica/Arial). 이모지 금지.
+- 새 토큰이 필요하면 styles.css 근거를 확인하고 `@theme`에 추가 후 사용. 컴포넌트 전용 일회성 값은 토큰화하지 않는다.
 
 ## 포맷팅 (Prettier)
 
