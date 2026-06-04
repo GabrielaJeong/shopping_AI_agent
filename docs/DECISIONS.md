@@ -107,3 +107,16 @@
 **PRD 연결**: 특정 F 아님 — 전 기능의 구현 토대(D-001 스택 결정의 버전 확정). 16 채택 시엔 매 작업 전 번들 docs 확인이 강제됨.
 
 ---
+
+## D-008: 디자인 토큰 = Tailwind v4 `@theme` (CSS-first), 폰트는 Pretendard CDN
+
+**날짜**: 2026-06-04
+**버전**: v0.0
+**상태**: 적용 중
+**결정**: 프로토타입 `styles.css`의 토큰을 `src/app/globals.css`의 `@theme` 블록에 1:1 이식한다(색 `--color-*`, radius `--radius-*`, shadow `--shadow-*`, 텍스트 스케일 `--text-*` + line-height/letter-spacing/weight 모디파이어). `tailwind.config.js`는 만들지 않는다(Tailwind v4는 CSS-first). 간격은 Tailwind 기본 스케일(4px step)을 그대로 쓴다. Pretendard는 jsDelivr 동적 서브셋 CSS를 `layout.tsx`에서 `<link>`로 로드, 워드마크용 `--font-brand`(Helvetica/Arial) 별도.
+**대안**: (1) `tailwind.config.ts`에 토큰 정의(v3 방식) — v4에선 비표준. (2) `.t-display` 등 프로토타입 유틸리티 클래스를 그대로 포팅 — 토큰화 이점 상실. (3) Pretendard를 next/font/local로 자가호스팅 — 폰트 파일 관리 부담.
+**근거**: v4 표준인 `@theme`가 `bg-paper`/`text-h1`/`rounded-card` 등 유틸리티를 자동 생성해 토큰을 단일 출처로 둘 수 있다. 빌드 산출 CSS에 유틸리티 생성을 확인함. CDN 동적 서브셋은 한글 우선 가변폰트를 적은 설정으로 로드.
+**트레이드오프**: 외부 CDN(jsDelivr) 의존 — 오프라인/CDN 장애 시 폴백 폰트로 렌더. 필요 시 next/font/local 자가호스팅으로 전환 가능. radius `--radius-sheet`는 styles.css 실제값 18px 채택(README 표의 20px와 불일치 — 구현값 우선).
+**PRD 연결**: 특정 F 아님 — F1·F4·F5 등 전 화면의 시각 토대. 디자인 정본(README)의 토큰 테이블을 코드로 고정.
+
+---
