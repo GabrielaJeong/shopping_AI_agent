@@ -4,10 +4,10 @@
 
 ## 구현 완료
 - [x] 문서 하네스 부트스트랩 (CLAUDE.md, docs 스켈레톤, CHANGELOG, memory 인덱스, SECURITY)
-- [x] 핵심 설계 결정 기록 (DECISIONS D-001~D-006: 스택·단계전환·DB·추천파이프라인·콜드스타트·제품명)
+- [x] 핵심 설계 결정 기록 (DECISIONS D-001~D-007: 스택·단계전환·DB·추천파이프라인·콜드스타트·제품명·Next버전)
+- [x] 앱 스캐폴드 (Next.js 15.5.19 + React 19.1 + TypeScript + Tailwind v4 + App Router + src/, pnpm via corepack). 베이스라인 검증 green: typecheck / lint / build 통과.
 
 ## 미구현 / 진행 중
-- [ ] 앱 스캐폴드 (Next.js App Router + TypeScript + Tailwind + pnpm) — 아직 없음
 - [ ] 디자인 토큰 → Tailwind 매핑 (출처: 프로토타입 styles.css)
 - [ ] 런치 플로우 (splash → intro → login → onboarding)
 - [ ] app 4탭 (home / explore / saved / my) + 푸시 화면 (detail / list / search)
@@ -23,3 +23,5 @@
 - 정본: `docs/README.md`(디자인·제품), `docs/prd.md`(기능 F1~F6).
 - 디자인 레퍼런스/스키마: `docs/prototype-handoff/design_files/` (`styles.css`=토큰, `data.js`=데이터 모델).
 - 결정 근거: `docs/DECISIONS.md`. 규칙: `docs/CONVENTIONS.md`. 보안: `docs/SECURITY.md`.
+- 앱 진입: `src/app/` (layout.tsx, page.tsx, globals.css). 설정: `next.config.ts`(turbopack.root 고정), `pnpm-workspace.yaml`(allowBuilds).
+- 검증: `corepack pnpm typecheck` / `lint` / `build` (pnpm은 PATH shim 불가 → corepack 경유).

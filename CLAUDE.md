@@ -69,7 +69,9 @@
 4. 추측으로 API/스키마 형태를 박지 말 것 — 실제 데이터/명세를 보고 기록(`data.js`, PRD).
 
 ## Red Flags — 이 패턴 작성 시 멈추고 확인
-( 비어 있음. LESSONS에서 "코딩 중 트리거"로 승격된 것만 누적한다. 예시를 미리 채우지 말 것 — 겪어서 쌓아야 신호가 산다. )
+- 🚩 네이티브 빌드 스크립트가 있는 의존성 추가/스캐폴드 중 → 설치 후 `ERR_PNPM_IGNORED_BUILDS` 확인. 필요한 패키지를 `pnpm-workspace.yaml`의 `allowBuilds`에 등록 후 재설치(미등록 시 typecheck/lint/build가 시작조차 안 됨). pnpm 설정은 `package.json "pnpm"`이 아니라 `pnpm-workspace.yaml`. (→ L-001)
+
+( 나머지는 LESSONS에서 "코딩 중 트리거"로 승격된 것만 누적한다. 예시를 미리 채우지 말 것 — 겪어서 쌓아야 신호가 산다. )
 
 ## 세션 종료 프로토콜
 1. 버그 패턴 셀프 리포트 → 재발 가능하면 `docs/LESSONS.md` L-XXX (강화 규칙은 검증 가능한 행동으로).
@@ -89,5 +91,6 @@
 > "매 커밋 풀 빌드+전체 테스트"는 낭비. 외부 경계(스키마/응답/권한) 변경 시엔 검증 생략 금물.
 
 ## 자주 쓰는 명령어 / 환경 주의
-- 패키지: `pnpm install` / 실행: `pnpm dev`.
-- OS: **Windows / PowerShell**. 셸 문법 주의(`$null`, `$env:VAR`, 백틱 줄바꿈). 프로세스 종료/캐시 정리 OS차 유의.
+- **pnpm은 PATH에 직접 없음** → `corepack pnpm <cmd>`로 호출(corepack enable은 권한 문제로 shim 설치 불가). 예: `corepack pnpm install`, `corepack pnpm dev`, `corepack pnpm build`.
+- 검증: `corepack pnpm typecheck` / `lint` / `build`.
+- OS: **Windows / PowerShell**. 셸 문법 주의(`$null`, `$env:VAR`, 백틱 줄바꿈). PowerShell 파이프에서 `Select-Object -First N`은 상위 프로세스에 broken-pipe를 줘 네이티브 명령이 비정상 종료할 수 있음 → 전체 출력은 `-Last N` 또는 `Out-String` 사용.

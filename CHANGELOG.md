@@ -5,8 +5,13 @@
 ## [Unreleased]
 ### Added
 - 문서 하네스 부트스트랩: `CLAUDE.md`, `docs/`(CONVENTIONS·LESSONS·DECISIONS·CURRENT_STATE·SESSION_CHECKLIST·SECURITY), `CHANGELOG.md`, `memory/MEMORY.md` 생성.
-- 스택 및 단계 전환 결정 기록: `docs/DECISIONS.md` D-001(Next.js+TS+Tailwind+pnpm, 웹 모바일 셸), D-002(UI 충실 재현 먼저 + 로직 mock).
+- 설계 결정 기록: `docs/DECISIONS.md` D-001~D-007 (스택, UI먼저·로직mock, DB=PostgreSQL, 추천 파이프라인 단계전환, 콜드스타트, 제품명 Moodyfit, Next 15 고정). 각 결정에 PRD F1~F6 연결.
+- **앱 스캐폴드**: Next.js 15.5.19 + React 19.1 + TypeScript + Tailwind v4 + App Router(`src/`), pnpm(corepack). `next.config.ts` turbopack.root 고정, `pnpm-workspace.yaml` allowBuilds(sharp·unrs-resolver), `package.json`에 `typecheck` 스크립트 추가.
+- 베이스라인 검증 통과: `typecheck` / `lint` / `build` 모두 green.
+
+### Lessons
+- L-001: pnpm 11의 ignored build scripts가 typecheck/lint/build를 차단 → `pnpm-workspace.yaml allowBuilds`로 해결. CLAUDE.md Red Flag로 승격.
 
 ### Notes
-- LESSONS / CLAUDE.md Red Flags는 의도적으로 빈 채로 시작(겪으며 누적).
-- 앱 스캐폴드는 아직 없음 — 다음 작업.
+- CLAUDE.md Red Flags는 L-001만 보유(나머지는 겪으며 누적).
+- 제품명 표기 Moodyfit / `moodyfit_` 통일은 D-006. 화면 구현 시 프로토타입의 `mudifit_` 키를 일괄 치환.
