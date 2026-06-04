@@ -1,6 +1,7 @@
 # Handoff: Moodyfit — AI 스타일 큐레이션 쇼핑앱
 
 ## Overview
+
 Moodyfit is a mobile fashion-commerce app whose core idea is **AI taste learning**: the user
 teaches the app their style through a short onboarding quiz and ongoing per-product feedback
 (like / dislike / "show similar" / save). The app responds with an increasingly personalized
@@ -11,6 +12,7 @@ prototype: Splash → Service Intro → Login → Taste Onboarding (5 steps) →
 main tabs (Home / Explore / Saved / My) and the two overlay sheets (Feedback, AI Chat).
 
 ## About the Design Files
+
 The files in `design_files/` are **design references created in HTML/React-via-Babel** — they
 are prototypes that demonstrate the intended look, motion, and behavior. **They are not
 production code to copy verbatim.** The Babel-in-browser setup, the `window.SHOP_DATA` global,
@@ -23,6 +25,7 @@ Next.js + a mobile-shell layout for web) and implement the designs there. Keep t
 result faithful; replace the prototype's mechanics with real ones.
 
 ## Fidelity
+
 **High-fidelity.** Colors, typography, spacing, radii, shadows, copy, and interactions are all
 final-intent. Recreate the UI pixel-accurately using the codebase's libraries. The product
 imagery is intentionally represented by **flat color blocks** (see Assets) — those are
@@ -37,75 +40,81 @@ is reserved for the status bar / dynamic island.
 ## Design Tokens
 
 ### Color
+
 The palette is a **warm monochrome** ("paper" warm-whites against "ink" warm-charcoal), with a
 single muted red used only for "live/hot" signals.
 
-| Token | Hex | Usage |
-|---|---|---|
-| `--paper` | `#F7F4EF` | App background |
-| `--paper-2` | `#FBF8F2` | Raised cards |
-| `--paper-3` | `#EFE9DE` | Input fields, hover fills, chips |
-| `--paper-deep` | `#E6DFD0` | Pressed / deeper fill |
-| `--ink` | `#3A3633` | Primary text, primary buttons, active icons |
-| `--ink-2` | `#6B655E` | Secondary text |
-| `--ink-3` | `#9B948B` | Tertiary text, placeholders |
-| `--ink-soft` | `#C9C2B4` | Disabled, dots, clear buttons |
-| `--line` | `#E2DCD0` | Borders |
-| `--line-soft` | `#ECE7DC` | Subtle dividers |
-| `--accent` | `#3A3633` | = ink (no separate accent hue) |
-| `--accent-soft` | `#ECE7DE` | Soft selected/tag fill, "like" button bg |
-| `--accent-deep` | `#1F1C1A` | Primary button hover |
-| `--hot` | `#C25450` | Live ranking, "up" trend (muted red) |
-| `--hot-soft` | `#F2DCDA` | Hot background tint |
-| Device letterbox | `#E8E4DC` | Page bg outside the phone (prototype only) |
+| Token            | Hex       | Usage                                       |
+| ---------------- | --------- | ------------------------------------------- |
+| `--paper`        | `#F7F4EF` | App background                              |
+| `--paper-2`      | `#FBF8F2` | Raised cards                                |
+| `--paper-3`      | `#EFE9DE` | Input fields, hover fills, chips            |
+| `--paper-deep`   | `#E6DFD0` | Pressed / deeper fill                       |
+| `--ink`          | `#3A3633` | Primary text, primary buttons, active icons |
+| `--ink-2`        | `#6B655E` | Secondary text                              |
+| `--ink-3`        | `#9B948B` | Tertiary text, placeholders                 |
+| `--ink-soft`     | `#C9C2B4` | Disabled, dots, clear buttons               |
+| `--line`         | `#E2DCD0` | Borders                                     |
+| `--line-soft`    | `#ECE7DC` | Subtle dividers                             |
+| `--accent`       | `#3A3633` | = ink (no separate accent hue)              |
+| `--accent-soft`  | `#ECE7DE` | Soft selected/tag fill, "like" button bg    |
+| `--accent-deep`  | `#1F1C1A` | Primary button hover                        |
+| `--hot`          | `#C25450` | Live ranking, "up" trend (muted red)        |
+| `--hot-soft`     | `#F2DCDA` | Hot background tint                         |
+| Device letterbox | `#E8E4DC` | Page bg outside the phone (prototype only)  |
 
 Splash screen background = `--ink` (`#3A3633`), with all marks/text in `--paper`.
 
 ### Typography
+
 - Font family: **Pretendard** (Korean-first variable font). Fallback stack:
   `"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif`
 - Base body letter-spacing: `-0.01em`; `font-feature-settings: "ss06", "tnum"` (tabular numerals).
 - The brand wordmark "Moodyfit" uses a **Helvetica/Arial-style bold** (Latin), 700 weight, `letter-spacing: -0.4px`.
 
-| Style | Size | Weight | Letter-spacing | Line-height |
-|---|---|---|---|---|
-| Display | 26px | 700 | -0.7px | 1.2 |
-| H1 | 22px | 700 | -0.5px | 1.25 |
-| H2 | 18px | 600 | -0.4px | 1.3 |
-| H3 | 15px | 600 | -0.3px | 1.35 |
-| Body | 14px | 400 | — | 1.55 |
-| Body-2 | 13px | 400 | — | 1.5 (color ink-2) |
-| Caption | 11px | 400 | — | 1.5 (color ink-3) |
-| Label | 10px | 500 | 0.08em, UPPERCASE | — |
-| Price | 16px | 600 | -0.3px | — |
+| Style   | Size | Weight | Letter-spacing    | Line-height       |
+| ------- | ---- | ------ | ----------------- | ----------------- |
+| Display | 26px | 700    | -0.7px            | 1.2               |
+| H1      | 22px | 700    | -0.5px            | 1.25              |
+| H2      | 18px | 600    | -0.4px            | 1.3               |
+| H3      | 15px | 600    | -0.3px            | 1.35              |
+| Body    | 14px | 400    | —                 | 1.55              |
+| Body-2  | 13px | 400    | —                 | 1.5 (color ink-2) |
+| Caption | 11px | 400    | —                 | 1.5 (color ink-3) |
+| Label   | 10px | 500    | 0.08em, UPPERCASE | —                 |
+| Price   | 16px | 600    | -0.3px            | —                 |
 
 Large display headlines in launch/onboarding go up to **27–28px / 700 / -0.8…-0.9px**, line-height ~1.25.
 
 ### Spacing
+
 Spacing scale (used as gap / margin / padding utilities): **4, 6, 8, 10, 12, 16, 20, 24, 32**.
 Standard horizontal screen padding is **20px** (`.px-20`). Cards pad **14–16px**. Scroll areas
 reserve **100px** bottom padding to clear the bottom nav; pinned CTAs sit in a 14px/20px/30px
 gradient-fade footer.
 
 ### Radius
-| Token | Value | Usage |
-|---|---|---|
-| `--r-card` | 10px | Cards |
-| `--r-image` | 6px | Product images |
-| `--r-chip` | 6px | Chips/tags |
-| `--r-btn` | 8px | Buttons |
-| Sheet top corners | 20px | Bottom sheets |
-| App icon squircle | 232/1024 ≈ 22.6% | Launcher icon |
-| Pills / dots / icon-btn | 999px | Fully round |
+
+| Token                   | Value            | Usage          |
+| ----------------------- | ---------------- | -------------- |
+| `--r-card`              | 10px             | Cards          |
+| `--r-image`             | 6px              | Product images |
+| `--r-chip`              | 6px              | Chips/tags     |
+| `--r-btn`               | 8px              | Buttons        |
+| Sheet top corners       | 20px             | Bottom sheets  |
+| App icon squircle       | 232/1024 ≈ 22.6% | Launcher icon  |
+| Pills / dots / icon-btn | 999px            | Fully round    |
 
 ### Shadows
-| Token | Value |
-|---|---|
-| `--sh-card` | `0 1px 2px rgba(58,54,51,0.04), 0 4px 12px rgba(58,54,51,0.04)` |
-| `--sh-sheet` | `0 -8px 30px rgba(58,54,51,0.10)` |
-| `--sh-elev` | `0 12px 40px rgba(58,54,51,0.12), 0 2px 6px rgba(58,54,51,0.06)` |
+
+| Token        | Value                                                            |
+| ------------ | ---------------------------------------------------------------- |
+| `--sh-card`  | `0 1px 2px rgba(58,54,51,0.04), 0 4px 12px rgba(58,54,51,0.04)`  |
+| `--sh-sheet` | `0 -8px 30px rgba(58,54,51,0.10)`                                |
+| `--sh-elev`  | `0 12px 40px rgba(58,54,51,0.12), 0 2px 6px rgba(58,54,51,0.06)` |
 
 ### Motion
+
 - `fade-up`: opacity 0→1 + translateY(8px→0), ~0.4s cubic-bezier(0.2,0.85,0.25,1). Stagger via
   `.d1/.d2/.d3` delay classes (~0.06–0.15s steps).
 - `pulse`: subtle scale-in emphasis on confirmation badges.
@@ -115,6 +124,7 @@ gradient-fade footer.
 - Respect `prefers-reduced-motion`: entrance states must resolve to the visible end-state.
 
 ### Iconography
+
 Line icons, ~currentColor, sizes 13–26px. Names referenced in the prototype:
 `home, grid, heart, heart-fill, user, sparkle, chat, search, close, back, arrow-right, arrow-up,
 send, check, bookmark, thumbs-down, shuffle`. Use the target codebase's icon set with equivalents;
@@ -147,6 +157,7 @@ stage: 'splash' → 'intro' → 'login' → 'onboarding' → 'app'
 - The Home-tab active state also highlights while on `list` (it's a Home sub-flow).
 
 ### State variables (prototype reference)
+
 - `stage` — launch machine (see above)
 - `onboarded` — persisted boolean
 - `tab` — active bottom-nav tab
@@ -164,6 +175,7 @@ Liking a product **adds it to `savedIds`** AND opens the feedback sheet. Saving 
 ## Screens / Views
 
 ### 1. Splash
+
 - **Purpose**: Brand moment while the app boots (~1.8s, then auto-advances).
 - **Layout**: Full screen, `--ink` background. Vertically + horizontally centered stack:
   the **brand mark** above the **"Moodyfit"** wordmark (both in `--paper`).
@@ -172,6 +184,7 @@ Liking a product **adds it to `savedIds`** AND opens the feedback sheet. Saving 
   small sizes). No tagline.
 
 ### 2. Service Intro (carousel)
+
 - **Purpose**: Explain the 3 core value props before login.
 - **Layout**: Top bar with small "Moodyfit" lockup (mark + word) left, "건너뛰기" (skip) right.
   A mini service-screen mock illustration, then headline + body, then dot indicators + a full-width
@@ -183,10 +196,11 @@ Liking a product **adds it to `savedIds`** AND opens the feedback sheet. Saving 
      learning bar ("취향 학습 +8% → 64%") + the 4 feedback buttons row.
   3. **찜하고, AI가 정리해요** — "저장한 옷을 무드별 컬렉션으로 알아서 묶어드려요." Mock: an "AI 컬렉션 제안"
      dark card + a 3-up product grid.
-- **Note**: These mocks are *miniatures of real features* (see Feedback sheet & Saved tab). Build the
+- **Note**: These mocks are _miniatures of real features_ (see Feedback sheet & Saved tab). Build the
   illustration from the same components at reduced scale, or as static representative cards.
 
 ### 3. Login
+
 - **Purpose**: Account entry; allows guest browsing.
 - **Layout** (top→bottom): "Moodyfit" lockup; headline **"오늘의 무드를\n입어보세요"** (27px/700);
   body "Moodyfit이 취향에 맞는 옷을 매일 골라드려요. 30초면 시작할 수 있어요."; a 3-up product teaser grid;
@@ -200,6 +214,7 @@ Liking a product **adds it to `savedIds`** AND opens the feedback sheet. Saving 
   the prototype renders them in the app's mono tone as placeholders.
 
 ### 4. Onboarding (5-step taste quiz)
+
 A `phase` machine: **welcome → steps(0..4) → analyzing → summary**.
 
 - **Welcome**: "Moodyfit" lockup + "둘러보기" skip; a tall striped **lookbook placeholder** hero;
@@ -225,6 +240,7 @@ A `phase` machine: **welcome → steps(0..4) → analyzing → summary**.
   pinned CTA **"내게 꼭 맞는 추천템 보러가기"** → enters Home.
 
 ### 5. Home (tab)
+
 - **Purpose**: Personalized AI feed.
 - **Layout**: sticky app bar (greeting label + name on the left, notification + other icon-buttons on
   the right); a search entry; a horizontal category chip filter; an AI banner/chip that opens chat;
@@ -233,30 +249,36 @@ A `phase` machine: **welcome → steps(0..4) → analyzing → summary**.
   heart toggle. Tapping a card → Detail. Tapping a keyword/section → List view.
 
 ### 6. Explore (tab)
+
 - 2-column product **grid**; sort toggle (**AI 추천순 / 가격**); category filter; "AI 발견" category
   entries that open a list view. Same product-card vocabulary as Home.
 
 ### 7. Saved / 찜 (tab)
+
 - Saved products as collections. A dark **"AI 컬렉션 제안"** card ("'베이지 데일리'로 묶을까요?") that can
   be created or dismissed; collection filter chips; **"새 컬렉션 생성"**; product grid. Heart toggles
   remove from saved.
 
 ### 8. My / 마이 (tab)
+
 - A **taste-learning ring** (overall %); **taste keyword bars** (미니멀 78% +6, 베이지 71% +4, …, each with
   a delta); a learning trend; tappable taste keywords → list view; settings rows including notifications,
   account, **취향 다시 설정하기** (→ onboarding), and **로그아웃** (→ login).
 
 ### 9. Search (pushed screen)
+
 - Sticky search field with clear button; **live "실시간 인기" ranking** list (rank number, term, and an
   up/down/same/NEW change indicator; top ranks emphasized; a blinking live dot) that auto-refreshes;
   **AI 추천 검색어** chips; **최근 검색어** with individual + clear-all delete; autocomplete suggestion rows
   (matched substring bolded). Selecting a term → list view; "결과 없음" path → chat. Back → Home.
 
 ### 10. List view (pushed screen)
+
 - Sticky header (back + title); product list/grid filtered by `listKeyword` or titled by `listTitle`;
   search entry; same product cards. Back → Home.
 
-### 11. Feedback sheet (overlay) — *core feature*
+### 11. Feedback sheet (overlay) — _core feature_
+
 - **Trigger**: tapping **좋아요 (like)** on a product detail. Also adds the product to saved.
 - **Layout** (bottom sheet, rounded 20px top, scrim behind): a `pulse` **success hero** — round ink
   check badge + **"취향에 반영했어요"** + subcopy "{tag1} · {tag2} 가중치가 올라갔어요"; a **"학습 변화"**
@@ -269,7 +291,8 @@ A `phase` machine: **welcome → steps(0..4) → analyzing → summary**.
 - **Planned (not yet built):** when "별로예요" is tapped, present a quick reason picker (e.g. 색 / 핏 / 가격)
   before dismissing. Documented here so it isn't lost — implement only if in scope.
 
-### 12. AI Chat sheet (overlay) — *core feature*
+### 12. AI Chat sheet (overlay) — _core feature_
+
 - **Trigger**: "AI에게 더 물어보기", "비슷한", a Home AI banner, or detail "더 묻기". Opens a taller sheet (~88%).
 - **Layout**: header with a round sparkle avatar + "AI 큐레이터" / "취향 기반으로 골라드려요" + close; a scrolling
   message list (user bubbles right/ink, AI bubbles left/paper-3, with product cards inline in AI replies);
@@ -281,6 +304,7 @@ A `phase` machine: **welcome → steps(0..4) → analyzing → summary**.
 ---
 
 ## Interactions & Behavior (summary)
+
 - **Heart/save** state is global (`savedIds`): toggling on any screen updates everywhere. Liking also opens
   feedback; saving just toggles.
 - **Bottom sheets**: scrim fade-in, sheet slide-up; tapping scrim or close dismisses; chat sheet is taller
@@ -295,6 +319,7 @@ A `phase` machine: **welcome → steps(0..4) → analyzing → summary**.
 ---
 
 ## Assets
+
 - **Product imagery**: represented by flat color blocks. Each product has an `img` object with
   `{ light, base, dark }` hex values used to build a simple tonal block, plus a `colors` array (swatches).
   **Replace with real product photography** in production; keep the card aspect ratios (tall ≈ 3/4,
@@ -304,11 +329,12 @@ A `phase` machine: **welcome → steps(0..4) → analyzing → summary**.
   - Mark (ring + crescent) — ink and light variants, transparent.
   - Logo lockup — mark + "Moodyfit" wordmark, ink and light variants, transparent.
   - Splash composition — ink bg, centered emblem + "Moodyfit".
-  The in-app mark is also available as inline SVG (see `launch.jsx` `MudifitMark`).
+    The in-app mark is also available as inline SVG (see `launch.jsx` `MudifitMark`).
 - **Font**: Pretendard (load via the codebase's font pipeline). Wordmark uses a Helvetica/Arial-class bold.
 - **Lookbook placeholders**: diagonal stripe fills mark spots awaiting real photography.
 
 ## Sample data model (`design_files/data.js`)
+
 A `SHOP_DATA` object: `PRODUCTS` (id, brand, name, price ₩, match %, cat, tags[], colors[], img{}, reason
 HTML), `TASTE` (keyword + value 0–1 + delta), `LEARN_TREND` (weekly ints), `CATS`, `QUICK_REPLIES`,
 `TRENDING` (term + up/down/same/new + delta), `AI_SEARCHES`, `RECENT`, `AI_REPLIES` (keyed canned responses
@@ -316,7 +342,9 @@ with product id sets), and helpers `format(price)` → "₩ 68,000" and `byId(id
 reference for your real catalog/recommendation API. All copy is **Korean** — preserve it.
 
 ## Files
+
 In `design_files/` (prototype source — React via in-browser Babel):
+
 - `Shopping App Prototype.html` — entry; loads React + all `.jsx`/`.css`; renders inside an iOS frame.
 - `styles.css` — all tokens + component styles (the source of truth for the token tables above).
 - `data.js` — sample catalog + taste/search/chat data + helpers.
