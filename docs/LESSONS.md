@@ -26,6 +26,17 @@
 
 ---
 
+## L-002: Prettier `endOfLine` 기본값(lf) + Windows autocrlf → format:check가 전 파일에서 실패
+
+**날짜**: 2026-06-04 (초기 발견)
+**위험도**: 낮음
+**발생 맥락**: feature/scaffold에서 `format:check` green이었으나, PR 머지 후 main을 새로 체크아웃하니 git autocrlf가 working tree를 CRLF로 변환 → Prettier 기본 `endOfLine:"lf"`가 거의 모든 텍스트 파일을 위반으로 판정해 `format:check`가 exit 1. typecheck/lint는 영향 없음.
+**재발 이유**: 포맷 검증을 "포맷터 적용 직후"의 working tree에서만 확인했고, git 체크아웃이 EOL을 바꾼다는 점을 검증에 넣지 않음.
+**해결**: `.prettierrc.json`에 `"endOfLine": "auto"` 추가(파일의 기존 EOL을 허용). CRLF/LF 환경 모두에서 통과.
+**강화 규칙**: Windows에서 Prettier를 도입할 때 `endOfLine: "auto"`를 기본 설정한다. 포맷 검증은 "방금 format한 직후"가 아니라 **새 체크아웃 상태**(또는 CI의 LF 환경)에서도 통과하는지로 본다.
+
+---
+
 <!--
 운영 규칙:
 - 재발하면 날짜를 추가한다(초기 발견 / 재발 / 재발). 재발 횟수 자체가 위험 신호.

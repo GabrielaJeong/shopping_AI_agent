@@ -18,7 +18,8 @@
 ## 포맷팅 (Prettier)
 
 - 포맷은 **Prettier 단독** 담당, ESLint는 코드 품질만 본다 (`eslint-config-prettier/flat`로 포맷 규칙 비활성 → 충돌 없음).
-- 설정: `.prettierrc.json` (semi, double-quote, printWidth 100, tabWidth 2, trailingComma all). 무시: `.prettierignore` (빌드 산출물·lock·프로토타입 레퍼런스·바이너리).
+- 설정: `.prettierrc.json` (semi, double-quote, printWidth 100, tabWidth 2, trailingComma all, **endOfLine auto**). 무시: `.prettierignore` (빌드 산출물·lock·프로토타입 레퍼런스·바이너리).
+- `endOfLine: "auto"`는 Windows의 git autocrlf로 working tree가 CRLF가 돼도 `format:check`가 실패하지 않게 한다 (→ L-002).
 - 명령: 정리 `corepack pnpm format` / 검증 `corepack pnpm format:check`. 커밋 전 `format:check` 통과를 기본으로 한다.
 
 ## 에러 응답 형식 (API 라우트)
