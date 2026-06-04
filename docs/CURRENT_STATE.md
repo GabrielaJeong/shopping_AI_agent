@@ -1,10 +1,10 @@
 # CURRENT_STATE.md
 > 현재 상태 스냅샷. 다음 세션 시작 시 빠른 파악용.
-> 최종 업데이트: 2026-06-03
+> 최종 업데이트: 2026-06-04
 
 ## 구현 완료
 - [x] 문서 하네스 부트스트랩 (CLAUDE.md, docs 스켈레톤, CHANGELOG, memory 인덱스, SECURITY)
-- [x] 스택/단계 전환 결정 기록 (DECISIONS D-001, D-002)
+- [x] 핵심 설계 결정 기록 (DECISIONS D-001~D-006: 스택·단계전환·DB·추천파이프라인·콜드스타트·제품명)
 
 ## 미구현 / 진행 중
 - [ ] 앱 스캐폴드 (Next.js App Router + TypeScript + Tailwind + pnpm) — 아직 없음
