@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Moodyfit · Prototype</title>
+<link rel="stylesheet" as="style" crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<link rel="stylesheet" href="prototype/styles.css" />
+</head>
+<body>
+<div id="root"></div>
+
+<template id="__bundler_thumbnail" data-bg-color="#E8E4DC">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#E8E4DC"/>
+    <path d="M470 360 h260 a16 16 0 0 1 16 16 l24 230 a16 16 0 0 1 -16 18 H446 a16 16 0 0 1 -16 -18 l24 -230 a16 16 0 0 1 16 -16 z" fill="none" stroke="#3A3633" stroke-width="14" stroke-linejoin="round"/>
+    <path d="M520 380 v-40 a80 80 0 0 1 160 0 v40" fill="none" stroke="#3A3633" stroke-width="14" stroke-linecap="round"/>
+    <path d="M567 470 l1.5 3.5 3.5 1.5 -3.5 1.5 -1.5 3.5 -1.5 -3.5 -3.5 -1.5 3.5 -1.5 z" fill="#3A3633" transform="translate(28 6) scale(4)" stroke="#3A3633" stroke-width="2" stroke-linejoin="round"/>
+  </svg>
+</template>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<!-- Data -->
+<script src="prototype/data.js"></script>
+
+<!-- Device frame -->
+<script type="text/babel" src="prototype/ios-frame.jsx"></script>
+
+<!-- Atoms & Charts -->
+<script type="text/babel" src="prototype/atoms.jsx"></script>
+<script type="text/babel" src="prototype/charts.jsx"></script>
+
+<!-- Brand launch sequence -->
+<script type="text/babel" src="prototype/launch.jsx"></script>
+
+<!-- Screens -->
+<script type="text/babel" src="prototype/home.jsx"></script>
+<script type="text/babel" src="prototype/detail.jsx"></script>
+<script type="text/babel" src="prototype/feedback.jsx"></script>
+<script type="text/babel" src="prototype/explore.jsx"></script>
+<script type="text/babel" src="prototype/list.jsx"></script>
+<script type="text/babel" src="prototype/search.jsx"></script>
+<script type="text/babel" src="prototype/saved.jsx"></script>
+<script type="text/babel" src="prototype/mypage.jsx"></script>
+<script type="text/babel" src="prototype/onboarding.jsx"></script>
+
+<!-- App -->
+<script type="text/babel" src="prototype/app.jsx"></script>
+</body>
+</html>
