@@ -48,6 +48,17 @@
 
 ---
 
+## L-004: PowerShell 5.1에서 PR 본문에 큰따옴표가 있으면 `gh pr create --body`가 인자를 쪼갠다
+
+**날짜**: 2026-06-05 (초기 발견)
+**위험도**: 낮음
+**발생 맥락**: `gh pr create --body $body`로 PR 생성 시, `$body`(here-string)에 리터럴 큰따옴표(예: 카피 인용 `"오늘의 무드를…"`)가 포함되자 PowerShell 5.1의 네이티브 인자 인용이 깨져 gh가 본문을 여러 unknown arguments로 분해 → `please quote all values that have spaces`로 실패. 따옴표 없던 이전 PR 본문들은 우연히 통과했음.
+**재발 이유**: PowerShell 5.1이 native exe에 문자열 인자를 넘길 때 임베디드 `"`를 제대로 escape하지 못한다는 점을 간과(한국어 카피엔 인용부호가 흔함).
+**해결**: 본문을 임시 파일에 쓰고 `gh pr create --body-file <file>` 사용 — 인용 문제 우회.
+**강화 규칙**: **PR 본문은 항상 `--body-file`로 넘긴다**(임시 .md에 써서). `--body "...$var..."` 직접 전달 금지. 멀티라인/특수문자 본문에 안전.
+
+---
+
 <!--
 운영 규칙:
 - 재발하면 날짜를 추가한다(초기 발견 / 재발 / 재발). 재발 횟수 자체가 위험 신호.

@@ -110,3 +110,4 @@
 - **pnpm은 PATH에 직접 없음** → `corepack pnpm <cmd>`로 호출(corepack enable은 권한 문제로 shim 설치 불가). 예: `corepack pnpm install`, `corepack pnpm dev`, `corepack pnpm build`.
 - 검증: `corepack pnpm typecheck` / `lint` / `build`.
 - OS: **Windows / PowerShell**. 셸 문법 주의(`$null`, `$env:VAR`, 백틱 줄바꿈). PowerShell 파이프에서 `Select-Object -First N`은 상위 프로세스에 broken-pipe를 줘 네이티브 명령이 비정상 종료할 수 있음 → 전체 출력은 `-Last N` 또는 `Out-String` 사용.
+- **PR 생성**: 본문은 항상 `gh pr create --body-file <임시.md>`로(PowerShell 5.1에서 `--body "...따옴표..."`는 인자가 쪼개짐 → L-004). `gh`는 `C:\Program Files\GitHub CLI\gh.exe`, 사용자 계정으로 인증돼 있음.
