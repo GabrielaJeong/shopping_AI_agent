@@ -19,12 +19,15 @@
 ### Fixed
 
 - `.prettierrc.json`에 `endOfLine: "auto"` 추가 — Windows autocrlf로 CRLF가 된 working tree에서 `format:check`가 전 파일 실패하던 문제 해결 (L-002).
+- dev 서버 실행 중 `pnpm build` 동시 실행으로 `.next` 손상(`_buildManifest` ENOENT → Internal Server Error). `.next` 삭제·재기동으로 복구. 재발 방지 규칙은 L-003 / CLAUDE Red Flag.
 
 ### Lessons
 
 - L-001: pnpm 11의 ignored build scripts가 typecheck/lint/build를 차단 → `pnpm-workspace.yaml allowBuilds`로 해결. CLAUDE.md Red Flag로 승격.
+- L-002: Prettier `endOfLine` 기본값 + Windows autocrlf로 `format:check` 실패 → `endOfLine: "auto"`.
+- L-003: dev 실행 중 `pnpm build` 동시 실행 → `.next` 손상. CLAUDE.md Red Flag로 승격.
 
 ### Notes
 
-- CLAUDE.md Red Flags는 L-001만 보유(나머지는 겪으며 누적).
+- CLAUDE.md Red Flags 보유: L-001(pnpm 빌드 차단), L-003(dev 중 build로 .next 손상).
 - 제품명 표기 Moodyfit / `moodyfit_` 통일은 D-006. 화면 구현 시 프로토타입의 `mudifit_` 키를 일괄 치환.

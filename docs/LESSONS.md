@@ -37,6 +37,17 @@
 
 ---
 
+## L-003: dev 서버 실행 중 `pnpm build`를 돌리면 `.next`가 손상돼 Internal Server Error
+
+**날짜**: 2026-06-05 (초기 발견)
+**위험도**: 중간
+**발생 맥락**: `pnpm dev`(Turbopack)가 백그라운드로 떠 있는 상태에서 변경 검증용으로 `pnpm build`를 여러 번 실행. build와 dev가 같은 `.next` 디렉터리를 동시에 쓰면서 `_buildManifest.js.tmp.*` 임시 파일 경합 → `ENOENT` 반복, 브라우저에 Internal Server Error.
+**재발 이유**: "UI/스타일·라우트 추가" 검증에 build를 포함시키면서, 그 build가 **실행 중인 dev 서버와 같은 `.next`를 공유**한다는 점을 간과.
+**해결**: dev 중지 → `.next` 삭제 → dev 재기동. (코드 버그 아님 — typecheck/lint/build 자체는 green)
+**강화 규칙**: **dev 서버가 떠 있는 동안에는 `pnpm build`를 돌리지 않는다.** 활성 dev 세션 중 검증은 `typecheck`/`lint`로 충분(둘 다 `.next` 미사용). build 검증이 꼭 필요하면 먼저 dev를 중지하고, 캐시 깨짐 신호(`_buildManifest.*` ENOENT)가 보이면 `.next` 삭제 후 재기동.
+
+---
+
 <!--
 운영 규칙:
 - 재발하면 날짜를 추가한다(초기 발견 / 재발 / 재발). 재발 횟수 자체가 위험 신호.
