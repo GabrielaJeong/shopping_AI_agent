@@ -6,7 +6,7 @@
 ## 구현 완료
 
 - [x] 문서 하네스 부트스트랩 (CLAUDE.md, docs 스켈레톤, CHANGELOG, memory 인덱스, SECURITY)
-- [x] 핵심 설계 결정 기록 (DECISIONS D-001~D-011: …·앱구조·취향벡터구조·app셸상태)
+- [x] 핵심 설계 결정 기록 (DECISIONS D-001~D-012: …·취향벡터구조·app셸상태·추천경계)
 - [x] 앱 스캐폴드 (Next.js 15.5.19 + React 19.1 + TypeScript + Tailwind v4 + App Router + src/, pnpm via corepack). 베이스라인 검증 green: typecheck / lint / build 통과.
 - [x] Prettier 도입(eslint 무충돌, endOfLine auto) + 검증 명령 `format:check`.
 - [x] 디자인 토큰 → Tailwind v4 `@theme` 매핑 (색·타이포·radius·shadow, `globals.css`). Pretendard CDN 연결, `layout.tsx` Geist 제거·lang=ko. 빌드 CSS에 유틸리티 생성 확인 (→ D-008). 토큰 미리보기는 `/foundation`.
@@ -18,12 +18,14 @@
 - [x] **Login** 화면 (브랜드+히어로 카피, 상품 티저 3-up, 이메일/Apple/카카오/둘러보기 + 약관 캡션). Button에 `secondary` 변형 추가. AppRoot에 연결. (Apple·카카오는 모노 플레이스홀더 — 실 SDK는 이후)
 - [x] **Onboarding** 5단계 취향 퀴즈 (F1, → D-010): welcome→steps(무드/예산/카테고리/컬러/라이프스타일, min검증+CTA활성)→analyzing(연출)→summary. 선택→`buildTasteProfile`(lib)→`persistence` 저장→`finishOnboarding`. 콜드스타트(둘러보기/미완료=빈 벡터, D-005) 처리. summary 매치%는 표시용 더미.
 - [x] **런치 플로우 4화면(Splash·Intro·Login·Onboarding) 완성** — 상태 머신 전이 전 구간 실제 화면.
-- [x] **app 셸 + 하단 내비 + 전역 saved** (→ D-011): `lib/app-shell-state`(tab/screen/sheet/savedIds), `BottomNav`(4탭, list=home 하이라이트), `AppShell`. 푸시(detail/list/search)·시트(feedback/chat)는 상태 슬롯 + 플레이스홀더. savedIds 전역+영속(`moodyfit_saved_ids`). 탭/푸시/시트 내용은 플레이스홀더.
+- [x] **app 셸 + 하단 내비 + 전역 saved** (→ D-011): `lib/app-shell-state`(tab/screen/sheet/savedIds), `BottomNav`(4탭, list=home 하이라이트), `AppShell`. savedIds 전역+영속(`moodyfit_saved_ids`).
+- [x] **추천 경계** (→ D-012): `lib/recommend.ts` `getHomeFeed(tasteProfile)` 진입 함수(현재 정적 mock, F2·F3 교체 지점). 화면은 이 함수만 소비. `Recommendation{product,match,reason}`.
+- [x] **Home 탭** 실제 화면: 앱바·검색진입·카테고리 인스크린 필터·AI 배너(→chat)·오늘의 픽 히어로(reason·match%)·픽 가로스크롤·섹션별 추천(전체보기→list). 프리미티브 `ProductCard`·`Reason` 신설. 카드→detail, 찜=전역 savedIds.
 
 ## 미구현 / 진행 중
 
-- [ ] **Home 탭** 실제 화면(오늘의 픽 히어로 + 추천 섹션) + `ProductCard`/`ChatProductCard` 프리미티브
-- [ ] explore / saved / my 탭 실제 화면, 푸시(detail/list/search) 실제 화면
+- [ ] explore / saved / my 탭 실제 화면
+- [ ] 푸시(detail/list/search) 실제 화면 (+ `ChatProductCard` 등)
 - [ ] 핵심 시트 2종(feedback/chat) 실제 내용
 - [ ] 추천/챗봇/피드백 로직 (PRD F2~F6) — 이후 단계, 현재 mock 인터페이스
 - [ ] LLM 챗봇 실제 연동 — 이후 단계
