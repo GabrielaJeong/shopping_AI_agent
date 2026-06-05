@@ -21,12 +21,13 @@
 - [x] **app 셸 + 하단 내비 + 전역 saved** (→ D-011): `lib/app-shell-state`(tab/screen/sheet/savedIds), `BottomNav`(4탭, list=home 하이라이트), `AppShell`. savedIds 전역+영속(`moodyfit_saved_ids`).
 - [x] **추천 경계** (→ D-012): `lib/recommend.ts` `getHomeFeed(tasteProfile)` 진입 함수(현재 정적 mock, F2·F3 교체 지점). 화면은 이 함수만 소비. `Recommendation{product,match,reason}`.
 - [x] **Home 탭** 실제 화면: 앱바·검색진입·카테고리 인스크린 필터·AI 배너(→chat)·오늘의 픽 히어로(reason·match%)·픽 가로스크롤·섹션별 추천(전체보기→list). 프리미티브 `ProductCard`·`Reason` 신설. 카드→detail, 찜=전역 savedIds.
+- [x] **Detail** 푸시 화면: 이미지 히어로(back·인디케이터)·썸네일·메타·match%·reason·옵션(컬러/사이즈)·피드백 4버튼. 데이터는 `getProductDetail(id)` 경계(D-012). 좋아요→저장 추가+feedback 시트, 저장→토글, 비슷한→chat 시트, 별로예요→부정신호 슬롯(주석). 좋아요 하트는 outline+accent-soft.
 
 ## 미구현 / 진행 중
 
+- [ ] 핵심 시트 2종(feedback/chat) **실제 내용**(F4·F5·F6) — detail이 슬롯은 엶
+- [ ] 푸시(list/search) 실제 화면 (+ `ChatProductCard` 등)
 - [ ] explore / saved / my 탭 실제 화면
-- [ ] 푸시(detail/list/search) 실제 화면 (+ `ChatProductCard` 등)
-- [ ] 핵심 시트 2종(feedback/chat) 실제 내용
 - [ ] 추천/챗봇/피드백 로직 (PRD F2~F6) — 이후 단계, 현재 mock 인터페이스
 - [ ] LLM 챗봇 실제 연동 — 이후 단계
 
