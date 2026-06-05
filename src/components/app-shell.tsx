@@ -10,6 +10,7 @@ import { useAppState } from "@/lib/app-state";
 import { AppShellProvider, useAppShell } from "@/lib/app-shell-state";
 import { BottomNav } from "@/components/bottom-nav";
 import { Home } from "@/components/screens/home";
+import { Detail } from "@/components/screens/detail";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/icon";
 import { byId } from "@/data";
@@ -30,9 +31,12 @@ function AppShellInner() {
     <div className="flex flex-1 flex-col">
       <div className={`flex flex-1 flex-col overflow-y-auto ${showNav ? "pb-[100px]" : "pb-8"}`}>
         {shell.screen === "home" && (shell.tab === "home" ? <Home /> : <TabPlaceholder />)}
-        {shell.screen === "detail" && (
-          <PushPlaceholder title="상품 상세" subtitle={`productId · ${shell.productId ?? "—"}`} />
-        )}
+        {shell.screen === "detail" &&
+          (shell.productId ? (
+            <Detail productId={shell.productId} />
+          ) : (
+            <PushPlaceholder title="상품 상세" subtitle="productId 없음" />
+          ))}
         {shell.screen === "list" && (
           <PushPlaceholder
             title={shell.listTitle ?? "리스트"}

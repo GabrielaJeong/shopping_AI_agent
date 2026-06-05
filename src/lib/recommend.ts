@@ -43,6 +43,15 @@ function rec(id: string): Recommendation {
 }
 
 /**
+ * 단일 상품의 추천 결과(상세 화면용). 화면은 mock을 직접 보지 말고 이 경계를 통한다.
+ * ⚠️ match·reason은 현재 더미(상품에 박힌 값) — 이후 F3 랭킹이 채울 자리(D-012).
+ */
+export function getProductDetail(id: string): Recommendation | null {
+  const product = byId(id);
+  return product ? { product, match: product.match, reason: product.reason } : null;
+}
+
+/**
  * 홈 추천 피드. 취향 프로필을 입력으로 받는다(이 시그니처가 F2~F3 교체의 경계).
  * 현재는 정적 mock — taste는 사용하지 않으며 빈 벡터에도 안전.
  */
