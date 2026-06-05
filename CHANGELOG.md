@@ -27,6 +27,7 @@
 - L-001: pnpm 11의 ignored build scripts가 typecheck/lint/build를 차단 → `pnpm-workspace.yaml allowBuilds`로 해결. CLAUDE.md Red Flag로 승격.
 - L-002: Prettier `endOfLine` 기본값 + Windows autocrlf로 `format:check` 실패 → `endOfLine: "auto"`.
 - L-003: dev 실행 중 `pnpm build` 동시 실행 → `.next` 손상. CLAUDE.md Red Flag로 승격.
+- L-004: PowerShell 5.1에서 `gh pr create --body "...따옴표..."`가 인자 분해 → PR 본문은 항상 `--body-file` 사용.
 
 ### Notes
 
