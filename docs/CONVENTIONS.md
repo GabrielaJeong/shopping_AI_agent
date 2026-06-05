@@ -5,11 +5,18 @@
 
 ## 네이밍
 
-- ( 파일/컴포넌트/함수/변수 네이밍 규칙. 스캐폴드 후 확정 )
+- 파일: **kebab-case** (`app-state.tsx`, `product-img.tsx`). 컴포넌트/타입: **PascalCase**, 함수/변수: **camelCase**, 상수: **UPPER_SNAKE**.
+- 컴포넌트는 named export 선호(`export function Button`). 페이지(`app/**/page.tsx`)만 default export.
+- import 별칭 `@/*` = `src/*`.
 
 ## 계층 경계
 
-- ( 데이터 접근·추천 로직은 `/lib` 한 곳으로. 화면은 인터페이스만 소비. 구체 규칙은 스캐폴드 후 )
+- `src/lib/` = 도메인/인프라 로직(상태 머신 `app-state`, 영속화 `persistence`, 추천(mock) 등). 화면은 이 인터페이스만 소비.
+- `src/components/` = UI. 재사용 프리미티브는 `src/components/ui/`(`button`/`chip`/`card`), 화면은 `src/components/screens/`.
+- `src/app/` = App Router 진입(`layout`, `page`). 라우트는 얇게, 로직은 lib/components로 위임.
+- **영속화는 반드시 `persistence` 인터페이스 경유**(localStorage 직접 호출 금지 — D-003/D-009로 DB 교체 가능하게).
+- 이벤트 핸들러를 받거나 hook을 쓰는 컴포넌트는 `"use client"`. 순수 표현(예: `Card`)은 서버 컴포넌트로 둔다.
+- className 합성은 `@/lib/cn`(`cn(...)`)을 쓴다.
 
 ## 디자인 토큰 / 스타일
 
