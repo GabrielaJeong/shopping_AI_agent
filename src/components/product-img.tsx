@@ -8,12 +8,9 @@
 
 import { Icon } from "@/components/icon";
 import { cn } from "@/lib/cn";
+import type { ProductImgColors } from "@/types";
 
-export interface ProductImgColors {
-  light: string;
-  base: string;
-  dark: string;
-}
+export type { ProductImgColors };
 
 type Shape = "base" | "tall" | "square";
 

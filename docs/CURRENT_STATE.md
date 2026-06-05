@@ -13,11 +13,12 @@
 - [x] 상태 머신 + mock 영속화 (D-009): `lib/app-state`(stage 머신), `lib/persistence`(moodyfit_onboarded 추상화). 루트(`/`)에서 마운트.
 - [x] 공통 프리미티브 (`components/`): `Icon`, `MudifitMark/Logo`, `ui/Button`, `ui/Chip`, `ui/Card`, `ProductImg`, `cn` 헬퍼. (atoms.jsx 구조 참고·재현)
 - [x] **Splash** 화면 (실제 구현, 1.8s 자동 전환). intro/login/onboarding/app은 전이 검증용 플레이스홀더.
+- [x] 데이터 모델 포팅: `types/`(Product/TasteKeyword/TrendingTerm/AiReply 등, 더미 필드 명시) + `data/`(샘플 카탈로그·취향·검색·챗, 한국어 보존) + 헬퍼 `format`/`byId`. match·reason·delta는 **정적 더미**(F2~F6가 계산할 자리)로 타입·주석에 명시.
 
 ## 미구현 / 진행 중
 
 - [ ] 런치 플로우 실제 화면: intro(3슬라이드) → login → onboarding(5단계) — 현재 플레이스홀더
-- [ ] 데이터 모델/샘플 카탈로그 포팅 (data.js → lib) + ProductCard 등
+- [ ] ProductCard / ChatProductCard 등 데이터 소비 프리미티브
 - [ ] app 4탭 (home / explore / saved / my) + 푸시 화면 (detail / list / search)
 - [ ] 핵심 시트 2종 (feedback, AI chat) — UI/mock
 - [ ] 추천/챗봇/피드백 로직 (PRD F2~F6) — 이후 단계, 현재 mock 인터페이스
