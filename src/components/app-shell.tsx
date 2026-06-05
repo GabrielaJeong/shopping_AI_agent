@@ -9,6 +9,7 @@
 import { useAppState } from "@/lib/app-state";
 import { AppShellProvider, useAppShell } from "@/lib/app-shell-state";
 import { BottomNav } from "@/components/bottom-nav";
+import { Home } from "@/components/screens/home";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/icon";
 import { byId } from "@/data";
@@ -28,7 +29,7 @@ function AppShellInner() {
   return (
     <div className="flex flex-1 flex-col">
       <div className={`flex flex-1 flex-col overflow-y-auto ${showNav ? "pb-[100px]" : "pb-8"}`}>
-        {shell.screen === "home" && <TabPlaceholder />}
+        {shell.screen === "home" && (shell.tab === "home" ? <Home /> : <TabPlaceholder />)}
         {shell.screen === "detail" && (
           <PushPlaceholder title="상품 상세" subtitle={`productId · ${shell.productId ?? "—"}`} />
         )}
@@ -64,7 +65,6 @@ function TabPlaceholder() {
         </p>
       </div>
 
-      {shell.tab === "home" && <HomeDemo />}
       {shell.tab === "explore" && (
         <SavedSummary note="탐색 탭(예정) — 전역 찜은 어디서나 공유됩니다." />
       )}
@@ -93,65 +93,6 @@ const TAB_TITLE = {
   saved: "찜",
   my: "마이",
 } as const;
-
-/* 홈 데모: 푸시/시트 상태 슬롯 + 전역 saved 토글을 실제로 눌러보는 임시 컨트롤. */
-function HomeDemo() {
-  const shell = useAppShell();
-  const sampleIds = ["p01", "p02", "p03"];
-
-  return (
-    <div className="mt-6 flex flex-col gap-5">
-      <section className="flex flex-col gap-2">
-        <span className="text-label text-ink-3 uppercase">push / sheet 슬롯</span>
-        <div className="grid grid-cols-2 gap-2">
-          <Button variant="neutral" onClick={() => shell.openDetail("p01")}>
-            상세 열기
-          </Button>
-          <Button
-            variant="neutral"
-            onClick={() => shell.openList({ title: "베이지 추천", keyword: "베이지" })}
-          >
-            리스트 열기
-          </Button>
-          <Button variant="neutral" onClick={shell.openSearch}>
-            검색 열기
-          </Button>
-          <Button
-            variant="neutral"
-            onClick={() => shell.openSheet({ mode: "feedback", productId: "p01" })}
-          >
-            피드백 시트
-          </Button>
-          <Button
-            variant="neutral"
-            onClick={() => shell.openSheet({ mode: "chat", chatPrompt: "similar_tone" })}
-          >
-            AI 챗 시트
-          </Button>
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-2">
-        <span className="text-label text-ink-3 uppercase">전역 찜 토글</span>
-        {sampleIds.map((id) => {
-          const p = byId(id);
-          const saved = shell.isSaved(id);
-          return (
-            <button
-              key={id}
-              type="button"
-              onClick={() => shell.toggleSaved(id)}
-              className="flex cursor-pointer items-center justify-between rounded-card bg-paper-2 px-4 py-3 text-left"
-            >
-              <span className="text-body-2 text-ink">{p?.name ?? id}</span>
-              <Icon name={saved ? "heart-fill" : "heart"} size={18} />
-            </button>
-          );
-        })}
-      </section>
-    </div>
-  );
-}
 
 /* 다른 탭에서 전역 saved가 공유됨을 보여주는 요약. */
 function SavedSummary({ note }: { note: string }) {
