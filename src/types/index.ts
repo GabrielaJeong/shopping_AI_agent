@@ -89,3 +89,17 @@ export interface AiReply {
   /** 답변에 곁들일 상품 id 세트. */
   products: string[];
 }
+
+/**
+ * 취향 벡터 — 태그→가중치(0~1) 맵. 한 사용자의 취향 프로필.
+ * F1 온보딩이 초기값을 시드하고, 이후 F6 피드백 루프가 갱신한다(부호 있는 델타·정규화·감쇠).
+ * 예: { 미니멀: 0.7, 베이지: 0.6, ... }
+ */
+export type TasteVector = Record<string, number>;
+
+/** 취향 프로필 — 취향 벡터 + 별도 제약(예산). 온보딩(F1) 산출물이자 추천(F2~F6)의 입력. */
+export interface TasteProfile {
+  vector: TasteVector;
+  /** 예산 선택(단일) — 가중치 태그가 아니라 필터 제약. 미선택/상관없음이면 null. */
+  budget: string | null;
+}

@@ -10,6 +10,7 @@ import { useAppState } from "@/lib/app-state";
 import { Splash } from "@/components/screens/splash";
 import { Intro } from "@/components/screens/intro";
 import { Login } from "@/components/screens/login";
+import { Onboarding } from "@/components/screens/onboarding";
 import { MudifitLogo } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 
@@ -52,18 +53,18 @@ export function AppRoot() {
       {s.stage === "login" && <Login onLogin={s.login} />}
 
       {s.stage === "onboarding" && (
-        <StagePlaceholder stage="onboarding" caption="취향 온보딩 (예정)">
-          <Button variant="primary" size="lg" block onClick={s.finishOnboarding}>
-            취향 분석 완료 → 홈
-          </Button>
-        </StagePlaceholder>
+        <Onboarding onComplete={s.finishOnboarding} onSkip={s.skipOnboarding} />
       )}
 
       {s.stage === "app" && (
         <StagePlaceholder stage="app" caption={s.onboarded ? "홈 (온보딩 완료)" : "홈 (게스트)"}>
           <p className="text-caption text-ink-3">
-            onboarded = {String(s.onboarded)} · 새로고침하면{" "}
-            {s.onboarded ? "splash→app 직행" : "intro부터"}
+            취향 태그 {Object.keys(s.tasteProfile.vector).length}개
+            {s.tasteProfile.budget ? ` · 예산 ${s.tasteProfile.budget}` : ""} · onboarded ={" "}
+            {String(s.onboarded)}
+          </p>
+          <p className="text-caption text-ink-3">
+            (빈 벡터여도 앱은 깨지지 않음 — 콜드스타트 D-005)
           </p>
           <Button variant="neutral" block onClick={s.resetOnboarding}>
             취향 다시 설정하기
