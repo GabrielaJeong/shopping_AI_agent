@@ -120,3 +120,16 @@
 **PRD 연결**: 특정 F 아님 — F1·F4·F5 등 전 화면의 시각 토대. 디자인 정본(README)의 토큰 테이블을 코드로 고정.
 
 ---
+
+## D-009: 앱 구조 = 단일 루트 클라이언트 상태 머신 + mock 영속화 추상화
+
+**날짜**: 2026-06-05
+**버전**: v0.0
+**상태**: 적용 중
+**결정**: handoff의 런치 머신(`splash → intro → login → onboarding → app`)을 **단일 루트의 클라이언트 상태 머신**으로 구현한다(라우트 분리 X). `AppStateProvider`(`src/lib/app-state.tsx`)가 `stage`와 전이(`finishSplash`/`finishIntro`/`login`/`finishOnboarding`/`logout`/`resetOnboarding`)를 보유하고, `AppRoot`가 현재 stage를 렌더한다. 온보딩 완료 플래그는 **mock 영속화 레이어**(`src/lib/persistence.ts`, `PersistenceStore` 인터페이스)로 추상화 — 지금은 localStorage(`moodyfit_onboarded`) 백엔드, 나중에 서버/DB로 구현만 교체(D-003). `app` 스테이지 내부의 tab/screen/sheet 라우팅은 app 구현 단계에서 확장.
+**대안**: (1) App Router 실제 라우트(`/onboarding` 등)로 스테이지 분리 — 모바일 셸 전환 애니메이션·전역 상태 공유가 번거롭고 프로토타입과 멀어짐. (2) localStorage 직접 호출 — DB 교체 시 호출부 전수 수정 필요(영속화 추상화로 회피).
+**근거**: 모바일 셸 단일 캔버스 특성상 단일 상태 머신이 프로토타입 동작과 가깝고 시트/푸시 전환 제어가 쉽다. 영속화 인터페이스화로 D-003(Phase 0 mock → 이후 DB) 전환 비용을 한 파일로 가둠.
+**트레이드오프**: 단일 상태가 커질 수 있음 → app 스테이지의 tab/screen/sheet는 별도 컨텍스트/리듀서로 분리 예정. stage가 URL에 반영되지 않음(딥링크/뒤로가기 제약) — 필요해지면 라우팅 동기화 재검토.
+**PRD 연결**: F1(온보딩 게이트 = `moodyfit_onboarded` 영속), 그리고 전 화면의 진입 흐름(런치 → app)의 골격.
+
+---
