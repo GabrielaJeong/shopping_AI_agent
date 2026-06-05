@@ -146,3 +146,16 @@
 **PRD 연결**: **F1**(온보딩 취향 벡터 시드)의 직접 산출물. F2·F6이 이 구조를 입력/갱신 대상으로 사용. summary 매치%는 표시용 더미(F3가 계산할 자리).
 
 ---
+
+## D-011: app 스테이지 상태 = 런치와 분리된 별도 컨텍스트 + 전역 savedIds 영속화
+
+**날짜**: 2026-06-05
+**버전**: v0.0
+**상태**: 적용 중
+**결정**: app 본체 상태(tab / screen(detail·list·search) / sheet(feedback·chat) / savedIds)를 런치 상태 머신(`app-state`, D-009)과 **분리된 컨텍스트** `lib/app-shell-state.tsx`(`AppShellProvider`)로 둔다. app 진입 시에만 마운트(`AppShell`). 규칙: 탭 전환 시 `screen=home` 리셋, 푸시 화면 `back`은 home 복귀, 내비 하이라이트는 `navActiveTab`(list는 home 서브플로우라 home 유지). **savedIds는 전역 + persistence 영속(키 `moodyfit_saved_ids`, D-003)** — 어느 화면에서 토글해도 전역 반영. savedIds는 메모리에선 `Set`, 저장은 배열.
+**대안**: (1) launch `app-state`에 app 필드까지 합치기 — 단일 컨텍스트 비대화, 관심사 혼재(D-009 트레이드오프에서 분리 예고). (2) savedIds를 URL/서버 상태로 — 현 단계 과함, persistence 추상화로 충분. (3) 푸시 화면을 App Router 라우트로 — D-009(단일 상태 머신)와 불일치.
+**근거**: 런치(일회성 진입)와 app(지속 사용) 관심사를 분리해 각자 단순하게 유지. savedIds 영속화로 새로고침에도 찜 유지, DB 교체는 persistence 한 곳만(D-003). nav active 규칙은 handoff 명세 그대로.
+**트레이드오프**: 두 컨텍스트 경계를 의식해야 함(예: My의 logout/취향 재설정은 launch `app-state` 호출). stage/tab/screen이 URL에 없어 딥링크·브라우저 뒤로가기는 추후 과제.
+**PRD 연결**: 전 기능 화면의 그릇. 전역 savedIds는 F5(추천 UI 행동 신호)·F6(저장=강한 긍정 신호) 입력 표면이 된다(현재는 토글·영속까지, 신호 반영 로직은 이후).
+
+---

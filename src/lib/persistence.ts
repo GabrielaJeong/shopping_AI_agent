@@ -13,10 +13,14 @@ export interface PersistenceStore {
   /** 취향 프로필(F1 산출물). 없으면 null → 콜드스타트(빈 프로필)로 처리. */
   getTasteProfile(): Promise<TasteProfile | null>;
   setTasteProfile(profile: TasteProfile): Promise<void>;
+  /** 찜한 상품 id 목록(전역 saved 상태). 없으면 빈 배열. */
+  getSavedIds(): Promise<string[]>;
+  setSavedIds(ids: string[]): Promise<void>;
 }
 
 const ONBOARDED_KEY = "moodyfit_onboarded";
 const TASTE_KEY = "moodyfit_taste_profile";
+const SAVED_KEY = "moodyfit_saved_ids";
 
 /** 클라이언트 전용. SSR/비브라우저 환경에서는 안전하게 기본값을 반환한다. */
 const localStorageStore: PersistenceStore = {
@@ -49,6 +53,24 @@ const localStorageStore: PersistenceStore = {
     if (typeof window === "undefined") return;
     try {
       window.localStorage.setItem(TASTE_KEY, JSON.stringify(profile));
+    } catch {
+      /* 쓰기 실패 무시 */
+    }
+  },
+  async getSavedIds() {
+    if (typeof window === "undefined") return [];
+    try {
+      const raw = window.localStorage.getItem(SAVED_KEY);
+      const parsed: unknown = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? (parsed as string[]) : [];
+    } catch {
+      return [];
+    }
+  },
+  async setSavedIds(ids) {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(SAVED_KEY, JSON.stringify(ids));
     } catch {
       /* 쓰기 실패 무시 */
     }
