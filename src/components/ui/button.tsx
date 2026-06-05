@@ -2,19 +2,20 @@
 
 /*
   Button — styles.css의 .btn 재현.
-  variant: primary(ink/paper) · neutral(paper-3/ink, 기본) · ghost(transparent/ink-2)
+  variant: primary(ink/paper) · neutral(paper-3/ink, 기본) · secondary(paper-2, 보조 CTA) · ghost(transparent/ink-2)
   size: md(기본) · lg
 */
 
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-type Variant = "primary" | "neutral" | "ghost";
+type Variant = "primary" | "neutral" | "secondary" | "ghost";
 type Size = "md" | "lg";
 
 const VARIANT: Record<Variant, string> = {
   primary: "bg-ink text-paper hover:bg-accent-deep",
   neutral: "bg-paper-3 text-ink hover:bg-paper-deep",
+  secondary: "bg-paper-2 text-ink hover:bg-paper-3",
   ghost: "bg-transparent text-ink-2 hover:text-ink",
 };
 

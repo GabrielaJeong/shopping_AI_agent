@@ -12,6 +12,7 @@
 - **런치 파운데이션**: 단일 루트 상태 머신(`lib/app-state`) + mock 영속화(`lib/persistence`, moodyfit_onboarded). 공통 프리미티브(`Icon`/`MudifitMark·Logo`/`Button`/`Chip`/`Card`/`ProductImg`/`cn` 헬퍼) — atoms.jsx 재현. **Splash** 실제 구현(1.8s 자동 전환), intro/login/onboarding/app은 전이 검증 플레이스홀더. splash-in/fade-up 애니메이션 + reduced-motion 가드.
 - **데이터 모델 포팅**: `types/`(Product·TasteKeyword·TrendingTerm·AiReply 등 — match·reason·delta를 "추천 엔진 F2~F6이 계산할 더미"로 타입/주석 명시) + `data/`(샘플 카탈로그·취향·검색·챗, 한국어 보존) + 헬퍼 `format`/`byId`. `ProductImgColors`를 `@/types`로 일원화.
 - **Intro 캐러셀**: 3슬라이드(취향 추천 / 학습 루프 / 찜·컬렉션) + 미니 목업(MockReco·MockFeedback·MockSaved, 프리미티브·샘플 데이터로 축소 재현), 점 인디케이터, 건너뛰기·다음·시작하기. AppRoot 연결(intro 플레이스홀더 대체).
+- **Login 화면**: 브랜드+히어로 카피, 상품 티저 3-up, 이메일/Apple/카카오/둘러보기 버튼 + 약관 캡션. Button에 `secondary` 변형(paper-2) 추가. AppRoot 연결(login 플레이스홀더 대체). Apple·카카오는 모노 플레이스홀더(실 SDK 이후).
 - **앱 스캐폴드**: Next.js 15.5.19 + React 19.1 + TypeScript + Tailwind v4 + App Router(`src/`), pnpm(corepack). `next.config.ts` turbopack.root 고정, `pnpm-workspace.yaml` allowBuilds(sharp·unrs-resolver), `package.json`에 `typecheck` 스크립트 추가.
 - 베이스라인 검증 통과: `typecheck` / `lint` / `build` 모두 green.
 - **Prettier 도입**: prettier 3.8 + eslint-config-prettier 10(`/flat`)로 ESLint와 무충돌 구성. `.prettierrc.json`·`.prettierignore` 추가, `format`·`format:check` 스크립트 추가. CONVENTIONS·검증 명령 목록에 반영.
