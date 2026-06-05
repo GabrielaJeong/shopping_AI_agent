@@ -8,6 +8,7 @@
 
 import { useAppState } from "@/lib/app-state";
 import { Splash } from "@/components/screens/splash";
+import { Intro } from "@/components/screens/intro";
 import { MudifitLogo } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 
@@ -45,13 +46,7 @@ export function AppRoot() {
     <div className="relative mx-auto flex min-h-dvh w-full max-w-[420px] flex-col overflow-hidden bg-paper">
       {s.stage === "splash" && <Splash onDone={s.finishSplash} />}
 
-      {s.stage === "intro" && (
-        <StagePlaceholder stage="intro" caption="서비스 소개 (예정)">
-          <Button variant="primary" size="lg" block onClick={s.finishIntro}>
-            로그인으로
-          </Button>
-        </StagePlaceholder>
-      )}
+      {s.stage === "intro" && <Intro onDone={s.finishIntro} />}
 
       {s.stage === "login" && (
         <StagePlaceholder stage="login" caption="로그인 (예정)">
