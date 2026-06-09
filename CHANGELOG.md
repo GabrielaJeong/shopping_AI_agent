@@ -35,6 +35,7 @@
 - L-002: Prettier `endOfLine` 기본값 + Windows autocrlf로 `format:check` 실패 → `endOfLine: "auto"`.
 - L-003: dev 실행 중 `pnpm build` 동시 실행 → `.next` 손상. CLAUDE.md Red Flag로 승격.
 - L-004: PowerShell 5.1에서 `gh pr create --body "...따옴표..."`가 인자 분해 → PR 본문은 항상 `--body-file` 사용.
+- L-005: PR 머지 후 main에 머문 채 새 작업 첫 커밋을 main에 직접(push 전 발견·복구) → 작업 시작 전 feature 브랜치 먼저. CLAUDE Red Flag로 승격.
 
 ### Notes
 
