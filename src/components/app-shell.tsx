@@ -13,6 +13,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { Home } from "@/components/screens/home";
 import { Detail } from "@/components/screens/detail";
 import { FeedbackSheet } from "@/components/sheets/feedback-sheet";
+import { ChatSheet } from "@/components/sheets/chat-sheet";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/icon";
 import { byId } from "@/data";
@@ -193,9 +194,7 @@ function SheetContainer() {
         </div>
         {shell.sheet.mode === "feedback" && <FeedbackSheet productId={shell.sheet.productId} />}
         {shell.sheet.mode === "chat" && (
-          <p className="text-body-2 pt-4 text-ink-2">
-            AI 챗 시트 플레이스홀더 · prompt {shell.sheet.chatPrompt ?? "—"} — 다음 단계에서 구현.
-          </p>
+          <ChatSheet productId={shell.sheet.productId} seed={shell.sheet.chatPrompt} />
         )}
       </div>
     </>

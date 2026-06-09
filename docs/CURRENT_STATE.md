@@ -6,7 +6,7 @@
 ## 구현 완료
 
 - [x] 문서 하네스 부트스트랩 (CLAUDE.md, docs 스켈레톤, CHANGELOG, memory 인덱스, SECURITY)
-- [x] 핵심 설계 결정 기록 (DECISIONS D-001~D-013: …·app셸상태·추천경계·피드백반영경계)
+- [x] 핵심 설계 결정 기록 (DECISIONS D-001~D-014: …·추천경계·피드백반영경계·챗봇재랭킹경계)
 - [x] 앱 스캐폴드 (Next.js 15.5.19 + React 19.1 + TypeScript + Tailwind v4 + App Router + src/, pnpm via corepack). 베이스라인 검증 green: typecheck / lint / build 통과.
 - [x] Prettier 도입(eslint 무충돌, endOfLine auto) + 검증 명령 `format:check`.
 - [x] 디자인 토큰 → Tailwind v4 `@theme` 매핑 (색·타이포·radius·shadow, `globals.css`). Pretendard CDN 연결, `layout.tsx` Geist 제거·lang=ko. 빌드 CSS에 유틸리티 생성 확인 (→ D-008). 토큰 미리보기는 `/foundation`.
@@ -23,10 +23,11 @@
 - [x] **Home 탭** 실제 화면: 앱바·검색진입·카테고리 인스크린 필터·AI 배너(→chat)·오늘의 픽 히어로(reason·match%)·픽 가로스크롤·섹션별 추천(전체보기→list). 프리미티브 `ProductCard`·`Reason` 신설. 카드→detail, 찜=전역 savedIds.
 - [x] **Detail** 푸시 화면: 이미지 히어로(back·인디케이터)·썸네일·메타·match%·reason·옵션(컬러/사이즈)·피드백 4버튼. 데이터는 `getProductDetail(id)` 경계(D-012). 좋아요→저장 추가+feedback 시트, 저장→토글, 비슷한→chat 시트, 별로예요→부정신호 슬롯(주석). 좋아요 하트는 outline+accent-soft.
 - [x] **피드백 시트** (F5/F6, → D-013): `lib/feedback.applyFeedback`(부호 델타 like/save/dislike/hide)로 **취향 벡터 실제 갱신·영속**, `app-state.recordFeedback`. 성공 히어로(pulse) + "학습 변화" 바(=실제 before→after) + 비슷한 상품 3-up(`getSimilar`) + CTA(더 묻기→chat / 계속 둘러보기). 시트 오버레이를 열릴 때만 마운트+슬라이드업으로 정리.
+- [x] **AI 챗 시트** (F4, → D-014): 두 경계 `lib/chat-rerank`(`parseReorderIntent`=발화→조건, `rerank`=조건→결과). 큐레이터 헤더·유저/AI 버블·인라인 ProductCard·타이핑 연출·빠른답변 칩·입력창. 발화→parse→rerank→결과 카드. 프로토타입 키워드-고정응답 라우팅은 부활 안 함(조건 산출 구조).
+- [x] **핵심 루프 골격 완성**: 런치(Splash·Intro·Login·Onboarding) + app(Home·Detail) + 두 핵심 시트(Feedback·Chat). F1(취향 시드)·F4(재랭킹)·F5/F6(피드백 반영) 표면이 mock 경계 위에 동작.
 
 ## 미구현 / 진행 중
 
-- [ ] **AI 챗 시트(F4)** 실제 내용 — feedback CTA·detail 비슷한·홈 배너가 슬롯은 엶
 - [ ] 푸시(list/search) 실제 화면 (+ `ChatProductCard` 등)
 - [ ] explore / saved / my 탭 실제 화면
 - [ ] 추천/챗봇/피드백 로직 (PRD F2~F6) — 이후 단계, 현재 mock 인터페이스
