@@ -6,11 +6,13 @@
   각 탭/푸시/시트 내용은 플레이스홀더 — 실제 화면은 다음 단계(Home부터)에서 대체.
 */
 
+import { useEffect, useState } from "react";
 import { useAppState } from "@/lib/app-state";
 import { AppShellProvider, useAppShell } from "@/lib/app-shell-state";
 import { BottomNav } from "@/components/bottom-nav";
 import { Home } from "@/components/screens/home";
 import { Detail } from "@/components/screens/detail";
+import { FeedbackSheet } from "@/components/sheets/feedback-sheet";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/icon";
 import { byId } from "@/data";
@@ -147,46 +149,54 @@ function PushPlaceholder({ title, subtitle }: { title: string; subtitle: string 
   );
 }
 
-/* ─── 시트 오버레이 플레이스홀더(feedback/chat) ─── */
+/* ─── 시트 오버레이 (feedback=실제, chat=플레이스홀더) ─── */
 function SheetOverlay() {
   const shell = useAppShell();
-  const open = shell.sheet.mode !== null;
+  if (shell.sheet.mode === null) return null;
+  return <SheetContainer />;
+}
+
+/** 열릴 때만 마운트 → 마운트 후 슬라이드업. (시트별 내용은 1회 마운트되어 effect도 1회) */
+function SheetContainer() {
+  const shell = useAppShell();
+  const [shown, setShown] = useState(false);
+  useEffect(() => setShown(true), []);
+
+  const expanded = shell.sheet.mode === "chat"; // 챗 시트는 더 높게
 
   return (
     <>
       <div
         onClick={shell.closeSheet}
-        className={`absolute inset-0 z-20 bg-ink/45 transition-opacity ${
-          open ? "opacity-100" : "pointer-events-none opacity-0"
+        className={`absolute inset-0 z-20 bg-ink/45 transition-opacity duration-300 ${
+          shown ? "opacity-100" : "opacity-0"
         }`}
         aria-hidden="true"
       />
       <div
-        className={`absolute right-0 bottom-0 left-0 z-30 flex max-h-[88%] flex-col rounded-t-[18px] bg-paper px-5 pt-2 pb-8 shadow-sheet transition-transform duration-300 ${
-          open ? "translate-y-0" : "translate-y-full"
-        }`}
         role="dialog"
         aria-modal="true"
+        className={`absolute right-0 bottom-0 left-0 z-30 flex flex-col rounded-t-[18px] bg-paper px-5 pb-8 shadow-sheet transition-transform duration-300 ${
+          expanded ? "max-h-[92%]" : "max-h-[88%]"
+        } ${shown ? "translate-y-0" : "translate-y-full"}`}
       >
-        <div className="mx-auto mt-2 mb-4 h-1 w-9 rounded-full bg-ink-soft" />
-        <div className="flex items-center justify-between">
-          <span className="text-h3 text-ink">
-            {shell.sheet.mode === "feedback" ? "취향에 반영했어요 (예정)" : "AI 큐레이터 (예정)"}
-          </span>
+        <div className="relative flex items-center justify-center pt-2 pb-3">
+          <span className="absolute top-2 h-1 w-9 rounded-full bg-ink-soft" />
           <button
             type="button"
             onClick={shell.closeSheet}
             aria-label="닫기"
-            className="flex size-9 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
+            className="absolute right-0 flex size-9 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
           >
             <Icon name="close" size={20} />
           </button>
         </div>
-        <p className="text-body-2 mt-3 text-ink-2">
-          {shell.sheet.mode === "feedback"
-            ? `피드백 시트 플레이스홀더 · productId ${shell.sheet.productId ?? "—"}`
-            : `AI 챗 시트 플레이스홀더 · prompt ${shell.sheet.chatPrompt ?? "—"}`}
-        </p>
+        {shell.sheet.mode === "feedback" && <FeedbackSheet productId={shell.sheet.productId} />}
+        {shell.sheet.mode === "chat" && (
+          <p className="text-body-2 pt-4 text-ink-2">
+            AI 챗 시트 플레이스홀더 · prompt {shell.sheet.chatPrompt ?? "—"} — 다음 단계에서 구현.
+          </p>
+        )}
       </div>
     </>
   );
