@@ -59,6 +59,17 @@
 
 ---
 
+## L-005: PR 머지 후 main에 머문 상태에서 새 작업 첫 커밋을 main에 직접 함
+
+**날짜**: 2026-06-05 (초기 발견)
+**위험도**: 중간
+**발생 맥락**: PR #16 머지 → `git checkout main` + pull로 끝난 뒤, 다음 작업(list/search)에서 **feature 브랜치 생성을 잊고** 바로 `git commit` → 로컬 main에 커밋됨. `git push -u origin feature/list-search`의 refspec 에러로 비로소 발견(push 전이라 원격 영향 없음).
+**재발 이유**: PR 머지 워크플로가 **항상 main에서 끝나서**, 다음 작업 진입 시 브랜치 생성을 빠뜨리기 쉬움(보호 브랜치에 올라타 있는 상태가 기본값이 됨).
+**해결**: 커밋을 feature 브랜치로 이전(`git checkout -b feature/<name>` → `git branch -f main origin/main`)하고 main을 origin/main으로 복구. 이후 정상 푸시·PR.
+**강화 규칙**: **새 작업의 첫 파일 수정 전에 `git checkout -b feature/<name>` 먼저.** 커밋 직전 `git branch --show-current`로 main이 아님을 확인. (보호 브랜치 직접 커밋 금지 — CLAUDE.md 절대 금지 1)
+
+---
+
 <!--
 운영 규칙:
 - 재발하면 날짜를 추가한다(초기 발견 / 재발 / 재발). 재발 횟수 자체가 위험 신호.
