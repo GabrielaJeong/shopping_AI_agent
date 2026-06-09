@@ -52,6 +52,24 @@ export function getProductDetail(id: string): Recommendation | null {
 }
 
 /**
+ * 키워드/카테고리로 추린 리스트(list 화면용). 경계 유지(D-012).
+ * ⚠️ 현재 mock: 이름·브랜드·태그·카테고리 substring 매칭. 이후 F2 후보 생성으로 대체.
+ */
+export function getList(keyword: string): Recommendation[] {
+  const k = keyword.trim().toLowerCase();
+  const matched = !k
+    ? PRODUCTS
+    : PRODUCTS.filter(
+        (p) =>
+          p.name.toLowerCase().includes(k) ||
+          p.brand.toLowerCase().includes(k) ||
+          p.category.includes(k) ||
+          p.tags.some((t) => t.toLowerCase().includes(k)),
+      );
+  return matched.map((product) => ({ product, match: product.match, reason: product.reason }));
+}
+
+/**
  * "비슷한 상품" 추천(피드백 시트·detail 등). 경계 유지(D-012).
  * ⚠️ 현재 mock: 같은 카테고리를 앞세워 채움. 이후 F2 콘텐츠 유사도(태그 기반)로 대체.
  */

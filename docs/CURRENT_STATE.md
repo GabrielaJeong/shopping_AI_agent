@@ -25,11 +25,11 @@
 - [x] **피드백 시트** (F5/F6, → D-013): `lib/feedback.applyFeedback`(부호 델타 like/save/dislike/hide)로 **취향 벡터 실제 갱신·영속**, `app-state.recordFeedback`. 성공 히어로(pulse) + "학습 변화" 바(=실제 before→after) + 비슷한 상품 3-up(`getSimilar`) + CTA(더 묻기→chat / 계속 둘러보기). 시트 오버레이를 열릴 때만 마운트+슬라이드업으로 정리.
 - [x] **AI 챗 시트** (F4, → D-014): 두 경계 `lib/chat-rerank`(`parseReorderIntent`=발화→조건, `rerank`=조건→결과). 큐레이터 헤더·유저/AI 버블·인라인 ProductCard·타이핑 연출·빠른답변 칩·입력창. 발화→parse→rerank→결과 카드. 프로토타입 키워드-고정응답 라우팅은 부활 안 함(조건 산출 구조).
 - [x] **핵심 루프 골격 완성**: 런치(Splash·Intro·Login·Onboarding) + app(Home·Detail) + 두 핵심 시트(Feedback·Chat). F1(취향 시드)·F4(재랭킹)·F5/F6(피드백 반영) 표면이 mock 경계 위에 동작.
+- [x] **List/Search 푸시 화면**: List(헤더+검색진입+2-col 그리드, `getList(keyword)` 경계 D-012). Search(검색 필드+clear · 실시간 인기 랭킹(up/down/same/new) · AI 추천 검색어 · 최근 검색어 개별/전체 삭제 · 자동완성 substring 볼드). 선택→list, 결과 없음→chat. back→home. 랭킹/검색 데이터는 mock.
 
 ## 미구현 / 진행 중
 
-- [ ] 푸시(list/search) 실제 화면 (+ `ChatProductCard` 등)
-- [ ] explore / saved / my 탭 실제 화면
+- [ ] explore / saved / my 탭 실제 화면 (전역 savedIds·추천 경계 재사용)
 - [ ] 추천/챗봇/피드백 로직 (PRD F2~F6) — 이후 단계, 현재 mock 인터페이스
 - [ ] LLM 챗봇 실제 연동 — 이후 단계
 
