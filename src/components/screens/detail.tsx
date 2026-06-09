@@ -172,7 +172,7 @@ export function Detail({ productId }: { productId: string }) {
             icon="shuffle"
             label="비슷한"
             onClick={() =>
-              shell.openSheet({ mode: "chat", productId: product.id, chatPrompt: "similar_tone" })
+              shell.openSheet({ mode: "chat", productId: product.id, chatPrompt: "비슷한 톤으로" })
             }
           />
           <FbButton
