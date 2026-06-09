@@ -12,6 +12,8 @@ import { AppShellProvider, useAppShell } from "@/lib/app-shell-state";
 import { BottomNav } from "@/components/bottom-nav";
 import { Home } from "@/components/screens/home";
 import { Detail } from "@/components/screens/detail";
+import { List } from "@/components/screens/list";
+import { Search } from "@/components/screens/search";
 import { FeedbackSheet } from "@/components/sheets/feedback-sheet";
 import { ChatSheet } from "@/components/sheets/chat-sheet";
 import { Button } from "@/components/ui/button";
@@ -40,15 +42,8 @@ function AppShellInner() {
           ) : (
             <PushPlaceholder title="상품 상세" subtitle="productId 없음" />
           ))}
-        {shell.screen === "list" && (
-          <PushPlaceholder
-            title={shell.listTitle ?? "리스트"}
-            subtitle={`keyword · ${shell.listKeyword ?? "—"}`}
-          />
-        )}
-        {shell.screen === "search" && (
-          <PushPlaceholder title="검색" subtitle="실시간 인기·자동완성" />
-        )}
+        {shell.screen === "list" && <List />}
+        {shell.screen === "search" && <Search />}
       </div>
 
       {showNav && <BottomNav />}
