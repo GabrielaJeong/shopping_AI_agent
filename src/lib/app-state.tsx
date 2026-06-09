@@ -13,6 +13,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { persistence } from "./persistence";
 import { emptyTasteProfile } from "./taste-vector";
+import { applyFeedback, type FeedbackSignal, type TasteChange } from "./feedback";
+import { byId } from "@/data";
 import type { TasteProfile } from "@/types";
 
 export type Stage = "splash" | "intro" | "login" | "onboarding" | "app";
@@ -37,6 +39,11 @@ export interface AppState {
   logout: () => void;
   /** 취향 다시 설정 → onboarding. */
   resetOnboarding: () => void;
+  /**
+   * 피드백 신호를 취향 벡터에 실제로 반영(F6) + 영속. 적용된 변화 목록을 반환(시트가 그대로 시각화).
+   * 무관한 productId면 빈 배열. (현재 단순 +/−델타 — D-013)
+   */
+  recordFeedback: (productId: string, signal: FeedbackSignal) => TasteChange[];
 }
 
 const AppStateContext = createContext<AppState | null>(null);
@@ -79,6 +86,17 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   }, []);
   const logout = useCallback(() => setStage("login"), []);
   const resetOnboarding = useCallback(() => setStage("onboarding"), []);
+  const recordFeedback = useCallback(
+    (productId: string, signal: FeedbackSignal): TasteChange[] => {
+      const product = byId(productId);
+      if (!product) return [];
+      const { profile, changes } = applyFeedback(tasteProfile, product, signal);
+      setTasteProfile(profile);
+      void persistence.setTasteProfile(profile); // 영속(레이어 경유, D-003)
+      return changes;
+    },
+    [tasteProfile],
+  );
 
   const value = useMemo<AppState>(
     () => ({
@@ -92,6 +110,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       skipOnboarding,
       logout,
       resetOnboarding,
+      recordFeedback,
     }),
     [
       stage,
@@ -104,6 +123,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       skipOnboarding,
       logout,
       resetOnboarding,
+      recordFeedback,
     ],
   );
 

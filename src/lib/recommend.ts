@@ -11,7 +11,7 @@
 */
 
 import type { Product, TasteProfile } from "@/types";
-import { byId } from "@/data";
+import { PRODUCTS, byId } from "@/data";
 
 export interface Recommendation {
   product: Product;
@@ -49,6 +49,23 @@ function rec(id: string): Recommendation {
 export function getProductDetail(id: string): Recommendation | null {
   const product = byId(id);
   return product ? { product, match: product.match, reason: product.reason } : null;
+}
+
+/**
+ * "비슷한 상품" 추천(피드백 시트·detail 등). 경계 유지(D-012).
+ * ⚠️ 현재 mock: 같은 카테고리를 앞세워 채움. 이후 F2 콘텐츠 유사도(태그 기반)로 대체.
+ */
+export function getSimilar(id: string, n = 3): Recommendation[] {
+  const base = byId(id);
+  const others = PRODUCTS.filter((p) => p.id !== id);
+  const sorted = base
+    ? [...others].sort(
+        (a, b) => (b.category === base.category ? 1 : 0) - (a.category === base.category ? 1 : 0),
+      )
+    : others;
+  return sorted
+    .slice(0, n)
+    .map((product) => ({ product, match: product.match, reason: product.reason }));
 }
 
 /**
