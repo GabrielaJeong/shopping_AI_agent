@@ -29,6 +29,7 @@
 - **간격**: Tailwind 기본 스케일(4px step) 사용. 화면 좌우 패딩 20px = `px-5`, 6px = `gap-1.5`, 10px = `gap-2.5`.
 - **폰트**: 본문 `font-sans`(Pretendard), 워드마크 `font-brand`(Helvetica/Arial). 이모지 금지.
 - 새 토큰이 필요하면 styles.css 근거를 확인하고 `@theme`에 추가 후 사용. 컴포넌트 전용 일회성 값은 토큰화하지 않는다.
+- **클릭 커서**: 손가락 커서는 `globals.css` base의 전역 규칙(`button:not(:disabled)`/`[role="button"]`/`a[href]`)이 일괄 처리한다. 클릭 요소마다 `cursor-pointer`를 붙일 필요 없다(붙어도 무해). 비활성은 자동으로 default. 프로토타입은 모바일이라 커서가 없었음 — 웹 셸 보강 규칙.
 
 ## UI 알림(토스트)
 
