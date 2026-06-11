@@ -33,8 +33,12 @@ function AppShellInner() {
   const showNav = shell.screen === "home" || shell.screen === "list";
 
   return (
-    <div className="flex flex-1 flex-col">
-      <div className={`flex flex-1 flex-col overflow-y-auto ${showNav ? "pb-[100px]" : "pb-8"}`}>
+    // min-h-0: 고정 높이 셸(h-dvh, → 디바이스 프레임) 안에서 flex 자식이 내용만큼 커지지 않고
+    // 줄어들어 안쪽 overflow-y-auto가 실제로 스크롤되게 한다(없으면 내용이 넘쳐 잘림).
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div
+        className={`flex min-h-0 flex-1 flex-col overflow-y-auto ${showNav ? "pb-[100px]" : "pb-8"}`}
+      >
         {shell.screen === "home" &&
           (shell.tab === "home" ? (
             <Home />

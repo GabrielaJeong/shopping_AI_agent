@@ -82,6 +82,7 @@
 - 🚩 네이티브 빌드 스크립트가 있는 의존성 추가/스캐폴드 중 → 설치 후 `ERR_PNPM_IGNORED_BUILDS` 확인. 필요한 패키지를 `pnpm-workspace.yaml`의 `allowBuilds`에 등록 후 재설치(미등록 시 typecheck/lint/build가 시작조차 안 됨). pnpm 설정은 `package.json "pnpm"`이 아니라 `pnpm-workspace.yaml`. (→ L-001)
 - 🚩 `pnpm dev`가 떠 있는데 검증으로 `pnpm build`를 돌리려는 중 → 멈춰라. 같은 `.next` 공유로 매니페스트가 손상돼 Internal Server Error가 난다. 활성 dev 세션 중엔 `typecheck`/`lint`만. build가 필요하면 dev 중지 후. 캐시 깨짐(`_buildManifest.*` ENOENT) 시 `.next` 삭제 후 재기동. (→ L-003)
 - 🚩 새 작업의 첫 커밋/파일 수정 직전 → `git branch --show-current`로 **main이 아닌지 확인**. PR 머지 후엔 main에 머물러 있으니, 작업 시작 전 `git checkout -b feature/<name>` 먼저. (→ L-005)
+- 🚩 레이아웃(height/overflow/flex)·포커스·시트 동작 변경 중 → typecheck/lint/200만으론 안 잡힌다. 머지 전 전체 흐름 한 바퀴(런치→탭→푸시→시트)로 **스크롤·시트 open/close·키보드(Esc)** 실제 확인(또는 PR에 점검 항목 명시). (→ L-006)
 
 ( 나머지는 LESSONS에서 "코딩 중 트리거"로 승격된 것만 누적한다. 예시를 미리 채우지 말 것 — 겪어서 쌓아야 신호가 산다. )
 

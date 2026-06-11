@@ -42,6 +42,7 @@
 - dev 서버 실행 중 `pnpm build` 동시 실행으로 `.next` 손상(`_buildManifest` ENOENT → Internal Server Error). `.next` 삭제·재기동으로 복구. 재발 방지 규칙은 L-003 / CLAUDE Red Flag.
 - My 탭 `Row`가 `<button>`인데 "알림" 행의 토글 스위치(`<button>`)를 품어 button 중첩 → hydration 에러. 인터랙티브 trailing이 있으면 Row를 `div`로 분기해 해결.
 - 시트 닫기 X 위치 정리: 드래그 핸들을 중앙 정렬하고 X를 시트 우상단 코너로(이전엔 핸들이 좌측에 붙고 X가 헤더를 넘쳐 챗 큐레이터 헤더와 겹침).
+- **app 스테이지 스크롤 복구**(#28 회귀): 디바이스 프레임으로 셸이 고정 높이(`h-dvh`)가 됐는데 flex 스크롤 체인에 `min-h-0`이 없어 내용이 넘쳐 잘리고 안 내려가던 문제 → `AppShellInner`/안쪽 스크롤 div에 `min-h-0` 추가. (→ L-006)
 
 ### Lessons
 
@@ -50,8 +51,9 @@
 - L-003: dev 실행 중 `pnpm build` 동시 실행 → `.next` 손상. CLAUDE.md Red Flag로 승격.
 - L-004: PowerShell 5.1에서 `gh pr create --body "...따옴표..."`가 인자 분해 → PR 본문은 항상 `--body-file` 사용.
 - L-005: PR 머지 후 main에 머문 채 새 작업 첫 커밋을 main에 직접(push 전 발견·복구) → 작업 시작 전 feature 브랜치 먼저. CLAUDE Red Flag로 승격.
+- L-006: 폴리시의 레이아웃/포커스 변경(#27·#28)이 스크롤·시트 동작 회귀를 냄(정적 검증 통과). 레이아웃/포커스/시트 변경 시 머지 전 전체 흐름 한 바퀴 실제 확인. CLAUDE Red Flag로 승격.
 
 ### Notes
 
-- CLAUDE.md Red Flags 보유: L-001(pnpm 빌드 차단), L-003(dev 중 build로 .next 손상).
+- CLAUDE.md Red Flags 보유: L-001(pnpm 빌드 차단), L-003(dev 중 build로 .next 손상), L-005(작업 전 브랜치), L-006(레이아웃/포커스 변경 후 흐름 점검).
 - 제품명 표기 Moodyfit / `moodyfit_` 통일은 D-006. 화면 구현 시 프로토타입의 `mudifit_` 키를 일괄 치환.
