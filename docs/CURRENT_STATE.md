@@ -27,11 +27,11 @@
 - [x] **핵심 루프 골격 완성**: 런치(Splash·Intro·Login·Onboarding) + app(Home·Detail) + 두 핵심 시트(Feedback·Chat). F1(취향 시드)·F4(재랭킹)·F5/F6(피드백 반영) 표면이 mock 경계 위에 동작.
 - [x] **List/Search 푸시 화면**: List(헤더+검색진입+2-col 그리드, `getList(keyword)` 경계 D-012). Search(검색 필드+clear · 실시간 인기 랭킹(up/down/same/new) · AI 추천 검색어 · 최근 검색어 개별/전체 삭제 · 자동완성 substring 볼드). 선택→list, 결과 없음→chat. back→home. 랭킹/검색 데이터는 mock.
 - [x] **Saved(찜) 탭**: 전역 savedIds 그리드(하트로 해제) + AI 컬렉션 제안 카드(만들기/닫기) + 컬렉션 필터 칩 + 빈 상태. `app-shell-state`에 `savedIds: string[]` 노출. 컬렉션 자동분류는 mock(태그 빈도, 클러스터링 자리 주석).
+- [x] **Explore(탐색) 탭**: 2-col 그리드 + 정렬(AI추천순/가격순) + 카테고리 인스크린 필터 + "AI 발견" 칩→list. 추천 경계 `getExplore()`(D-012). 임시 SavedSummary 플레이스홀더 제거.
 
 ## 미구현 / 진행 중
 
-- [ ] **explore** 탭 (2-col 그리드 + 정렬 AI추천순/가격 + 카테고리 필터 + AI 발견→list, 추천 경계)
-- [ ] **my** 탭 (취향 학습 링 + 취향 키워드 바[실제 tasteProfile] + 추세 + 설정행)
+- [ ] **my** 탭 (취향 학습 링 + 취향 키워드 바[실제 tasteProfile] + 추세 + 설정행) — TabPlaceholder만 남음
 - [ ] 추천/챗봇/피드백 로직 (PRD F2~F6) — 이후 단계, 현재 mock 인터페이스
 - [ ] LLM 챗봇 실제 연동 — 이후 단계
 

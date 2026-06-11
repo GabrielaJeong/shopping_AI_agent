@@ -15,11 +15,11 @@ import { Detail } from "@/components/screens/detail";
 import { List } from "@/components/screens/list";
 import { Search } from "@/components/screens/search";
 import { Saved } from "@/components/screens/saved";
+import { Explore } from "@/components/screens/explore";
 import { FeedbackSheet } from "@/components/sheets/feedback-sheet";
 import { ChatSheet } from "@/components/sheets/chat-sheet";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/icon";
-import { byId } from "@/data";
 
 export function AppShell() {
   return (
@@ -41,6 +41,8 @@ function AppShellInner() {
             <Home />
           ) : shell.tab === "saved" ? (
             <Saved />
+          ) : shell.tab === "explore" ? (
+            <Explore />
           ) : (
             <TabPlaceholder />
           ))}
@@ -75,9 +77,6 @@ function TabPlaceholder() {
         </p>
       </div>
 
-      {shell.tab === "explore" && (
-        <SavedSummary note="탐색 탭(예정) — 전역 찜은 어디서나 공유됩니다." />
-      )}
       {shell.tab === "my" && (
         <div className="mt-6 flex flex-col gap-3">
           <p className="text-body-2 text-ink-2">
@@ -103,29 +102,7 @@ const TAB_TITLE = {
   my: "마이",
 } as const;
 
-/* 다른 탭에서 전역 saved가 공유됨을 보여주는 요약. */
-function SavedSummary({ note }: { note: string }) {
-  const shell = useAppShell();
-  const ids = ["p01", "p02", "p03", "p04", "p05", "p06", "p07", "p08"].filter((id) =>
-    shell.isSaved(id),
-  );
-  return (
-    <div className="mt-6 flex flex-col gap-3">
-      <p className="text-body-2 text-ink-2">{note}</p>
-      <p className="text-caption text-ink-3">찜한 상품 {ids.length}개</p>
-      <div className="flex flex-col gap-2">
-        {ids.length === 0 && <p className="text-caption text-ink-3">아직 찜한 상품이 없어요.</p>}
-        {ids.map((id) => (
-          <div key={id} className="rounded-card bg-paper-2 px-4 py-3 text-body-2 text-ink">
-            {byId(id)?.name ?? id}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ─── 푸시 화면 플레이스홀더(detail/list/search) ─── */
+/* ─── 푸시 화면 플레이스홀더(detail fallback 전용) ─── */
 function PushPlaceholder({ title, subtitle }: { title: string; subtitle: string }) {
   const shell = useAppShell();
   return (
