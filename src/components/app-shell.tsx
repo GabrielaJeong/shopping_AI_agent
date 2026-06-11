@@ -2,12 +2,11 @@
 
 /*
   AppShell — app 스테이지 본체(셸). 런치 상태 머신(stage==='app')에서 마운트.
-  이번 단계 범위: 하단 4탭 내비 + 탭/푸시(detail·list·search)/시트(feedback·chat) 상태 슬롯 + 전역 savedIds.
-  각 탭/푸시/시트 내용은 플레이스홀더 — 실제 화면은 다음 단계(Home부터)에서 대체.
+  하단 4탭 내비 + 탭(Home/Explore/Saved/My) + 푸시(Detail/List/Search) + 시트(Feedback/Chat) + 전역 savedIds.
+  모든 표면 구현됨. 추천/피드백/재랭킹은 lib 경계(D-012·D-013·D-014)의 mock 위에서 동작.
 */
 
 import { useEffect, useState } from "react";
-import { useAppState } from "@/lib/app-state";
 import { AppShellProvider, useAppShell } from "@/lib/app-shell-state";
 import { BottomNav } from "@/components/bottom-nav";
 import { Home } from "@/components/screens/home";
@@ -16,9 +15,9 @@ import { List } from "@/components/screens/list";
 import { Search } from "@/components/screens/search";
 import { Saved } from "@/components/screens/saved";
 import { Explore } from "@/components/screens/explore";
+import { My } from "@/components/screens/my";
 import { FeedbackSheet } from "@/components/sheets/feedback-sheet";
 import { ChatSheet } from "@/components/sheets/chat-sheet";
-import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/icon";
 
 export function AppShell() {
@@ -44,7 +43,7 @@ function AppShellInner() {
           ) : shell.tab === "explore" ? (
             <Explore />
           ) : (
-            <TabPlaceholder />
+            <My />
           ))}
         {shell.screen === "detail" &&
           (shell.productId ? (
@@ -61,46 +60,6 @@ function AppShellInner() {
     </div>
   );
 }
-
-/* ─── 탭 루트 플레이스홀더 ─── */
-function TabPlaceholder() {
-  const shell = useAppShell();
-  const app = useAppState();
-
-  return (
-    <div className="flex flex-1 flex-col px-5 pt-[54px]">
-      <div className="mt-6 flex flex-col gap-1">
-        <span className="text-label text-ink-3 uppercase">app · tab · {shell.tab}</span>
-        <h1 className="text-h1 text-ink">{TAB_TITLE[shell.tab]}</h1>
-        <p className="text-body-2 text-ink-2">
-          탭 셸 플레이스홀더입니다. 실제 화면은 다음 단계부터 채웁니다.
-        </p>
-      </div>
-
-      {shell.tab === "my" && (
-        <div className="mt-6 flex flex-col gap-3">
-          <p className="text-body-2 text-ink-2">
-            취향 태그 {Object.keys(app.tasteProfile.vector).length}개
-            {app.tasteProfile.budget ? ` · 예산 ${app.tasteProfile.budget}` : ""}
-          </p>
-          <Button variant="neutral" block onClick={app.resetOnboarding}>
-            취향 다시 설정하기
-          </Button>
-          <Button variant="ghost" block onClick={app.logout}>
-            로그아웃
-          </Button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-const TAB_TITLE = {
-  home: "홈",
-  explore: "탐색",
-  saved: "찜",
-  my: "마이",
-} as const;
 
 /* ─── 푸시 화면 플레이스홀더(detail fallback 전용) ─── */
 function PushPlaceholder({ title, subtitle }: { title: string; subtitle: string }) {
