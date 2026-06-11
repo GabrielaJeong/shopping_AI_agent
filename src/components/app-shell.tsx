@@ -110,7 +110,8 @@ function SheetContainer() {
   useEffect(() => {
     const prevFocus = document.activeElement as HTMLElement | null;
     setShown(true);
-    dialogRef.current?.focus();
+    // preventScroll: 시트는 화면 하단 absolute라, 포커스 시 브라우저가 강제로 스크롤(점프)하는 것 방지.
+    dialogRef.current?.focus({ preventScroll: true });
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeSheet();
     };
