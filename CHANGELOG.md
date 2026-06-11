@@ -31,6 +31,7 @@
 
 - `.prettierrc.json`에 `endOfLine: "auto"` 추가 — Windows autocrlf로 CRLF가 된 working tree에서 `format:check`가 전 파일 실패하던 문제 해결 (L-002).
 - dev 서버 실행 중 `pnpm build` 동시 실행으로 `.next` 손상(`_buildManifest` ENOENT → Internal Server Error). `.next` 삭제·재기동으로 복구. 재발 방지 규칙은 L-003 / CLAUDE Red Flag.
+- My 탭 `Row`가 `<button>`인데 "알림" 행의 토글 스위치(`<button>`)를 품어 button 중첩 → hydration 에러. 인터랙티브 trailing이 있으면 Row를 `div`로 분기해 해결.
 
 ### Lessons
 

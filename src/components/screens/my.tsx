@@ -117,15 +117,24 @@ function Row({
   chevron?: boolean;
   danger?: boolean;
 }) {
+  const labelCls = `text-body ${danger ? "text-hot" : "text-ink"}`;
+  const rowCls =
+    "flex items-center justify-between border-b border-line-soft py-3.5 text-left last:border-0";
+
+  // 인터랙티브 trailing(예: 토글 스위치)이 있으면 행 자체는 button이 아니다(button 중첩 방지).
+  if (trailing) {
+    return (
+      <div className={rowCls}>
+        <span className={labelCls}>{label}</span>
+        {trailing}
+      </div>
+    );
+  }
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={!onClick && !trailing}
-      className="flex items-center justify-between border-b border-line-soft py-3.5 text-left last:border-0"
-    >
-      <span className={`text-body ${danger ? "text-hot" : "text-ink"}`}>{label}</span>
-      {trailing ?? (chevron && <Icon name="chevron-right" size={18} color="var(--color-ink-3)" />)}
+    <button type="button" onClick={onClick} className={rowCls}>
+      <span className={labelCls}>{label}</span>
+      {chevron && <Icon name="chevron-right" size={18} color="var(--color-ink-3)" />}
     </button>
   );
 }
