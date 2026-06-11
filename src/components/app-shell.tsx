@@ -57,6 +57,25 @@ function AppShellInner() {
 
       {showNav && <BottomNav />}
       <SheetOverlay />
+      <Toaster />
+    </div>
+  );
+}
+
+/* ─── 전역 토스터 (설정/액션 확인) ─── */
+function Toaster() {
+  const { toasts } = useAppShell();
+  if (toasts.length === 0) return null;
+  return (
+    <div className="pointer-events-none absolute inset-x-0 bottom-24 z-40 flex flex-col items-center gap-2 px-6">
+      {toasts.map((t) => (
+        <div
+          key={t.id}
+          className="text-body-2 animate-fade-up max-w-full rounded-[10px] bg-ink px-4 py-2.5 text-center font-medium text-paper shadow-[0_8px_24px_rgba(31,28,26,0.22)]"
+        >
+          {t.msg}
+        </div>
+      ))}
     </div>
   );
 }
@@ -119,17 +138,19 @@ function SheetContainer() {
           expanded ? "max-h-[92%]" : "max-h-[88%]"
         } ${shown ? "translate-y-0" : "translate-y-full"}`}
       >
-        <div className="relative flex items-center justify-center pt-2 pb-3">
-          <span className="absolute top-2 h-1 w-9 rounded-full bg-ink-soft" />
-          <button
-            type="button"
-            onClick={shell.closeSheet}
-            aria-label="닫기"
-            className="absolute right-0 flex size-9 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
-          >
-            <Icon name="close" size={20} />
-          </button>
+        {/* 드래그 핸들(중앙) */}
+        <div className="flex justify-center pt-2.5 pb-2">
+          <span className="h-1 w-9 rounded-full bg-ink-soft" />
         </div>
+        {/* 닫기 — 시트 우상단 코너 */}
+        <button
+          type="button"
+          onClick={shell.closeSheet}
+          aria-label="닫기"
+          className="absolute top-2 right-3 flex size-9 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
+        >
+          <Icon name="close" size={20} />
+        </button>
         {shell.sheet.mode === "feedback" && <FeedbackSheet productId={shell.sheet.productId} />}
         {shell.sheet.mode === "chat" && (
           <ChatSheet productId={shell.sheet.productId} seed={shell.sheet.chatPrompt} />
