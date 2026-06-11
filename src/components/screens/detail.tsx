@@ -15,6 +15,7 @@ import { useState } from "react";
 import { Icon, type IconName } from "@/components/icon";
 import { Reason } from "@/components/reason";
 import { useAppShell } from "@/lib/app-shell-state";
+import { useAppState } from "@/lib/app-state";
 import { getProductDetail } from "@/lib/recommend";
 import { format } from "@/data";
 import { cn } from "@/lib/cn";
@@ -23,6 +24,7 @@ const SIZES = ["S", "M", "L", "XL"];
 
 export function Detail({ productId }: { productId: string }) {
   const shell = useAppShell();
+  const app = useAppState();
   const detail = getProductDetail(productId);
 
   const [thumb, setThumb] = useState(0);
@@ -165,7 +167,10 @@ export function Detail({ productId }: { productId: string }) {
             icon="thumbs-down"
             label="별로예요"
             onClick={() => {
-              /* 부정 신호 슬롯(F6 −delta) + planned 이유 선택(색/핏/가격). 다음 단계. */
+              // 부정 신호: 취향 벡터에 −delta 반영(F6) + 확인 토스트.
+              // (handoff 'planned' 이유 선택(색/핏/가격)은 이후 단계)
+              app.recordFeedback(product.id, "dislike");
+              shell.toast("비슷한 추천을 줄일게요");
             }}
           />
           <FbButton

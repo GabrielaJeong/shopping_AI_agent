@@ -26,12 +26,14 @@
 - **앱 스캐폴드**: Next.js 15.5.19 + React 19.1 + TypeScript + Tailwind v4 + App Router(`src/`), pnpm(corepack). `next.config.ts` turbopack.root 고정, `pnpm-workspace.yaml` allowBuilds(sharp·unrs-resolver), `package.json`에 `typecheck` 스크립트 추가.
 - 베이스라인 검증 통과: `typecheck` / `lint` / `build` 모두 green.
 - **Prettier 도입**: prettier 3.8 + eslint-config-prettier 10(`/flat`)로 ESLint와 무충돌 구성. `.prettierrc.json`·`.prettierignore` 추가, `format`·`format:check` 스크립트 추가. CONVENTIONS·검증 명령 목록에 반영.
+- **전역 토스터**: `app-shell-state`에 `toast(msg)` + `toasts` 추가, AppShell `Toaster`(하단·자동 2.2s). detail "별로예요" → `recordFeedback(dislike)`로 취향 벡터 −delta 실제 반영 + "비슷한 추천을 줄일게요" 토스트(부정 신호의 실제 경로 연결). (다른 액션 토스트는 폴리시에서 확대)
 
 ### Fixed
 
 - `.prettierrc.json`에 `endOfLine: "auto"` 추가 — Windows autocrlf로 CRLF가 된 working tree에서 `format:check`가 전 파일 실패하던 문제 해결 (L-002).
 - dev 서버 실행 중 `pnpm build` 동시 실행으로 `.next` 손상(`_buildManifest` ENOENT → Internal Server Error). `.next` 삭제·재기동으로 복구. 재발 방지 규칙은 L-003 / CLAUDE Red Flag.
 - My 탭 `Row`가 `<button>`인데 "알림" 행의 토글 스위치(`<button>`)를 품어 button 중첩 → hydration 에러. 인터랙티브 trailing이 있으면 Row를 `div`로 분기해 해결.
+- 시트 닫기 X 위치 정리: 드래그 핸들을 중앙 정렬하고 X를 시트 우상단 코너로(이전엔 핸들이 좌측에 붙고 X가 헤더를 넘쳐 챗 큐레이터 헤더와 겹침).
 
 ### Lessons
 

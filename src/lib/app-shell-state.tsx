@@ -11,7 +11,15 @@
   (이번 단계는 셸·내비·전역 상태까지. 각 탭/푸시/시트 내용은 다음 단계.)
 */
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { persistence } from "./persistence";
 
 export type Tab = "home" | "explore" | "saved" | "my";
@@ -57,6 +65,10 @@ export interface AppShellState {
     chatPrompt?: string;
   }) => void;
   closeSheet: () => void;
+
+  /** 전역 토스트(설정/액션 확인 메시지). */
+  toasts: { id: number; msg: string }[];
+  toast: (msg: string) => void;
 }
 
 const AppShellContext = createContext<AppShellState | null>(null);
@@ -129,6 +141,14 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
   );
   const closeSheet = useCallback(() => setSheet(CLOSED_SHEET), []);
 
+  const [toasts, setToasts] = useState<{ id: number; msg: string }[]>([]);
+  const toastId = useRef(1);
+  const toast = useCallback((msg: string) => {
+    const id = toastId.current++;
+    setToasts((t) => [...t, { id, msg }]);
+    window.setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 2200);
+  }, []);
+
   const navActiveTab: Tab = screen === "list" ? "home" : tab;
 
   const value = useMemo<AppShellState>(
@@ -150,6 +170,8 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
       toggleSaved,
       openSheet,
       closeSheet,
+      toasts,
+      toast,
     }),
     [
       tab,
@@ -169,6 +191,8 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
       toggleSaved,
       openSheet,
       closeSheet,
+      toasts,
+      toast,
     ],
   );
 
