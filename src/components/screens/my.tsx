@@ -11,6 +11,7 @@
 import { useState } from "react";
 import { Icon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
+import { TasteBars } from "@/components/taste-bars";
 import { useAppState } from "@/lib/app-state";
 import { useAppShell } from "@/lib/app-shell-state";
 import { useToast } from "@/lib/toast";
@@ -63,27 +64,10 @@ export function My() {
               </Button>
             </div>
           ) : (
-            <div className="flex flex-col gap-3">
-              {keywords.map((k) => (
-                <button
-                  key={k.tag}
-                  type="button"
-                  onClick={() => shell.openList({ title: k.tag, keyword: k.tag })}
-                  className="grid grid-cols-[72px_1fr_36px] items-center gap-2.5 rounded-btn px-1 py-1 text-left hover:bg-paper-3"
-                >
-                  <span className="text-body-2 font-medium text-ink">{k.tag}</span>
-                  <span className="h-1.5 overflow-hidden rounded-full bg-paper-3">
-                    <span
-                      className="block h-full rounded-full bg-ink"
-                      style={{ width: `${Math.round(k.weight * 100)}%` }}
-                    />
-                  </span>
-                  <span className="text-right text-[11px] font-medium text-ink-2">
-                    {Math.round(k.weight * 100)}%
-                  </span>
-                </button>
-              ))}
-            </div>
+            <TasteBars
+              items={keywords}
+              onPick={(k) => shell.openList({ title: k.tag, keyword: k.tag })}
+            />
           )}
         </section>
 
