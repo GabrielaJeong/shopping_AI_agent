@@ -49,19 +49,18 @@ export function getExplore(): Recommendation[] {
 
 /**
  * 키워드/카테고리로 추린 리스트(list 화면용). 경계 유지(D-012).
- * ⚠️ 현재 mock: 이름·브랜드·태그·카테고리 substring 매칭. 이후 F2 후보 생성으로 대체.
+ * ⚠️ 현재 mock: 공백으로 나눈 **토큰 중 하나라도** 이름·브랜드·카테고리·태그에 들어가면 매칭.
+ * (구(句) 검색어 "오버사이즈 셔츠"가 한 필드에 통째로 없어도 매칭되게 — 이후 F2 후보 생성으로 대체)
  */
 export function getList(keyword: string): Recommendation[] {
-  const k = keyword.trim().toLowerCase();
-  const matched = !k
-    ? PRODUCTS
-    : PRODUCTS.filter(
-        (p) =>
-          p.name.toLowerCase().includes(k) ||
-          p.brand.toLowerCase().includes(k) ||
-          p.category.includes(k) ||
-          p.tags.some((t) => t.toLowerCase().includes(k)),
-      );
+  const tokens = keyword.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const matched =
+    tokens.length === 0
+      ? PRODUCTS
+      : PRODUCTS.filter((p) => {
+          const haystack = `${p.name} ${p.brand} ${p.category} ${p.tags.join(" ")}`.toLowerCase();
+          return tokens.some((t) => haystack.includes(t));
+        });
   return matched.map((product) => ({ product, match: product.match, reason: product.reason }));
 }
 
