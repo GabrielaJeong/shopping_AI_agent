@@ -6,7 +6,7 @@
   모든 표면 구현됨. 추천/피드백/재랭킹은 lib 경계(D-012·D-013·D-014)의 mock 위에서 동작.
 */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AppShellProvider, useAppShell } from "@/lib/app-shell-state";
 import { BottomNav } from "@/components/bottom-nav";
 import { Home } from "@/components/screens/home";
@@ -98,24 +98,44 @@ function SheetOverlay() {
 /** 열릴 때만 마운트 → 마운트 후 슬라이드업. (시트별 내용은 1회 마운트되어 effect도 1회) */
 function SheetContainer() {
   const shell = useAppShell();
+  const closeSheet = shell.closeSheet;
   const [shown, setShown] = useState(false);
-  useEffect(() => setShown(true), []);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  // 접근성: 열릴 때 시트로 포커스 이동 + Esc 닫기 + 닫힐 때 직전 포커스 복원.
+  useEffect(() => {
+    const prevFocus = document.activeElement as HTMLElement | null;
+    setShown(true);
+    dialogRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeSheet();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      prevFocus?.focus?.();
+    };
+  }, [closeSheet]);
 
   const expanded = shell.sheet.mode === "chat"; // 챗 시트는 더 높게
+  const label = shell.sheet.mode === "chat" ? "AI 큐레이터" : "취향 반영";
 
   return (
     <>
       <div
-        onClick={shell.closeSheet}
+        onClick={closeSheet}
         className={`absolute inset-0 z-20 bg-ink/45 transition-opacity duration-300 ${
           shown ? "opacity-100" : "opacity-0"
         }`}
         aria-hidden="true"
       />
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        className={`absolute right-0 bottom-0 left-0 z-30 flex flex-col rounded-t-[18px] bg-paper px-5 pb-8 shadow-sheet transition-transform duration-300 ${
+        aria-label={label}
+        tabIndex={-1}
+        className={`absolute right-0 bottom-0 left-0 z-30 flex flex-col rounded-t-[18px] bg-paper px-5 pb-8 shadow-sheet transition-transform duration-300 outline-none ${
           expanded ? "max-h-[92%]" : "max-h-[88%]"
         } ${shown ? "translate-y-0" : "translate-y-full"}`}
       >
