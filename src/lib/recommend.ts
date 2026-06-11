@@ -52,6 +52,14 @@ export function getProductDetail(id: string): Recommendation | null {
 }
 
 /**
+ * 탐색 그리드 후보(explore 화면용). 경계 유지(D-012).
+ * ⚠️ 현재 전체 카탈로그(mock). 이후 F2 후보 생성 + 신규/탐색 노출 슬롯이 들어올 자리.
+ */
+export function getExplore(): Recommendation[] {
+  return PRODUCTS.map((product) => ({ product, match: product.match, reason: product.reason }));
+}
+
+/**
  * 키워드/카테고리로 추린 리스트(list 화면용). 경계 유지(D-012).
  * ⚠️ 현재 mock: 이름·브랜드·태그·카테고리 substring 매칭. 이후 F2 후보 생성으로 대체.
  */
