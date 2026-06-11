@@ -14,6 +14,7 @@ import { Home } from "@/components/screens/home";
 import { Detail } from "@/components/screens/detail";
 import { List } from "@/components/screens/list";
 import { Search } from "@/components/screens/search";
+import { Saved } from "@/components/screens/saved";
 import { FeedbackSheet } from "@/components/sheets/feedback-sheet";
 import { ChatSheet } from "@/components/sheets/chat-sheet";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,14 @@ function AppShellInner() {
   return (
     <div className="flex flex-1 flex-col">
       <div className={`flex flex-1 flex-col overflow-y-auto ${showNav ? "pb-[100px]" : "pb-8"}`}>
-        {shell.screen === "home" && (shell.tab === "home" ? <Home /> : <TabPlaceholder />)}
+        {shell.screen === "home" &&
+          (shell.tab === "home" ? (
+            <Home />
+          ) : shell.tab === "saved" ? (
+            <Saved />
+          ) : (
+            <TabPlaceholder />
+          ))}
         {shell.screen === "detail" &&
           (shell.productId ? (
             <Detail productId={shell.productId} />
@@ -70,7 +78,6 @@ function TabPlaceholder() {
       {shell.tab === "explore" && (
         <SavedSummary note="탐색 탭(예정) — 전역 찜은 어디서나 공유됩니다." />
       )}
-      {shell.tab === "saved" && <SavedSummary note="찜 탭(예정) — 저장한 상품 목록." />}
       {shell.tab === "my" && (
         <div className="mt-6 flex flex-col gap-3">
           <p className="text-body-2 text-ink-2">
