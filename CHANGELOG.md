@@ -10,6 +10,7 @@
 
 ### Added
 
+- **반응형(폴리시)**: 모바일은 풀-블리드 폰 화면 유지, 큰 화면(sm↑)은 레터박스 배경(#e8e4dc) 위 가운데 정렬된 **디바이스 프레임**(h-844 캡=`calc(100dvh-3rem)`, rounded-[2rem], shadow-elev)으로 — 내비/시트/토스트가 창 바닥이 아닌 프레임 바닥에 옴. 런치 화면(intro/login/onboarding 4)·셸 `min-h-dvh`→`h-dvh`/`h-full`+필요시 overflow 스크롤로 프레임 높이와 정합.
 - **접근성(폴리시)**: 시트 — Esc로 닫기 + 열릴 때 시트로 포커스 이동·닫힐 때 직전 포커스 복원 + `aria-label`/`aria-modal`/`tabIndex=-1`. ProductCard — 열기 영역(role=button)과 찜 버튼을 **형제로 분리**(중첩 인터랙티브 제거) + 찜 `aria-pressed`/`aria-label`.
 - **토스트 확대(폴리시) + 전역화**: 토스터를 `lib/toast`(`ToastProvider`/`useToast`/`Toaster`)로 분리해 **루트(AppRoot)로 승격** — stage 전환(로그아웃·취향 재설정)에도 보이게. 액션 연결: 찜 토글(`toggleSaved` 중앙: 찜했어요/해제), 컬렉션 만들기, 별로예요(−delta), 홈 알림, 로그아웃·취향 재설정. (이전 `app-shell-state`의 toast/Toaster는 제거 — useToast로 일원화). CONVENTIONS 규칙도 `useToast()`로 갱신.
 

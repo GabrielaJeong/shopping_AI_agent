@@ -17,7 +17,7 @@ export function Login({ onLogin }: { onLogin: () => void }) {
   const teaser = [byId("p01"), byId("p04"), byId("p02")].filter(Boolean) as Product[];
 
   return (
-    <div className="flex min-h-dvh flex-col px-5 pt-[54px] pb-[26px]">
+    <div className="flex h-full flex-col overflow-y-auto px-5 pt-[54px] pb-[26px] [scrollbar-width:none]">
       {/* 브랜드 + 히어로 */}
       <div className="pt-9">
         <div className="animate-fade-up">
