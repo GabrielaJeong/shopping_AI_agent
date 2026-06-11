@@ -30,6 +30,13 @@
 - **폰트**: 본문 `font-sans`(Pretendard), 워드마크 `font-brand`(Helvetica/Arial). 이모지 금지.
 - 새 토큰이 필요하면 styles.css 근거를 확인하고 `@theme`에 추가 후 사용. 컴포넌트 전용 일회성 값은 토큰화하지 않는다.
 
+## UI 알림(토스트)
+
+- **사용자 액션 확인 알림은 공용 토스터를 쓴다** — `useAppShell().toast(msg)`. 새 토스트/스낵바/배너 컴포넌트를 만들지 말 것.
+- 렌더는 `AppShell`의 단일 `Toaster`(하단, 자동 소멸). 전역 상태는 `app-shell-state`의 `toasts`/`toast`.
+- 토스트 문구는 **실제로 일어난 동작을 반영**한다(빈 약속 금지). 예: "비슷한 추천을 줄일게요"는 실제 −delta 반영(F6)과 짝.
+- 적용 대상(예): 찜 추가/해제, 피드백 반영, 로그아웃·취향 재설정, 컬렉션 생성 등.
+
 ## 포맷팅 (Prettier)
 
 - 포맷은 **Prettier 단독** 담당, ESLint는 코드 품질만 본다 (`eslint-config-prettier/flat`로 포맷 규칙 비활성 → 충돌 없음).
