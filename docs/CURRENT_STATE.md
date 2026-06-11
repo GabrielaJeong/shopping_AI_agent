@@ -32,11 +32,11 @@
 - [x] **My(마이) 탭**: 취향 학습 링 + **취향 키워드 바(실제 tasteProfile.vector)** + 학습 추세 스파크라인 + 설정행(알림 토글 · 계정 · 취향 다시 설정→onboarding · 로그아웃→login). 키워드 탭→list. 링%·추세·키워드 델타는 더미(학습률 산출 자리 주석). AppShell 전 탭 실제 화면화 완료(TabPlaceholder 제거).
 - [x] **모든 핵심 화면 구현 완료**: 런치(Splash·Intro·Login·Onboarding) + app 4탭(Home·Explore·Saved·My) + 푸시(Detail·List·Search) + 시트(Feedback·Chat). UI 골격 + mock 경계.
 
-- [x] **폴리시**: Home 정본 충실도 재현 · 토스트 전역화+액션 연결 · 접근성(시트 Esc 닫기·포커스 이동/복원·aria-label, ProductCard 중첩 인터랙티브 분리: 찜 버튼을 형제로).
+- [x] **폴리시**: Home 정본 충실도 재현 · 토스트 전역화+액션 연결 · 접근성(시트 Esc·포커스 이동/복원·aria, ProductCard 중첩 분리) · **반응형**(모바일 풀-블리드, 큰 화면 sm↑은 레터박스 배경 위 가운데 디바이스 프레임 h-844/rounded/shadow; 런치 화면 `min-h-dvh`→`h-full`+스크롤).
 
 ## 미구현 / 진행 중
 
-- [ ] 폴리시 잔여: 반응형(큰 화면 폰 프레임), 전체 흐름 전환 미세 점검, (선택) 시트 풀 포커스 트랩
+- [ ] 폴리시 잔여(선택): 전체 흐름 전환 미세 다듬기, 시트 풀 포커스 트랩(Tab 순환)
 - [ ] 실제 엔진/연동 (PRD 단계, 현재는 mock 경계만): F2·F3 추천 파이프라인, F4 LLM 의도 파싱, F6 정규화·감쇠·신호 가중치, DB 연결(D-003)
 - [ ] 학습률/키워드 델타 추적(My 링·추세 실제화), 컬렉션 클러스터링(Saved), 상품 실제 이미지
 

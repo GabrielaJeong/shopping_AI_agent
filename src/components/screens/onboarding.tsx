@@ -85,7 +85,7 @@ export function Onboarding({
   const goNext = () => setPhase(isLast ? "analyzing" : stepIndex + 1);
 
   return (
-    <div className="flex min-h-dvh flex-col px-5 pt-[54px] pb-[30px]">
+    <div className="flex h-full flex-col overflow-y-auto px-5 pt-[54px] pb-[30px] [scrollbar-width:none]">
       {/* 상단 바 */}
       <div className="flex items-center justify-between pt-2">
         <button
@@ -232,7 +232,7 @@ function StepOptions({
 /* ─── welcome ─── */
 function Welcome({ onStart, onSkip }: { onStart: () => void; onSkip: () => void }) {
   return (
-    <div className="flex min-h-dvh flex-col px-5 pt-[54px] pb-[30px]">
+    <div className="flex h-full flex-col overflow-y-auto px-5 pt-[54px] pb-[30px] [scrollbar-width:none]">
       <div className="flex items-center justify-end pt-2">
         <button
           type="button"
@@ -297,7 +297,7 @@ function Analyzing({ onDone }: { onDone: () => void }) {
     ANALYZING_STATUS[Math.min(ANALYZING_STATUS.length - 1, Math.floor((pct / 100) * 3))];
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center gap-7 px-5">
+    <div className="flex h-full flex-col items-center justify-center gap-7 px-5">
       <div className="relative size-[140px]">
         <svg width="140" height="140" viewBox="0 0 120 120" className="-rotate-90">
           <circle cx="60" cy="60" r={r} fill="none" stroke="var(--color-paper-3)" strokeWidth="6" />
@@ -337,7 +337,7 @@ function Summary({ profile, onComplete }: { profile: TasteProfile; onComplete: (
   }, []);
 
   return (
-    <div className="flex min-h-dvh flex-col px-5 pt-[54px] pb-[30px]">
+    <div className="flex h-full flex-col overflow-y-auto px-5 pt-[54px] pb-[30px] [scrollbar-width:none]">
       <div className="animate-fade-up mt-6 flex flex-col items-center text-center">
         <span className="flex size-14 items-center justify-center rounded-full bg-ink text-paper">
           <Icon name="check" size={26} />

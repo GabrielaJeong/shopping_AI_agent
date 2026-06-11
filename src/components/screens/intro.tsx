@@ -151,7 +151,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
   const slide = SLIDES[i];
 
   return (
-    <div className="flex min-h-dvh flex-col px-5 pt-[54px] pb-[30px]">
+    <div className="flex h-full flex-col overflow-y-auto px-5 pt-[54px] pb-[30px] [scrollbar-width:none]">
       {/* 상단 바 */}
       <div className="flex items-center justify-between pt-3">
         <MudifitLogo size={17} gap={8} />
