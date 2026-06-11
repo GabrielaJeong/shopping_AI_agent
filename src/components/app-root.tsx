@@ -6,6 +6,7 @@
 */
 
 import { useAppState } from "@/lib/app-state";
+import { Toaster } from "@/lib/toast";
 import { Splash } from "@/components/screens/splash";
 import { Intro } from "@/components/screens/intro";
 import { Login } from "@/components/screens/login";
@@ -24,6 +25,9 @@ export function AppRoot() {
         <Onboarding onComplete={s.finishOnboarding} onSkip={s.skipOnboarding} />
       )}
       {s.stage === "app" && <AppShell />}
+
+      {/* 전역 토스터 — stage 전환(로그아웃 등)에도 살아남도록 루트에 둠 */}
+      <Toaster />
     </div>
   );
 }

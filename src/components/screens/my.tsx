@@ -13,13 +13,24 @@ import { Icon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
 import { useAppState } from "@/lib/app-state";
 import { useAppShell } from "@/lib/app-shell-state";
+import { useToast } from "@/lib/toast";
 import { topTasteTags } from "@/lib/taste-vector";
 import { LEARN_TREND } from "@/data";
 
 export function My() {
   const app = useAppState();
   const shell = useAppShell();
+  const { toast } = useToast();
   const [notify, setNotify] = useState(true);
+
+  const onReset = () => {
+    toast("취향을 다시 설정할게요");
+    app.resetOnboarding();
+  };
+  const onLogout = () => {
+    toast("로그아웃됐어요");
+    app.logout();
+  };
 
   const keywords = topTasteTags(app.tasteProfile.vector, 6); // 실제 취향 벡터
   const overall = LEARN_TREND[LEARN_TREND.length - 1]; // ⚠️ 더미(학습률 산출 자리)
@@ -47,7 +58,7 @@ export function My() {
           {keywords.length === 0 ? (
             <div className="flex flex-col gap-2 rounded-card bg-paper-2 p-4">
               <p className="text-body-2 text-ink-2">아직 학습된 취향이 없어요.</p>
-              <Button variant="primary" onClick={app.resetOnboarding}>
+              <Button variant="primary" onClick={onReset}>
                 취향 알려주기
               </Button>
             </div>
@@ -96,8 +107,8 @@ export function My() {
             }
           />
           <Row label="계정" onClick={() => undefined} chevron />
-          <Row label="취향 다시 설정하기" onClick={app.resetOnboarding} chevron />
-          <Row label="로그아웃" onClick={app.logout} danger />
+          <Row label="취향 다시 설정하기" onClick={onReset} chevron />
+          <Row label="로그아웃" onClick={onLogout} danger />
         </section>
       </div>
     </div>

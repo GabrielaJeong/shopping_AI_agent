@@ -11,6 +11,7 @@ import { Icon } from "@/components/icon";
 import { Chip } from "@/components/ui/chip";
 import { ProductCard } from "@/components/product-card";
 import { useAppShell } from "@/lib/app-shell-state";
+import { useToast } from "@/lib/toast";
 import { byId } from "@/data";
 import type { Product } from "@/types";
 
@@ -38,6 +39,7 @@ function deriveCollections(products: Product[]): Collection[] {
 
 export function Saved() {
   const shell = useAppShell();
+  const { toast } = useToast();
   const products = useMemo(
     () => shell.savedIds.map((id) => byId(id)).filter((p): p is Product => Boolean(p)),
     [shell.savedIds],
@@ -94,6 +96,7 @@ export function Saved() {
                   onClick={() => {
                     setSelected(collections[0]?.name ?? null); // mock: 제안 컬렉션으로 필터
                     setDismissed(true);
+                    toast(`"${suggestion}" 컬렉션을 만들었어요`);
                   }}
                   className="rounded-btn bg-paper px-3.5 py-2 text-[13px] font-semibold text-ink"
                 >

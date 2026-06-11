@@ -57,25 +57,6 @@ function AppShellInner() {
 
       {showNav && <BottomNav />}
       <SheetOverlay />
-      <Toaster />
-    </div>
-  );
-}
-
-/* ─── 전역 토스터 (설정/액션 확인) ─── */
-function Toaster() {
-  const { toasts } = useAppShell();
-  if (toasts.length === 0) return null;
-  return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-24 z-40 flex flex-col items-center gap-2 px-6">
-      {toasts.map((t) => (
-        <div
-          key={t.id}
-          className="text-body-2 animate-fade-up max-w-full rounded-[10px] bg-ink px-4 py-2.5 text-center font-medium text-paper shadow-[0_8px_24px_rgba(31,28,26,0.22)]"
-        >
-          {t.msg}
-        </div>
-      ))}
     </div>
   );
 }

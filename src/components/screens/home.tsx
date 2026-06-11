@@ -15,6 +15,7 @@ import { ProductImg } from "@/components/product-img";
 import { Reason } from "@/components/reason";
 import { useAppState } from "@/lib/app-state";
 import { useAppShell } from "@/lib/app-shell-state";
+import { useToast } from "@/lib/toast";
 import { getHomeFeed, type Recommendation } from "@/lib/recommend";
 import { topTasteTags } from "@/lib/taste-vector";
 import { CATS, format } from "@/data";
@@ -26,6 +27,7 @@ const NAME = "회원";
 export function Home() {
   const { tasteProfile } = useAppState();
   const shell = useAppShell();
+  const { toast } = useToast();
   const feed = useMemo(() => getHomeFeed(tasteProfile), [tasteProfile]);
   const keywords = topTasteTags(tasteProfile.vector, 4); // 실제 취향 벡터
   const [cat, setCat] = useState<CategoryId>("all");
@@ -49,7 +51,7 @@ export function Home() {
           <button
             type="button"
             aria-label="알림"
-            onClick={() => shell.toast("새로운 알림이 없어요")}
+            onClick={() => toast("새로운 알림이 없어요")}
             className="relative flex size-9 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
           >
             <Icon name="bell" size={22} />
