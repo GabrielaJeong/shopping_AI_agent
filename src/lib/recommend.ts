@@ -21,25 +21,13 @@ export interface Recommendation {
   reason: string;
 }
 
-export interface HomeSection {
-  title: string;
-  /** "전체보기" → list view 키워드(없으면 제목 기준). */
-  keyword?: string;
-  items: Recommendation[];
-}
-
 export interface HomeFeed {
-  /** 오늘의 픽(히어로). */
-  hero: Recommendation;
-  /** 가로 스크롤 픽 row. */
-  picks: Recommendation[];
-  sections: HomeSection[];
-}
-
-function rec(id: string): Recommendation {
-  const product = byId(id);
-  if (!product) throw new Error(`recommend: unknown product id ${id}`);
-  return { product, match: product.match, reason: product.reason };
+  /** 오늘의 픽 — 가로 슬라이더(여러 개). */
+  heroPicks: Recommendation[];
+  /** 오늘의 추천 — 카테고리 필터 대상. */
+  today: Recommendation[];
+  /** AI가 찾은 새 취향(발견). */
+  discoveries: Recommendation[];
 }
 
 /**
@@ -97,16 +85,16 @@ export function getSimilar(id: string, n = 3): Recommendation[] {
 /**
  * 홈 추천 피드. 취향 프로필을 입력으로 받는다(이 시그니처가 F2~F3 교체의 경계).
  * 현재는 정적 mock — taste는 사용하지 않으며 빈 벡터에도 안전.
+ * 반환 형태(heroPicks/today/discoveries)는 Home 디자인(home.jsx/README §5)에 맞춘 것.
  */
 export function getHomeFeed(taste: TasteProfile): HomeFeed {
   void taste; // 현재 mock은 취향 벡터를 사용하지 않음(F2/F3에서 사용 예정)
+  const all = PRODUCTS.map(
+    (product): Recommendation => ({ product, match: product.match, reason: product.reason }),
+  );
   return {
-    hero: rec("p01"),
-    picks: [rec("p02"), rec("p03"), rec("p04"), rec("p06"), rec("p08")],
-    sections: [
-      { title: "오늘 들어온 추천", items: [rec("p01"), rec("p04"), rec("p07"), rec("p03")] },
-      { title: "베이지 무드 추천", keyword: "베이지", items: [rec("p01"), rec("p04"), rec("p07")] },
-      { title: "미니멀 데일리", keyword: "미니멀", items: [rec("p03"), rec("p06"), rec("p08")] },
-    ],
+    heroPicks: all.slice(0, 5), // 오늘의 픽 슬라이더
+    today: all.slice(1, 6), // 오늘의 추천
+    discoveries: all.slice(5, 8), // AI가 찾은 새 취향
   };
 }
