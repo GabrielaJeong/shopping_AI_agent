@@ -10,6 +10,8 @@
 
 ### Added
 
+- **토스트 확대(폴리시) + 전역화**: 토스터를 `lib/toast`(`ToastProvider`/`useToast`/`Toaster`)로 분리해 **루트(AppRoot)로 승격** — stage 전환(로그아웃·취향 재설정)에도 보이게. 액션 연결: 찜 토글(`toggleSaved` 중앙: 찜했어요/해제), 컬렉션 만들기, 별로예요(−delta), 홈 알림, 로그아웃·취향 재설정. (이전 `app-shell-state`의 toast/Toaster는 제거 — useToast로 일원화). CONVENTIONS 규칙도 `useToast()`로 갱신.
+
 - 문서 하네스 부트스트랩: `CLAUDE.md`, `docs/`(CONVENTIONS·LESSONS·DECISIONS·CURRENT_STATE·SESSION_CHECKLIST·SECURITY), `CHANGELOG.md`, `memory/MEMORY.md` 생성.
 - 설계 결정 기록: `docs/DECISIONS.md` D-001~D-012 (스택, UI먼저·로직mock, DB=PostgreSQL, 추천 파이프라인 단계전환, 콜드스타트, 제품명 Moodyfit, Next 15 고정, 디자인 토큰=Tailwind v4 @theme, 앱 구조=단일 루트 상태 머신, 취향 벡터 구조, app 셸 상태 분리, 추천 경계 getHomeFeed). 각 결정에 PRD F1~F6 연결.
 - **디자인 토큰 매핑**: 프로토타입 `styles.css` 토큰을 `globals.css` `@theme`로 1:1 이식(색·타이포 스케일·radius·shadow). Pretendard 동적 서브셋 CDN을 `layout.tsx`에서 로드(Geist 제거, lang=ko, metadata=Moodyfit). 빌드 CSS에 유틸리티 생성 확인. 토큰 미리보기는 `/foundation`으로 이동.

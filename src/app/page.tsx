@@ -4,13 +4,16 @@
   (디자인 토큰 미리보기는 /foundation 으로 이동)
 */
 
+import { ToastProvider } from "@/lib/toast";
 import { AppStateProvider } from "@/lib/app-state";
 import { AppRoot } from "@/components/app-root";
 
 export default function Page() {
   return (
-    <AppStateProvider>
-      <AppRoot />
-    </AppStateProvider>
+    <ToastProvider>
+      <AppStateProvider>
+        <AppRoot />
+      </AppStateProvider>
+    </ToastProvider>
   );
 }

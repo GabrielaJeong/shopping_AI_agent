@@ -11,16 +11,9 @@
   (이번 단계는 셸·내비·전역 상태까지. 각 탭/푸시/시트 내용은 다음 단계.)
 */
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { persistence } from "./persistence";
+import { useToast } from "./toast";
 
 export type Tab = "home" | "explore" | "saved" | "my";
 export type Screen = "home" | "detail" | "list" | "search";
@@ -65,15 +58,12 @@ export interface AppShellState {
     chatPrompt?: string;
   }) => void;
   closeSheet: () => void;
-
-  /** 전역 토스트(설정/액션 확인 메시지). */
-  toasts: { id: number; msg: string }[];
-  toast: (msg: string) => void;
 }
 
 const AppShellContext = createContext<AppShellState | null>(null);
 
 export function AppShellProvider({ children }: { children: React.ReactNode }) {
+  const { toast } = useToast();
   const [tab, setTab] = useState<Tab>("home");
   const [screen, setScreen] = useState<Screen>("home");
   const [productId, setProductId] = useState<string | null>(null);
@@ -123,15 +113,18 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
 
   const isSaved = useCallback((id: string) => savedIds.has(id), [savedIds]);
 
-  const toggleSaved = useCallback((id: string) => {
-    setSavedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
+  const toggleSaved = useCallback(
+    (id: string) => {
+      const willRemove = savedIds.has(id);
+      const next = new Set(savedIds);
+      if (willRemove) next.delete(id);
       else next.add(id);
+      setSavedIds(next);
       void persistence.setSavedIds([...next]); // 영속화(레이어 경유)
-      return next;
-    });
-  }, []);
+      toast(willRemove ? "찜을 해제했어요" : "찜했어요");
+    },
+    [savedIds, toast],
+  );
 
   const openSheet = useCallback(
     (s: { mode: Exclude<SheetMode, null>; productId?: string; chatPrompt?: string }) => {
@@ -140,14 +133,6 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
     [],
   );
   const closeSheet = useCallback(() => setSheet(CLOSED_SHEET), []);
-
-  const [toasts, setToasts] = useState<{ id: number; msg: string }[]>([]);
-  const toastId = useRef(1);
-  const toast = useCallback((msg: string) => {
-    const id = toastId.current++;
-    setToasts((t) => [...t, { id, msg }]);
-    window.setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 2200);
-  }, []);
 
   const navActiveTab: Tab = screen === "list" ? "home" : tab;
 
@@ -170,8 +155,6 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
       toggleSaved,
       openSheet,
       closeSheet,
-      toasts,
-      toast,
     }),
     [
       tab,
@@ -191,8 +174,6 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
       toggleSaved,
       openSheet,
       closeSheet,
-      toasts,
-      toast,
     ],
   );
 
