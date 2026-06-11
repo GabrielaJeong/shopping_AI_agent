@@ -20,7 +20,7 @@
 - [x] **런치 플로우 4화면(Splash·Intro·Login·Onboarding) 완성** — 상태 머신 전이 전 구간 실제 화면.
 - [x] **app 셸 + 하단 내비 + 전역 saved** (→ D-011): `lib/app-shell-state`(tab/screen/sheet/savedIds), `BottomNav`(4탭, list=home 하이라이트), `AppShell`. savedIds 전역+영속(`moodyfit_saved_ids`).
 - [x] **추천 경계** (→ D-012): `lib/recommend.ts` `getHomeFeed(tasteProfile)` 진입 함수(현재 정적 mock, F2·F3 교체 지점). 화면은 이 함수만 소비. `Recommendation{product,match,reason}`.
-- [x] **Home 탭** 실제 화면: 앱바·검색진입·카테고리 인스크린 필터·AI 배너(→chat)·오늘의 픽 히어로(reason·match%)·픽 가로스크롤·섹션별 추천(전체보기→list). 프리미티브 `ProductCard`·`Reason` 신설. 카드→detail, 찜=전역 savedIds.
+- [x] **Home 탭** 실제 화면(정본 home.jsx/README §5 충실 재현): 앱바(인사+검색아이콘+벨/토스트) · AI 큐레이션 배너(문장+액션칩→chat) · **오늘의 픽 가로 슬라이더**(썸네일+브랜드/이름/가격/태그칩/자세히보기+reason+점 인디케이터) · **내 취향 키워드 바(실제 tasteProfile)** · 오늘의 추천(카테고리 칩 필터+가로스크롤, 전체보기→list) · AI가 찾은 새 취향(넓은 카드). 프리미티브 `ProductCard`·`Reason`. `getHomeFeed` 반환형을 heroPicks/today/discoveries로 재구성(경계 형태만, mock 유지).
 - [x] **Detail** 푸시 화면: 이미지 히어로(back·인디케이터)·썸네일·메타·match%·reason·옵션(컬러/사이즈)·피드백 4버튼. 데이터는 `getProductDetail(id)` 경계(D-012). 좋아요→저장 추가+feedback 시트, 저장→토글, 비슷한→chat 시트, **별로예요→`recordFeedback(dislike)`로 취향 벡터 −delta 실제 반영(F6 음수 경로 활성) + 토스트**. 좋아요 하트는 outline+accent-soft. (handoff 'planned' 이유 피커는 이후)
 - [x] **전역 토스터**: `app-shell-state.toast()`/`toasts` + AppShell `Toaster`(하단, 2.2s 자동). 사용자 액션 알림 재사용 규칙은 CONVENTIONS 「UI 알림(토스트)」.
 - [x] **피드백 시트** (F5/F6, → D-013): `lib/feedback.applyFeedback`(부호 델타 like/save/dislike/hide)로 **취향 벡터 실제 갱신·영속**, `app-state.recordFeedback`. 성공 히어로(pulse) + "학습 변화" 바(=실제 before→after) + 비슷한 상품 3-up(`getSimilar`) + CTA(더 묻기→chat / 계속 둘러보기). 시트 오버레이를 열릴 때만 마운트+슬라이드업으로 정리.

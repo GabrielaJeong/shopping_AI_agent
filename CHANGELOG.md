@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- **Home 충실도 재현(폴리시)**: 정본(home.jsx/README §5)대로 재구성 — 앱바(인사+검색아이콘+벨) · AI 큐레이션 배너(문장+액션칩) · **오늘의 픽 가로 슬라이더**(썸네일+브랜드/이름/가격/태그칩/자세히보기 + reason + 점 인디케이터) · **내 취향 키워드 바(실제 tasteProfile)** · 오늘의 추천(카테고리 칩 필터를 이 섹션으로) · AI가 찾은 새 취향. `getHomeFeed` 반환형을 `heroPicks/today/discoveries`로 재구성(경계 형태만 변경, mock 본체·match·reason 더미는 그대로). 이전의 단순 단일 히어로/일반 섹션 버전을 대체.
+
 ### Added
 
 - 문서 하네스 부트스트랩: `CLAUDE.md`, `docs/`(CONVENTIONS·LESSONS·DECISIONS·CURRENT_STATE·SESSION_CHECKLIST·SECURITY), `CHANGELOG.md`, `memory/MEMORY.md` 생성.
