@@ -33,7 +33,7 @@ export function ChatSheet({ productId, seed }: { productId: string | null; seed:
   const nextId = useRef(1);
   const mounted = useRef(true);
   const seeded = useRef(false);
-  const endRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     mounted.current = true;
@@ -42,8 +42,11 @@ export function ChatSheet({ productId, seed }: { productId: string | null; seed:
     };
   }, []);
 
+  // 새 메시지마다 리스트를 바닥으로. scrollIntoView는 배경(앱 스크롤 컨테이너)까지
+  // 끌어당겨 시트 열 때 화면이 튄다 → 리스트 컨테이너 scrollTop만 직접 조정한다. (L-006)
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = listRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages, typing]);
 
   const send = (utterance: string) => {
@@ -90,7 +93,10 @@ export function ChatSheet({ productId, seed }: { productId: string | null; seed:
       </div>
 
       {/* 메시지 리스트 */}
-      <div className="flex flex-1 flex-col gap-3 overflow-y-auto py-2 [scrollbar-width:none]">
+      <div
+        ref={listRef}
+        className="flex flex-1 flex-col gap-3 overflow-y-auto py-2 [scrollbar-width:none]"
+      >
         {messages.length === 0 && !typing && (
           <p className="text-body-2 mt-4 text-center text-ink-3">
             &ldquo;더 라이트한 느낌으로&rdquo; 처럼 말해보세요. 추천을 다시 골라드려요.
@@ -137,7 +143,6 @@ export function ChatSheet({ productId, seed }: { productId: string | null; seed:
             <Dot delay="0.3s" />
           </div>
         )}
-        <div ref={endRef} />
       </div>
 
       {/* 빠른답변 칩 */}
