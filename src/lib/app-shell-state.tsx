@@ -45,6 +45,8 @@ export interface AppShellState {
   /** 푸시 화면에서 탭 홈으로 복귀. */
   back: () => void;
 
+  /** 찜한 상품 id 목록(저장 순). */
+  savedIds: string[];
   isSaved: (id: string) => boolean;
   /** 전역 찜 토글(영속). */
   toggleSaved: (id: string) => void;
@@ -138,6 +140,7 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
       listKeyword,
       sheet,
       navActiveTab,
+      savedIds: [...savedIds],
       selectTab,
       openDetail,
       openList,
@@ -156,6 +159,7 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
       listKeyword,
       sheet,
       navActiveTab,
+      savedIds,
       selectTab,
       openDetail,
       openList,
