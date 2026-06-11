@@ -21,7 +21,8 @@
 - [x] **app 셸 + 하단 내비 + 전역 saved** (→ D-011): `lib/app-shell-state`(tab/screen/sheet/savedIds), `BottomNav`(4탭, list=home 하이라이트), `AppShell`. savedIds 전역+영속(`moodyfit_saved_ids`).
 - [x] **추천 경계** (→ D-012): `lib/recommend.ts` `getHomeFeed(tasteProfile)` 진입 함수(현재 정적 mock, F2·F3 교체 지점). 화면은 이 함수만 소비. `Recommendation{product,match,reason}`.
 - [x] **Home 탭** 실제 화면: 앱바·검색진입·카테고리 인스크린 필터·AI 배너(→chat)·오늘의 픽 히어로(reason·match%)·픽 가로스크롤·섹션별 추천(전체보기→list). 프리미티브 `ProductCard`·`Reason` 신설. 카드→detail, 찜=전역 savedIds.
-- [x] **Detail** 푸시 화면: 이미지 히어로(back·인디케이터)·썸네일·메타·match%·reason·옵션(컬러/사이즈)·피드백 4버튼. 데이터는 `getProductDetail(id)` 경계(D-012). 좋아요→저장 추가+feedback 시트, 저장→토글, 비슷한→chat 시트, 별로예요→부정신호 슬롯(주석). 좋아요 하트는 outline+accent-soft.
+- [x] **Detail** 푸시 화면: 이미지 히어로(back·인디케이터)·썸네일·메타·match%·reason·옵션(컬러/사이즈)·피드백 4버튼. 데이터는 `getProductDetail(id)` 경계(D-012). 좋아요→저장 추가+feedback 시트, 저장→토글, 비슷한→chat 시트, **별로예요→`recordFeedback(dislike)`로 취향 벡터 −delta 실제 반영(F6 음수 경로 활성) + 토스트**. 좋아요 하트는 outline+accent-soft. (handoff 'planned' 이유 피커는 이후)
+- [x] **전역 토스터**: `app-shell-state.toast()`/`toasts` + AppShell `Toaster`(하단, 2.2s 자동). 사용자 액션 알림 재사용 규칙은 CONVENTIONS 「UI 알림(토스트)」.
 - [x] **피드백 시트** (F5/F6, → D-013): `lib/feedback.applyFeedback`(부호 델타 like/save/dislike/hide)로 **취향 벡터 실제 갱신·영속**, `app-state.recordFeedback`. 성공 히어로(pulse) + "학습 변화" 바(=실제 before→after) + 비슷한 상품 3-up(`getSimilar`) + CTA(더 묻기→chat / 계속 둘러보기). 시트 오버레이를 열릴 때만 마운트+슬라이드업으로 정리.
 - [x] **AI 챗 시트** (F4, → D-014): 두 경계 `lib/chat-rerank`(`parseReorderIntent`=발화→조건, `rerank`=조건→결과). 큐레이터 헤더·유저/AI 버블·인라인 ProductCard·타이핑 연출·빠른답변 칩·입력창. 발화→parse→rerank→결과 카드. 프로토타입 키워드-고정응답 라우팅은 부활 안 함(조건 산출 구조).
 - [x] **핵심 루프 골격 완성**: 런치(Splash·Intro·Login·Onboarding) + app(Home·Detail) + 두 핵심 시트(Feedback·Chat). F1(취향 시드)·F4(재랭킹)·F5/F6(피드백 반영) 표면이 mock 경계 위에 동작.
