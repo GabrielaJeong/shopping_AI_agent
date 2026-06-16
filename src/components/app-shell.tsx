@@ -6,8 +6,14 @@
   모든 표면 구현됨. 추천/피드백/재랭킹은 lib 경계(D-012·D-013·D-014)의 mock 위에서 동작.
 */
 
-import { useEffect, useRef, useState } from "react";
-import { AppShellProvider, useAppShell, useSheet } from "@/lib/app-shell-state";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  AppShellProvider,
+  useAppShell,
+  useSheet,
+  type Screen,
+  type Tab,
+} from "@/lib/app-shell-state";
 import { BottomNav } from "@/components/bottom-nav";
 import { Home } from "@/components/screens/home";
 import { Detail } from "@/components/screens/detail";
@@ -32,11 +38,36 @@ function AppShellInner() {
   const shell = useAppShell();
   const showNav = shell.screen === "home" || shell.screen === "list";
 
+  // ── 스크롤 위치 관리(표준 모바일) ──
+  // 화면이 단일 overflow 컨테이너 안에서 교체되므로 scrollTop이 내비게이션에 걸쳐 남는다.
+  // 푸시 화면(detail/list/search)·탭 전환은 맨 위에서 시작하고, 푸시에서 back으로 탭 홈에
+  // 복귀하면 직전 스크롤 위치를 복원한다. (탭별 위치를 기록 → back일 때만 복원)
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const positions = useRef<Map<Tab, number>>(new Map());
+  const prevScreen = useRef<Screen>("home");
+
+  // 탭 홈을 보는 동안 스크롤을 계속 기록(back 복원용). 푸시 화면 스크롤은 기록하지 않음.
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (el && prevScreen.current === "home") positions.current.set(shell.tab, el.scrollTop);
+  }, [shell.tab]);
+
+  useLayoutEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const backToHome = shell.screen === "home" && prevScreen.current !== "home";
+    // back(푸시→홈)이면 복원, 그 외(푸시 진입·탭 전환·초기)는 맨 위.
+    el.scrollTop = backToHome ? (positions.current.get(shell.tab) ?? 0) : 0;
+    prevScreen.current = shell.screen;
+  }, [shell.screen, shell.tab, shell.productId, shell.listKeyword, shell.listTitle]);
+
   return (
     // min-h-0: 고정 높이 셸(h-dvh, → 디바이스 프레임) 안에서 flex 자식이 내용만큼 커지지 않고
     // 줄어들어 안쪽 overflow-y-auto가 실제로 스크롤되게 한다(없으면 내용이 넘쳐 잘림).
     <div className="flex min-h-0 flex-1 flex-col">
       <div
+        ref={scrollRef}
+        onScroll={handleScroll}
         className={`flex min-h-0 flex-1 flex-col overflow-y-auto ${showNav ? "pb-[100px]" : "pb-8"}`}
       >
         {shell.screen === "home" &&
