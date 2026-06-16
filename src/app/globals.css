@@ -141,6 +141,21 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* 클릭 가능 요소엔 손가락 커서. 네이티브 <button> 기본 커서는 default이고
+     Tailwind preflight도 안 넣어준다. 프로토타입은 모바일이라 커서를 생략했으나
+     웹(모바일 셸)에선 hover affordance가 필요 → 전역 보강. (비활성은 default 유지) */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [role="button"][aria-disabled="true"] {
+    cursor: default;
+  }
+
   /* 진입 애니메이션은 reduced-motion에서 즉시 끝상태로 (README 모션 규칙) */
   @media (prefers-reduced-motion: reduce) {
     *,

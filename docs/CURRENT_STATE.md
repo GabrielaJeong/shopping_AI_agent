@@ -1,12 +1,12 @@
 # CURRENT_STATE.md
 
 > 현재 상태 스냅샷. 다음 세션 시작 시 빠른 파악용.
-> 최종 업데이트: 2026-06-05
+> 최종 업데이트: 2026-06-17
 
 ## 구현 완료
 
 - [x] 문서 하네스 부트스트랩 (CLAUDE.md, docs 스켈레톤, CHANGELOG, memory 인덱스, SECURITY)
-- [x] 핵심 설계 결정 기록 (DECISIONS D-001~D-014: …·추천경계·피드백반영경계·챗봇재랭킹경계)
+- [x] 핵심 설계 결정 기록 (DECISIONS D-001~D-016: …·추천경계·피드백반영경계·챗봇재랭킹경계·스크롤위치(D-015, #35 대기)·시트 상태 별도 컨텍스트(D-016))
 - [x] 앱 스캐폴드 (Next.js 15.5.19 + React 19.1 + TypeScript + Tailwind v4 + App Router + src/, pnpm via corepack). 베이스라인 검증 green: typecheck / lint / build 통과.
 - [x] Prettier 도입(eslint 무충돌, endOfLine auto) + 검증 명령 `format:check`.
 - [x] 디자인 토큰 → Tailwind v4 `@theme` 매핑 (색·타이포·radius·shadow, `globals.css`). Pretendard CDN 연결, `layout.tsx` Geist 제거·lang=ko. 빌드 CSS에 유틸리티 생성 확인 (→ D-008). 토큰 미리보기는 `/foundation`.
@@ -33,6 +33,7 @@
 - [x] **모든 핵심 화면 구현 완료**: 런치(Splash·Intro·Login·Onboarding) + app 4탭(Home·Explore·Saved·My) + 푸시(Detail·List·Search) + 시트(Feedback·Chat). UI 골격 + mock 경계.
 
 - [x] **폴리시**: Home 정본 충실도 재현 · 토스트 전역화+액션 연결 · 접근성(시트 Esc·포커스 이동/복원·aria, ProductCard 중첩 분리) · **반응형**(모바일 풀-블리드, 큰 화면 sm↑은 레터박스 배경 위 가운데 디바이스 프레임 h-844/rounded/shadow; 런치 화면 `min-h-dvh`→`h-full`+스크롤).
+- [x] **시트 열림 점프·끊김 해결**(#31·#36, 사용자 dev 확인): 챗 시트 점프 근본원인=scrollIntoView가 시트 화면 밖 순간 조상(프레임/윈도우)을 강제 스크롤 → 리스트 컨테이너 직접 스크롤로 대체(6개 챗 진입점 전부 점프 없음). 시트 열림 jank=시트 open이 화면 재렌더 유발 → 시트 상태 별도 컨텍스트 분리(D-016). 진단·교훈은 L-006(근본원인 교정)·L-007(측정 규율).
 
 ## 미구현 / 진행 중
 

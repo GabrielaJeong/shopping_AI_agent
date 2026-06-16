@@ -9,8 +9,10 @@
 import { useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/icon";
 import { Chip } from "@/components/ui/chip";
+import { Tag } from "@/components/ui/tag";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product-card";
+import { TasteBars } from "@/components/taste-bars";
 import { ProductImg } from "@/components/product-img";
 import { Reason } from "@/components/reason";
 import { useAppState } from "@/lib/app-state";
@@ -99,26 +101,11 @@ export function Home() {
       {keywords.length > 0 && (
         <section className="mt-8 px-5">
           <h2 className="text-h2 mb-3 text-ink">내 취향 키워드</h2>
-          <div className="flex flex-col gap-3 rounded-card bg-paper-2 p-4">
-            {keywords.map((k) => (
-              <button
-                key={k.tag}
-                type="button"
-                onClick={() => shell.openList({ title: k.tag, keyword: k.tag })}
-                className="grid grid-cols-[64px_1fr_36px] items-center gap-2.5 text-left"
-              >
-                <span className="text-body-2 font-medium text-ink">{k.tag}</span>
-                <span className="h-1.5 overflow-hidden rounded-full bg-paper-3">
-                  <span
-                    className="block h-full rounded-full bg-ink"
-                    style={{ width: `${Math.round(k.weight * 100)}%` }}
-                  />
-                </span>
-                <span className="text-right text-[11px] font-medium text-ink-2">
-                  {Math.round(k.weight * 100)}%
-                </span>
-              </button>
-            ))}
+          <div className="rounded-card bg-paper-2 p-4">
+            <TasteBars
+              items={keywords}
+              onPick={(k) => shell.openList({ title: k.tag, keyword: k.tag })}
+            />
           </div>
         </section>
       )}
@@ -246,9 +233,7 @@ function HeroSlider({ picks, onOpen }: { picks: Recommendation[]; onOpen: (id: s
                   <div className="text-price mt-2 text-ink">{format(r.product.price)}</div>
                   <div className="mt-2 flex flex-wrap gap-1">
                     {r.product.tags.slice(0, 2).map((t) => (
-                      <Chip key={t} variant="outline" size="tiny">
-                        {t}
-                      </Chip>
+                      <Tag key={t}>{t}</Tag>
                     ))}
                   </div>
                 </div>
