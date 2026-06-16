@@ -7,7 +7,7 @@
 */
 
 import { useEffect, useRef, useState } from "react";
-import { AppShellProvider, useAppShell } from "@/lib/app-shell-state";
+import { AppShellProvider, useAppShell, useSheet } from "@/lib/app-shell-state";
 import { BottomNav } from "@/components/bottom-nav";
 import { Home } from "@/components/screens/home";
 import { Detail } from "@/components/screens/detail";
@@ -94,14 +94,15 @@ function PushPlaceholder({ title, subtitle }: { title: string; subtitle: string 
 
 /* ─── 시트 오버레이 (feedback=실제, chat=플레이스홀더) ─── */
 function SheetOverlay() {
-  const shell = useAppShell();
-  if (shell.sheet.mode === null) return null;
+  const sheet = useSheet();
+  if (sheet.mode === null) return null;
   return <SheetContainer />;
 }
 
 /** 열릴 때만 마운트 → 마운트 후 슬라이드업. (시트별 내용은 1회 마운트되어 effect도 1회) */
 function SheetContainer() {
   const shell = useAppShell();
+  const sheet = useSheet();
   const closeSheet = shell.closeSheet;
   const [shown, setShown] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -122,8 +123,8 @@ function SheetContainer() {
     };
   }, [closeSheet]);
 
-  const expanded = shell.sheet.mode === "chat"; // 챗 시트는 더 높게
-  const label = shell.sheet.mode === "chat" ? "AI 큐레이터" : "취향 반영";
+  const expanded = sheet.mode === "chat"; // 챗 시트는 더 높게
+  const label = sheet.mode === "chat" ? "AI 큐레이터" : "취향 반영";
 
   return (
     <>
@@ -157,10 +158,8 @@ function SheetContainer() {
         >
           <Icon name="close" size={20} />
         </button>
-        {shell.sheet.mode === "feedback" && <FeedbackSheet productId={shell.sheet.productId} />}
-        {shell.sheet.mode === "chat" && (
-          <ChatSheet productId={shell.sheet.productId} seed={shell.sheet.chatPrompt} />
-        )}
+        {sheet.mode === "feedback" && <FeedbackSheet productId={sheet.productId} />}
+        {sheet.mode === "chat" && <ChatSheet productId={sheet.productId} seed={sheet.chatPrompt} />}
       </div>
     </>
   );
