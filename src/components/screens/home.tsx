@@ -9,6 +9,7 @@
 import { useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/icon";
 import { Chip } from "@/components/ui/chip";
+import { Tag } from "@/components/ui/tag";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product-card";
 import { ProductImg } from "@/components/product-img";
@@ -246,9 +247,7 @@ function HeroSlider({ picks, onOpen }: { picks: Recommendation[]; onOpen: (id: s
                   <div className="text-price mt-2 text-ink">{format(r.product.price)}</div>
                   <div className="mt-2 flex flex-wrap gap-1">
                     {r.product.tags.slice(0, 2).map((t) => (
-                      <Chip key={t} variant="outline" size="tiny">
-                        {t}
-                      </Chip>
+                      <Tag key={t}>{t}</Tag>
                     ))}
                   </div>
                 </div>
