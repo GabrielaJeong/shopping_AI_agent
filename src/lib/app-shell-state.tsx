@@ -35,7 +35,6 @@ export interface AppShellState {
   /** list 컨텍스트(제목/키워드). */
   listTitle: string | null;
   listKeyword: string | null;
-  sheet: SheetState;
   /** 하단 내비에서 하이라이트할 탭(list일 때 home 유지). */
   navActiveTab: Tab;
 
@@ -61,6 +60,11 @@ export interface AppShellState {
 }
 
 const AppShellContext = createContext<AppShellState | null>(null);
+
+// 시트 상태는 별도 컨텍스트로 분리한다(D-016). 시트 open/close가 위 AppShellContext 값을 바꾸면
+// 그걸 소비하는 현재 화면 전체(무거운 Home 등)가 재렌더돼 시트 슬라이드업이 끊긴다(jank).
+// 시트 상태를 읽는 곳은 시트 오버레이뿐이므로 여기만 구독하게 한다(진입점은 openSheet 콜백만 사용).
+const SheetStateContext = createContext<SheetState>(CLOSED_SHEET);
 
 export function AppShellProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
@@ -136,6 +140,7 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
 
   const navActiveTab: Tab = screen === "list" ? "home" : tab;
 
+  // sheet는 의도적으로 제외(D-016) — 시트 open/close가 이 값을 바꾸지 않아야 화면이 재렌더되지 않는다.
   const value = useMemo<AppShellState>(
     () => ({
       tab,
@@ -143,7 +148,6 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
       productId,
       listTitle,
       listKeyword,
-      sheet,
       navActiveTab,
       savedIds: [...savedIds],
       selectTab,
@@ -162,7 +166,6 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
       productId,
       listTitle,
       listKeyword,
-      sheet,
       navActiveTab,
       savedIds,
       selectTab,
@@ -177,11 +180,20 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
     ],
   );
 
-  return <AppShellContext.Provider value={value}>{children}</AppShellContext.Provider>;
+  return (
+    <AppShellContext.Provider value={value}>
+      <SheetStateContext.Provider value={sheet}>{children}</SheetStateContext.Provider>
+    </AppShellContext.Provider>
+  );
 }
 
 export function useAppShell(): AppShellState {
   const ctx = useContext(AppShellContext);
   if (!ctx) throw new Error("useAppShell must be used within <AppShellProvider>");
   return ctx;
+}
+
+/** 시트 상태 구독(시트 오버레이 전용 — D-016). 화면 컴포넌트는 이걸 구독하지 말 것(재렌더 유발). */
+export function useSheet(): SheetState {
+  return useContext(SheetStateContext);
 }
