@@ -38,6 +38,8 @@
 
 ### Fixed
 
+- **챗 시트 점프 — 장기 미해결, 측정으로 근본원인 확정·해결**(#31): `endRef.scrollIntoView`가 시트가 아직 화면 밖(`translate-y-full`)인 순간 실행돼, 화면 밖 endRef를 보이게 하려고 **조상 스크롤 컨테이너(디바이스 프레임/윈도우)를 강제 스크롤** → 배경이 솟구쳤다 복귀(계측: 배경 rect 293px 왕복, `app scrollTop`=0). app 스크롤 컨테이너는 시트의 형제라 안 움직여 "스크롤 아님"으로 여러 번 오진했음. `scrollIntoView` 제거 → 리스트 컨테이너 `scrollTop = scrollHeight` 직접 조정(조상 미동). **챗 6개 진입점(홈 AI 배너/다른 무드/예산/detail 비슷한/feedback 더 묻기/search 결과없음) 전부 점프 없음 — 사용자 dev 확인 완료.** (→ L-006 근본원인 교정 / L-007 신설)
+- **시트 열림 끊김(jank) 제거**(#36, → D-016): 시트 open이 `useAppShell` 컨텍스트 값을 바꿔 현재 화면 전체(무거운 Home)가 재렌더되며 슬라이드업이 끊기던 문제 → `sheet` 상태를 별도 `SheetStateContext`(`useSheet`)로 분리해 시트 토글이 화면을 재렌더하지 않게. 슬라이드 부드러움 — 사용자 확인 완료.
 - `.prettierrc.json`에 `endOfLine: "auto"` 추가 — Windows autocrlf로 CRLF가 된 working tree에서 `format:check`가 전 파일 실패하던 문제 해결 (L-002).
 - dev 서버 실행 중 `pnpm build` 동시 실행으로 `.next` 손상(`_buildManifest` ENOENT → Internal Server Error). `.next` 삭제·재기동으로 복구. 재발 방지 규칙은 L-003 / CLAUDE Red Flag.
 - My 탭 `Row`가 `<button>`인데 "알림" 행의 토글 스위치(`<button>`)를 품어 button 중첩 → hydration 에러. 인터랙티브 trailing이 있으면 Row를 `div`로 분기해 해결.
@@ -53,9 +55,11 @@
 - L-003: dev 실행 중 `pnpm build` 동시 실행 → `.next` 손상. CLAUDE.md Red Flag로 승격.
 - L-004: PowerShell 5.1에서 `gh pr create --body "...따옴표..."`가 인자 분해 → PR 본문은 항상 `--body-file` 사용.
 - L-005: PR 머지 후 main에 머문 채 새 작업 첫 커밋을 main에 직접(push 전 발견·복구) → 작업 시작 전 feature 브랜치 먼저. CLAUDE Red Flag로 승격.
-- L-006: 폴리시의 레이아웃/포커스 변경(#27·#28)이 스크롤·시트 동작 회귀를 냄(정적 검증 통과). 레이아웃/포커스/시트 변경 시 머지 전 전체 흐름 한 바퀴 실제 확인. CLAUDE Red Flag로 승격.
+- L-006: 폴리시의 레이아웃/포커스 변경(#27·#28)이 스크롤·시트 동작 회귀를 냄(정적 검증 통과). 레이아웃/포커스/시트 변경 시 머지 전 전체 흐름 한 바퀴 실제 확인. CLAUDE Red Flag로 승격. **(2026-06-16 재발·근본원인 확정**: 시트 점프의 진짜 원인은 scrollIntoView가 조상(프레임/윈도우)을 스크롤한 것 — 틀렸던 기전 설명 교정. 강화규칙2(한 곳 고치면 grep 전수확인) 추가.)
+- L-007: **시각 버그를 추측으로 반복 수정 — 측정으로 원인 확정 전 고치지 말 것**. 우리가 겪은 "가설→즉시 수정→재현" 루프를 규칙화: ① 보고 전 수정이 dev에 실제 적용됐는지(브랜치/머지/리로드) 확인, ② 프록시(`scrollTop`) 말고 사용자가 보는 관측량(요소 rect)을 프레임별 측정, ③ transient는 연속 샘플 min/max, ④ 같은 증상 2번 재현이면 멈추고 계측부터. CLAUDE Red Flag로 승격.
 
 ### Notes
 
-- CLAUDE.md Red Flags 보유: L-001(pnpm 빌드 차단), L-003(dev 중 build로 .next 손상), L-005(작업 전 브랜치), L-006(레이아웃/포커스 변경 후 흐름 점검).
+- CLAUDE.md Red Flags 보유: L-001(pnpm 빌드 차단), L-003(dev 중 build로 .next 손상), L-005(작업 전 브랜치), L-006(레이아웃/포커스 변경 후 흐름 점검 + 전역 동작 grep 전수확인), L-007(시각 버그는 추측 말고 측정·실제 적용 확인).
+- 설계 결정 추가: D-016(시트 상태 별도 컨텍스트 분리 — 시트 열림 시 화면 재렌더 방지).
 - 제품명 표기 Moodyfit / `moodyfit_` 통일은 D-006. 화면 구현 시 프로토타입의 `mudifit_` 키를 일괄 치환.
