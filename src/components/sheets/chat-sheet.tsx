@@ -42,8 +42,10 @@ export function ChatSheet({ productId, seed }: { productId: string | null; seed:
     };
   }, []);
 
-  // 새 메시지마다 리스트를 바닥으로. scrollIntoView는 배경(앱 스크롤 컨테이너)까지
-  // 끌어당겨 시트 열 때 화면이 튄다 → 리스트 컨테이너 scrollTop만 직접 조정한다. (L-006)
+  // 새 메시지마다 리스트를 바닥으로. scrollIntoView는 시트가 아직 화면 밖(translate-y-full)일 때
+  // 화면 밖 endRef를 보이게 하려고 조상 스크롤 컨테이너(디바이스 프레임/윈도우)를 강제 스크롤해
+  // 배경이 튄다(측정: 배경 ~293px 왕복, app scrollTop=0). 리스트 컨테이너 scrollTop만 직접
+  // 조정해 리스트 안에서만 스크롤한다(조상 미동). (L-006 / L-007)
   useEffect(() => {
     const el = listRef.current;
     if (el) el.scrollTop = el.scrollHeight;
