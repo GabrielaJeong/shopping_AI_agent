@@ -88,16 +88,8 @@ export function Onboarding({
     // 일반 블록 스크롤(flex-col 아님!) — flex-col이면 긴 옵션 영역이 0으로 수축돼 안 보인다.
     // position static 유지 → 하단 CTA(absolute)가 프레임 바닥에 핀. pb-[120px]로 CTA 가림 방지.
     <div className="h-full overflow-y-auto px-5 pt-[54px] pb-[120px] [scrollbar-width:none]">
-      {/* 진행 바 — 상단 바(헤더) 위, 안전영역 아래 최상단(Figma). */}
-      <div className="h-[3px] overflow-hidden rounded-full bg-paper-3">
-        <div
-          className="h-full rounded-full bg-ink transition-[width] duration-500"
-          style={{ width: `${((stepIndex + 1) / ONBOARDING_STEPS.length) * 100}%` }}
-        />
-      </div>
-
       {/* 상단 바 (back / STEP / 건너뛰기) */}
-      <div className="mt-3 flex items-center justify-between pb-1">
+      <div className="flex items-center justify-between pt-2 pb-1">
         <button
           type="button"
           onClick={goBack}
@@ -116,8 +108,16 @@ export function Onboarding({
         </button>
       </div>
 
+      {/* 진행 바 — 헤더 아래 */}
+      <div className="mt-2 mb-6 h-[3px] overflow-hidden rounded-full bg-paper-3">
+        <div
+          className="h-full rounded-full bg-ink transition-[width] duration-500"
+          style={{ width: `${((stepIndex + 1) / ONBOARDING_STEPS.length) * 100}%` }}
+        />
+      </div>
+
       {/* 타이틀 (display) */}
-      <div key={`t-${stepIndex}`} className="animate-fade-up mt-5 mb-6">
+      <div key={`t-${stepIndex}`} className="animate-fade-up mb-6">
         <h1 className="text-display text-ink">{step.title}</h1>
         <p className="text-body-2 mt-2 text-ink-2">{step.subtitle}</p>
       </div>
@@ -138,7 +138,7 @@ export function Onboarding({
           className="[pointer-events:auto]"
         >
           {isLast ? "취향 분석 시작" : "다음"}
-          {!isLast && <Icon name="arrow-right" size={16} />}
+          <Icon name="arrow-right" size={16} />
         </Button>
         <p className="mt-2 text-center text-caption text-ink-3">
           {selected.length > 0
@@ -203,11 +203,17 @@ function StepOptions({
             >
               <span
                 className={cn(
-                  "block aspect-square w-full rounded-btn ring-inset transition",
-                  on ? "ring-2 ring-ink" : "ring-1 ring-line",
+                  "relative block aspect-square w-full overflow-hidden rounded-btn ring-inset transition",
+                  on && "ring-2 ring-ink",
                 )}
                 style={{ background: o.swatch }}
-              />
+              >
+                {on && (
+                  <span className="absolute top-2 right-2 flex size-[22px] items-center justify-center rounded-full bg-ink text-paper">
+                    <Icon name="check" size={13} />
+                  </span>
+                )}
+              </span>
               <span className={cn("mt-2 block pl-0.5 text-[13px] text-ink", on && "font-semibold")}>
                 {o.label}
               </span>
@@ -229,7 +235,7 @@ function StepOptions({
             <span
               className={cn(
                 "relative block aspect-[3/4] overflow-hidden rounded-btn ring-inset transition",
-                on ? "ring-2 ring-ink" : "ring-1 ring-line",
+                on && "ring-2 ring-ink",
               )}
               style={{ background: STRIPE }}
             >
@@ -269,7 +275,7 @@ function Welcome({ onStart, onSkip }: { onStart: () => void; onSkip: () => void 
 
       {/* 룩북 플레이스홀더 히어로 (4/5, LOOKBOOK 라벨 + 무드 칩) */}
       <div
-        className="animate-fade-up relative mt-[18px] aspect-[4/5] w-full overflow-hidden rounded-[14px] ring-1 ring-line ring-inset"
+        className="animate-fade-up relative mt-[18px] aspect-[4/5] w-full overflow-hidden rounded-[14px]"
         style={{ background: STRIPE }}
       >
         <span className="absolute top-3 left-3 font-mono text-[9.5px] tracking-[0.1em] text-ink-3">
