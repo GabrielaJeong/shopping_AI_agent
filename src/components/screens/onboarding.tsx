@@ -88,8 +88,16 @@ export function Onboarding({
     // 컨테이너는 position static 유지 → 하단 CTA(absolute)가 프레임 바닥에 핀(스크롤해도 고정).
     // pb-[120px]로 마지막 옵션이 CTA에 가리지 않게 확보(정본 .app-scroll paddingBottom 120).
     <div className="flex h-full flex-col overflow-y-auto px-5 pt-[54px] pb-[120px] [scrollbar-width:none]">
-      {/* 상단 바 (8/20/4) */}
-      <div className="flex items-center justify-between pt-2 pb-1">
+      {/* 진행 바 — 상단 바(헤더) 위, 안전영역 아래 최상단(Figma). */}
+      <div className="h-[3px] overflow-hidden rounded-full bg-paper-3">
+        <div
+          className="h-full rounded-full bg-ink transition-[width] duration-500"
+          style={{ width: `${((stepIndex + 1) / ONBOARDING_STEPS.length) * 100}%` }}
+        />
+      </div>
+
+      {/* 상단 바 (back / STEP / 건너뛰기) */}
+      <div className="mt-3 flex items-center justify-between pb-1">
         <button
           type="button"
           onClick={goBack}
@@ -108,16 +116,8 @@ export function Onboarding({
         </button>
       </div>
 
-      {/* 진행 바 (h3, mt-8 mb-24) */}
-      <div className="mt-2 mb-6 h-[3px] overflow-hidden rounded-full bg-paper-3">
-        <div
-          className="h-full rounded-full bg-ink transition-[width] duration-500"
-          style={{ width: `${((stepIndex + 1) / ONBOARDING_STEPS.length) * 100}%` }}
-        />
-      </div>
-
-      {/* 타이틀 (display, mb-24) */}
-      <div key={`t-${stepIndex}`} className="animate-fade-up mb-6">
+      {/* 타이틀 (display) */}
+      <div key={`t-${stepIndex}`} className="animate-fade-up mt-5 mb-6">
         <h1 className="text-display text-ink">{step.title}</h1>
         <p className="text-body-2 mt-2 text-ink-2">{step.subtitle}</p>
       </div>
