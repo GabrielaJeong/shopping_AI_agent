@@ -66,7 +66,7 @@ export function Detail({ productId }: { productId: string }) {
           type="button"
           onClick={shell.back}
           aria-label="뒤로"
-          className="absolute top-[58px] left-4 flex size-9 items-center justify-center rounded-full bg-paper/90 text-ink backdrop-blur-sm"
+          className="absolute top-[58px] left-4 flex size-[38px] items-center justify-center rounded-full bg-paper/90 text-ink backdrop-blur-sm"
         >
           <Icon name="back" size={20} />
         </button>
@@ -101,7 +101,7 @@ export function Detail({ productId }: { productId: string }) {
 
       {/* match · reason */}
       <div className="px-5 pt-4">
-        <div className="rounded-card bg-accent-soft px-3.5 py-3">
+        <div className="rounded-btn bg-accent-soft px-3.5 py-3">
           <span className="mr-1.5 inline-block rounded bg-paper px-1.5 py-0.5 text-[9px] font-semibold tracking-[0.1em] text-ink uppercase">
             AI {match}%
           </span>

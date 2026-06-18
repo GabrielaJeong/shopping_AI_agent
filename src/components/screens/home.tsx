@@ -6,7 +6,7 @@
   구성: 앱바 → AI 배너 → 오늘의 픽 슬라이더 → 내 취향 키워드(실제 벡터) → 오늘의 추천(카테고리 필터) → AI가 찾은 새 취향.
 */
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/icon";
 import { Chip } from "@/components/ui/chip";
 import { Tag } from "@/components/ui/tag";
@@ -39,14 +39,14 @@ export function Home() {
   return (
     <div className="flex flex-1 flex-col">
       {/* 앱바 */}
-      <header className="sticky top-0 z-10 flex items-center justify-between bg-paper px-5 pt-[58px] pb-2">
+      <header className="sticky top-0 z-10 flex items-center justify-between bg-paper px-5 pt-[70px] pb-5">
         <h1 className="text-h1 text-ink">안녕하세요, {NAME}님</h1>
         <div className="flex items-center gap-1">
           <button
             type="button"
             aria-label="검색"
             onClick={shell.openSearch}
-            className="flex size-9 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
+            className="flex size-[38px] cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
           >
             <Icon name="search" size={22} />
           </button>
@@ -54,7 +54,7 @@ export function Home() {
             type="button"
             aria-label="알림"
             onClick={() => toast("새로운 알림이 없어요")}
-            className="relative flex size-9 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
+            className="relative flex size-[38px] cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
           >
             <Icon name="bell" size={22} />
             <span className="absolute top-2 right-2 size-1.5 rounded-full bg-hot" />
@@ -101,7 +101,7 @@ export function Home() {
       {keywords.length > 0 && (
         <section className="mt-8 px-5">
           <h2 className="text-h2 mb-3 text-ink">내 취향 키워드</h2>
-          <div className="rounded-card bg-paper-2 p-4">
+          <div className="rounded-card bg-paper-2 p-3.5">
             <TasteBars
               items={keywords}
               onPick={(k) => shell.openList({ title: k.tag, keyword: k.tag })}
@@ -198,16 +198,44 @@ function Row({ items, wide = false }: { items: Recommendation[]; wide?: boolean 
   );
 }
 
-/* 오늘의 픽 — 가로 스냅 슬라이더 + 점 인디케이터. (무한 루프는 생략, 스냅으로 대체) */
+/* 오늘의 픽 — 가로 스냅 슬라이더 + 무한 루프(정본 home.jsx).
+   loop=[clone(last), ...real, clone(first)]: 첫 실제 슬라이드에서도 양쪽 peek이 보인다.
+   stride=clientWidth-30(정본값). 마운트 시 첫 실제 슬라이드로 위치, 경계(clone)서 워프. */
 function HeroSlider({ picks, onOpen }: { picks: Recommendation[]; onOpen: (id: string) => void }) {
   const ref = useRef<HTMLDivElement>(null);
+  const settle = useRef<number | undefined>(undefined);
   const [idx, setIdx] = useState(0);
+  const n = picks.length;
+  const loop = n > 1 ? [picks[n - 1], ...picks, picks[0]] : picks;
+
+  const stride = () => {
+    const el = ref.current;
+    return el ? el.clientWidth - 30 : 1;
+  };
+
+  // 마운트 시 첫 실제 슬라이드(index 1)로 위치.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || n <= 1) return;
+    const id = requestAnimationFrame(() => {
+      el.scrollLeft = stride();
+    });
+    return () => cancelAnimationFrame(id);
+  }, [n]);
 
   const onScroll = () => {
     const el = ref.current;
-    if (!el) return;
-    const stride = el.clientWidth - 40;
-    setIdx(Math.max(0, Math.min(picks.length - 1, Math.round(el.scrollLeft / stride))));
+    if (!el || n <= 1) return;
+    const s = stride();
+    const raw = Math.round(el.scrollLeft / s); // 0..n+1 (clone 포함)
+    const live = (((raw - 1) % n) + n) % n; // 점 인디케이터용 실제 index
+    if (live !== idx) setIdx(live);
+    // 스크롤이 멎으면 clone 경계를 가로질러 워프(끊김 없이).
+    window.clearTimeout(settle.current);
+    settle.current = window.setTimeout(() => {
+      if (raw === 0) el.scrollTo({ left: s * n, behavior: "auto" });
+      else if (raw === n + 1) el.scrollTo({ left: s, behavior: "auto" });
+    }, 140);
   };
 
   return (
@@ -217,13 +245,13 @@ function HeroSlider({ picks, onOpen }: { picks: Recommendation[]; onOpen: (id: s
         onScroll={onScroll}
         className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 [scrollbar-width:none]"
       >
-        {picks.map((r) => (
+        {loop.map((r, i) => (
           <div
-            key={r.product.id}
-            className="flex w-[calc(100%-40px)] shrink-0 snap-center flex-col gap-3 rounded-card bg-paper-2 p-4"
+            key={i}
+            className="flex w-[calc(100%-40px)] shrink-0 snap-center flex-col gap-3.5 rounded-[12px] bg-paper-2 p-4"
           >
             <div className="flex items-stretch gap-3">
-              <div className="w-[118px] shrink-0">
+              <div className="w-[130px] shrink-0">
                 <ProductImg colors={r.product.img} brand={r.product.brand} shape="tall" />
               </div>
               <div className="flex min-w-0 flex-1 flex-col justify-between">

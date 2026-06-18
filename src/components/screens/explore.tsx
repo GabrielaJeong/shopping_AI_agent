@@ -30,7 +30,7 @@ export function Explore() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="sticky top-0 z-10 bg-paper px-5 pt-[56px] pb-3">
+      <header className="sticky top-0 z-10 bg-paper px-5 pt-[70px] pb-5">
         <h1 className="text-h1 text-ink">탐색</h1>
       </header>
 

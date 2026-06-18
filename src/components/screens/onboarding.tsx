@@ -92,7 +92,7 @@ export function Onboarding({
           type="button"
           onClick={goBack}
           aria-label="이전"
-          className="-ml-1.5 flex size-9 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
+          className="-ml-1.5 flex size-[38px] cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
         >
           <Icon name="back" size={22} />
         </button>

@@ -78,12 +78,12 @@ export function Search() {
   return (
     <div className="flex flex-1 flex-col">
       {/* 검색 바 */}
-      <header className="sticky top-0 z-10 flex items-center gap-2 bg-paper px-3 pt-[56px] pb-3">
+      <header className="sticky top-0 z-10 flex items-center gap-2 bg-paper px-3 pt-[62px] pb-4">
         <button
           type="button"
           onClick={shell.back}
           aria-label="뒤로"
-          className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
+          className="flex size-[38px] shrink-0 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
         >
           <Icon name="back" size={22} />
         </button>

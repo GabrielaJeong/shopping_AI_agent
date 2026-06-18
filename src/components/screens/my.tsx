@@ -38,7 +38,7 @@ export function My() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="sticky top-0 z-10 bg-paper px-5 pt-[56px] pb-3">
+      <header className="sticky top-0 z-10 bg-paper px-5 pt-[70px] pb-5">
         <h1 className="text-h1 text-ink">마이</h1>
       </header>
 
@@ -60,7 +60,7 @@ export function My() {
         <section className="flex flex-col gap-3">
           <span className="text-label text-ink-2 uppercase">내 취향 키워드</span>
           {keywords.length === 0 ? (
-            <div className="flex flex-col gap-2 rounded-card bg-paper-2 p-4">
+            <div className="flex flex-col gap-2 rounded-card bg-paper-2 p-3.5">
               <p className="text-body-2 text-ink-2">아직 학습된 취향이 없어요.</p>
               <Button variant="primary" onClick={onReset}>
                 취향 알려주기

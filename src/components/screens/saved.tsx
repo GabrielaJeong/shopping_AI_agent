@@ -63,7 +63,7 @@ export function Saved() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="sticky top-0 z-10 flex items-baseline gap-2 bg-paper px-5 pt-[56px] pb-3">
+      <header className="sticky top-0 z-10 flex items-baseline gap-2 bg-paper px-5 pt-[70px] pb-5">
         <h1 className="text-h1 text-ink">찜</h1>
         <span className="text-caption text-ink-3">{products.length}개</span>
       </header>
