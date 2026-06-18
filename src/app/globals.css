@@ -141,21 +141,6 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* 클릭 가능 요소엔 손가락 커서. 네이티브 <button> 기본 커서는 default이고
-     Tailwind preflight도 안 넣어준다. 프로토타입은 모바일이라 커서를 생략했으나
-     웹(모바일 셸)에선 hover affordance가 필요 → 전역 보강. (비활성은 default 유지) */
-  button:not(:disabled),
-  [role="button"]:not([aria-disabled="true"]),
-  a[href],
-  summary {
-    cursor: pointer;
-  }
-
-  button:disabled,
-  [role="button"][aria-disabled="true"] {
-    cursor: default;
-  }
-
   /* 진입 애니메이션은 reduced-motion에서 즉시 끝상태로 (README 모션 규칙) */
   @media (prefers-reduced-motion: reduce) {
     *,
@@ -166,4 +151,20 @@
       transition-duration: 0.001ms !important;
     }
   }
+}
+
+/*
+  클릭 가능 요소 손가락 커서 — 의도적으로 @layer 밖(unlayered)에 둔다.
+  @layer base 안에 두면 이 Tailwind v4 셋업에서 raw <button>에 안정적으로 적용되지 않았다
+  (명시적 cursor-pointer 유틸을 가진 Button/Chip만 커서가 보였고, BannerChip·TasteBars 행 등
+  bare <button>은 안 먹음). unlayered 규칙은 모든 @layer(preflight/utilities)보다 우선하므로
+  button/[role=button]/a[href]에 확실히 적용된다.
+  비활성은 :not(:disabled)/:not([aria-disabled])로 제외 → disabled 버튼의 cursor-not-allowed
+  유틸(예: 품절 사이즈)을 덮어쓰지 않는다. (#32 후속 / L-007)
+*/
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+a[href],
+summary {
+  cursor: pointer;
 }
