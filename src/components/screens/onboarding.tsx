@@ -85,9 +85,9 @@ export function Onboarding({
   const goNext = () => setPhase(isLast ? "analyzing" : stepIndex + 1);
 
   return (
-    // 컨테이너는 position static 유지 → 하단 CTA(absolute)가 프레임 바닥에 핀(스크롤해도 고정).
-    // pb-[120px]로 마지막 옵션이 CTA에 가리지 않게 확보(정본 .app-scroll paddingBottom 120).
-    <div className="flex h-full flex-col overflow-y-auto px-5 pt-[54px] pb-[120px] [scrollbar-width:none]">
+    // 일반 블록 스크롤(flex-col 아님!) — flex-col이면 긴 옵션 영역이 0으로 수축돼 안 보인다.
+    // position static 유지 → 하단 CTA(absolute)가 프레임 바닥에 핀. pb-[120px]로 CTA 가림 방지.
+    <div className="h-full overflow-y-auto px-5 pt-[54px] pb-[120px] [scrollbar-width:none]">
       {/* 진행 바 — 상단 바(헤더) 위, 안전영역 아래 최상단(Figma). */}
       <div className="h-[3px] overflow-hidden rounded-full bg-paper-3">
         <div
@@ -378,7 +378,7 @@ function Summary({ profile, onComplete }: { profile: TasteProfile; onComplete: (
   }, []);
 
   return (
-    <div className="flex h-full flex-col overflow-y-auto px-5 pt-[54px] pb-[120px] [scrollbar-width:none]">
+    <div className="h-full overflow-y-auto px-5 pt-[54px] pb-[120px] [scrollbar-width:none]">
       <div className="animate-fade-up mt-7">
         <span className="mb-[18px] flex size-[52px] items-center justify-center rounded-full bg-ink text-paper">
           <Icon name="check" size={26} />
