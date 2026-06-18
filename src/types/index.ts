@@ -103,3 +103,14 @@ export interface TasteProfile {
   /** 예산 선택(단일) — 가중치 태그가 아니라 필터 제약. 미선택/상관없음이면 null. */
   budget: string | null;
 }
+
+/**
+ * 찜 컬렉션 — 저장 상품(savedIds)을 묶은 사용자 그룹. AI 제안 또는 사용자가 생성.
+ * productIds는 savedIds의 부분집합으로 다룬다(해제된 항목은 표시/카운트에서 제외).
+ * ⚠️ "어떤 무드로 묶을지"의 자동 클러스터링은 이후 F2/F3·취향 벡터가 산출할 자리(지금은 태그 mock).
+ */
+export interface Collection {
+  id: string;
+  name: string;
+  productIds: string[];
+}
