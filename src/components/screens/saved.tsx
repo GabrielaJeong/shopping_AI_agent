@@ -48,8 +48,10 @@ export function Saved() {
 
   const [selected, setSelected] = useState<string | null>(null); // 컬렉션 필터(null=전체)
   const [dismissed, setDismissed] = useState(false);
+  const [extra, setExtra] = useState<Collection[]>([]); // 사용자가 만든 컬렉션(mock, 세션 한정)
 
-  const activeCollection = collections.find((c) => c.name === selected);
+  const allCollections = useMemo(() => [...collections, ...extra], [collections, extra]);
+  const activeCollection = allCollections.find((c) => c.name === selected);
   const shown = activeCollection
     ? products.filter((p) => activeCollection.ids.includes(p.id))
     : products;
@@ -61,7 +63,7 @@ export function Saved() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="sticky top-0 z-10 flex items-baseline gap-2 bg-paper px-5 pt-[56px] pb-3">
+      <header className="sticky top-0 z-10 flex items-baseline gap-2 bg-paper px-5 pt-[70px] pb-5">
         <h1 className="text-h1 text-ink">찜</h1>
         <span className="text-caption text-ink-3">{products.length}개</span>
       </header>
@@ -89,7 +91,7 @@ export function Saved() {
                   AI 컬렉션 제안
                 </span>
               </div>
-              <p className="text-body text-paper">&ldquo;{suggestion}&rdquo;로 묶어드릴까요?</p>
+              <p className="text-body text-paper">&ldquo;{suggestion}&rdquo;로 묶을까요?</p>
               <div className="mt-3 flex gap-2">
                 <button
                   type="button"
@@ -114,7 +116,7 @@ export function Saved() {
           )}
 
           {/* 컬렉션 필터 칩 */}
-          {collections.length > 0 && (
+          {allCollections.length > 0 && (
             <div className="flex gap-1.5 overflow-x-auto [scrollbar-width:none]">
               <Chip
                 variant={selected === null ? "selected" : "default"}
@@ -122,7 +124,7 @@ export function Saved() {
               >
                 전체
               </Chip>
-              {collections.map((c) => (
+              {allCollections.map((c) => (
                 <Chip
                   key={c.name}
                   variant={selected === c.name ? "selected" : "default"}
@@ -131,8 +133,16 @@ export function Saved() {
                   {c.name}
                 </Chip>
               ))}
-              {/* 새 컬렉션 생성 슬롯(이후 사용자 정의 컬렉션) */}
-              <Chip variant="outline" onClick={() => undefined}>
+              {/* 새 컬렉션 생성: 현재 보기를 스냅샷해 새 컬렉션으로(mock, 세션 한정). */}
+              <Chip
+                variant="outline"
+                onClick={() => {
+                  const name = `컬렉션 ${collections.length + extra.length + 1}`;
+                  setExtra((e) => [...e, { name, ids: shown.map((p) => p.id) }]);
+                  setSelected(name);
+                  toast(`"${name}"을 만들었어요`);
+                }}
+              >
                 + 새 컬렉션
               </Chip>
             </div>

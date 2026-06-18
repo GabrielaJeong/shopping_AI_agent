@@ -66,7 +66,7 @@ export function Detail({ productId }: { productId: string }) {
           type="button"
           onClick={shell.back}
           aria-label="뒤로"
-          className="absolute top-[58px] left-4 flex size-9 items-center justify-center rounded-full bg-paper/90 text-ink backdrop-blur-sm"
+          className="absolute top-[58px] left-4 flex size-[38px] items-center justify-center rounded-full bg-paper/90 text-ink backdrop-blur-sm"
         >
           <Icon name="back" size={20} />
         </button>
@@ -101,12 +101,20 @@ export function Detail({ productId }: { productId: string }) {
 
       {/* match · reason */}
       <div className="px-5 pt-4">
-        <div className="rounded-card bg-accent-soft px-3.5 py-3">
+        <div className="rounded-btn bg-accent-soft px-3.5 py-3">
           <span className="mr-1.5 inline-block rounded bg-paper px-1.5 py-0.5 text-[9px] font-semibold tracking-[0.1em] text-ink uppercase">
             AI {match}%
           </span>
           <Reason html={reason} className="text-[12.5px] leading-relaxed text-ink" />
         </div>
+        {/* 이 추천 더 묻기 → 챗 시트 (정본 §12 트리거) */}
+        <button
+          type="button"
+          onClick={() => shell.openSheet({ mode: "chat", productId: product.id })}
+          className="mt-2 inline-flex items-center gap-1 text-[12px] font-medium text-ink-2"
+        >
+          <Icon name="sparkle" size={13} />이 추천 더 묻기
+        </button>
       </div>
 
       {/* 옵션: 컬러 */}

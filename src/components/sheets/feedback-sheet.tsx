@@ -57,7 +57,7 @@ export function FeedbackSheet({ productId }: { productId: string | null }) {
 
       {/* 학습 변화 카드 — 값은 applyFeedback이 실제로 바꾼 before→after */}
       {changes.length > 0 && (
-        <div className="rounded-card bg-paper-2 p-4">
+        <div className="rounded-card bg-paper-2 p-3.5">
           <div className="mb-3 flex items-center justify-between">
             <span className="text-h3 text-ink">학습 변화</span>
             <span className="text-caption text-ink-3">방금 업데이트</span>

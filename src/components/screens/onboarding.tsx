@@ -92,7 +92,7 @@ export function Onboarding({
           type="button"
           onClick={goBack}
           aria-label="이전"
-          className="-ml-1.5 flex size-9 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
+          className="-ml-1.5 flex size-[38px] cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
         >
           <Icon name="back" size={22} />
         </button>
@@ -316,9 +316,12 @@ function Analyzing({ onDone }: { onDone: () => void }) {
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="font-mono text-h2 text-ink">{pct}%</span>
         </div>
-        <span className="absolute -top-1 right-3 text-ink">
-          <Icon name="sparkle" size={20} />
-        </span>
+        {/* 링을 도는 스파클 (정본 §4 "sparkle orbiting"). reduced-motion에선 전역 가드로 정지. */}
+        <div className="absolute inset-0 animate-[spin_6s_linear_infinite]">
+          <span className="absolute -top-1 left-1/2 -translate-x-1/2 text-ink">
+            <Icon name="sparkle" size={20} />
+          </span>
+        </div>
       </div>
       <p className="text-body text-ink-2">{status}</p>
     </div>

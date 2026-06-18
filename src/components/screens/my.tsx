@@ -38,7 +38,7 @@ export function My() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="sticky top-0 z-10 bg-paper px-5 pt-[56px] pb-3">
+      <header className="sticky top-0 z-10 bg-paper px-5 pt-[70px] pb-5">
         <h1 className="text-h1 text-ink">마이</h1>
       </header>
 
@@ -54,10 +54,13 @@ export function My() {
         </section>
 
         {/* 취향 키워드 바 — 실제 tasteProfile */}
+        {/* 정본 §8은 키워드별 델타(예: "미니멀 78% +6")를 보여준다. 지금은 가중치만 — 델타 '값'은
+            취향 변화 추적(F6) 영역이라 mock으로 박지 않는다. 표시 자리는 TasteBars에 delta 옵션이
+            생기면 채운다. (백로그: CURRENT_STATE) */}
         <section className="flex flex-col gap-3">
           <span className="text-label text-ink-2 uppercase">내 취향 키워드</span>
           {keywords.length === 0 ? (
-            <div className="flex flex-col gap-2 rounded-card bg-paper-2 p-4">
+            <div className="flex flex-col gap-2 rounded-card bg-paper-2 p-3.5">
               <p className="text-body-2 text-ink-2">아직 학습된 취향이 없어요.</p>
               <Button variant="primary" onClick={onReset}>
                 취향 알려주기
