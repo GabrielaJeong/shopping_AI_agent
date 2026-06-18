@@ -7,6 +7,7 @@
   rounded-btn, hover bg-paper-3). 값은 11px ink-2 우측 정렬.
 */
 
+import { Icon } from "@/components/icon";
 import { cn } from "@/lib/cn";
 
 export interface TasteBarItem {
@@ -32,7 +33,11 @@ export function TasteBars({
         const pct = Math.round(it.weight * 100);
         const inner = (
           <>
-            <span className="text-[12px] font-medium text-ink">{it.tag}</span>
+            <span className="flex items-center gap-1 text-[12px] font-medium text-ink">
+              {it.tag}
+              {/* tappable 행엔 chevron (정본 BarList) — 클릭 시 키워드 리스트로 */}
+              {onPick && <Icon name="chevron-right" size={13} color="var(--color-ink-3)" />}
+            </span>
             <span className="h-1.5 overflow-hidden rounded-full bg-paper-3">
               <span
                 className="block h-full rounded-full bg-ink transition-[width] duration-700 ease-out"
