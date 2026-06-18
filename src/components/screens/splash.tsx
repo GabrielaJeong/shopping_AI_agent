@@ -6,7 +6,7 @@
 */
 
 import { useEffect } from "react";
-import { MudifitLogo } from "@/components/brand";
+import { MoodyfitLogo } from "@/components/brand";
 
 export function Splash({ onDone }: { onDone: () => void }) {
   useEffect(() => {
@@ -17,7 +17,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
   return (
     <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-ink text-paper">
       <div className="animate-splash-in">
-        <MudifitLogo size={36} stack gap={18} />
+        <MoodyfitLogo size={36} stack gap={18} />
       </div>
     </div>
   );

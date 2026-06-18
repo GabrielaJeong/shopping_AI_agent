@@ -92,6 +92,7 @@
 **근거**: 정본 디자인 문서(handoff README)가 Moodyfit을 쓰며, 표기 일관성은 브랜딩·코드 검색·온보딩 게이트 키 정합에 직결된다. 비직관적이라 다음 세션이 옛 표기로 되돌리기 쉬워 명문화한다.
 **트레이드오프**: 프로토타입 코드를 참조할 때 옛 키(`mudifit_`)와의 차이를 매번 의식해야 함 → 포팅 시 일괄 치환.
 **PRD 연결**: 특정 F 기능이 아닌 전 화면 카피·브랜딩 일관성 사안. `moodyfit_onboarded` 키는 런치 게이트(F1 온보딩 완료 영속화)에 연결.
+**후속(2026-06-18)**: 마지막 잔재였던 브랜드 컴포넌트 식별자도 `MudifitMark`/`MudifitLogo` → `MoodyfitMark`/`MoodyfitLogo`로 리네임(brand.tsx + splash/intro/login). 코드상 'Mudifit' 식별자 제거 완료(프로토타입 옛 명칭 참조 주석만 남김).
 
 ---
 

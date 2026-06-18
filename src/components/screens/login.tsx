@@ -7,7 +7,7 @@
 */
 
 import { Icon } from "@/components/icon";
-import { MudifitLogo } from "@/components/brand";
+import { MoodyfitLogo } from "@/components/brand";
 import { ProductImg } from "@/components/product-img";
 import { Button } from "@/components/ui/button";
 import { byId } from "@/data";
@@ -21,7 +21,7 @@ export function Login({ onLogin }: { onLogin: () => void }) {
       {/* 브랜드 + 히어로 */}
       <div className="pt-9">
         <div className="animate-fade-up">
-          <MudifitLogo size={24} />
+          <MoodyfitLogo size={24} />
         </div>
         <h1
           className="animate-fade-up mt-6 font-bold whitespace-pre-line text-ink"
