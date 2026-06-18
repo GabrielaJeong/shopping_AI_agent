@@ -13,7 +13,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Icon } from "@/components/icon";
-import { Chip } from "@/components/ui/chip";
+import { MoodyfitLogo } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { buildTasteProfile, topTasteTags } from "@/lib/taste-vector";
@@ -85,9 +85,11 @@ export function Onboarding({
   const goNext = () => setPhase(isLast ? "analyzing" : stepIndex + 1);
 
   return (
-    <div className="flex h-full flex-col overflow-y-auto px-5 pt-[54px] pb-[30px] [scrollbar-width:none]">
-      {/* 상단 바 */}
-      <div className="flex items-center justify-between pt-2">
+    // 일반 블록 스크롤(flex-col 아님!) — flex-col이면 긴 옵션 영역이 0으로 수축돼 안 보인다.
+    // position static 유지 → 하단 CTA(absolute)가 프레임 바닥에 핀. pb-[120px]로 CTA 가림 방지.
+    <div className="h-full overflow-y-auto px-5 pt-[54px] pb-[120px] [scrollbar-width:none]">
+      {/* 상단 바 (back / STEP / 건너뛰기) */}
+      <div className="flex items-center justify-between pt-2 pb-1">
         <button
           type="button"
           onClick={goBack}
@@ -100,42 +102,51 @@ export function Onboarding({
         <button
           type="button"
           onClick={onSkip}
-          className="cursor-pointer px-1.5 text-caption font-medium text-ink-3"
+          className="cursor-pointer px-3 text-caption font-medium text-ink-3"
         >
           건너뛰기
         </button>
       </div>
 
-      {/* 진행 바 */}
-      <div className="mt-3 h-1 overflow-hidden rounded-full bg-paper-3">
+      {/* 진행 바 — 헤더 아래 */}
+      <div className="mt-2 mb-6 h-[3px] overflow-hidden rounded-full bg-paper-3">
         <div
           className="h-full rounded-full bg-ink transition-[width] duration-500"
           style={{ width: `${((stepIndex + 1) / ONBOARDING_STEPS.length) * 100}%` }}
         />
       </div>
 
-      {/* 타이틀 */}
-      <div key={`t-${stepIndex}`} className="animate-fade-up mt-6">
-        <h1 className="text-h1 text-ink">{step.title}</h1>
-        <p className="text-body-2 mt-1 text-ink-2">{step.subtitle}</p>
+      {/* 타이틀 (display) */}
+      <div key={`t-${stepIndex}`} className="animate-fade-up mb-6">
+        <h1 className="text-display text-ink">{step.title}</h1>
+        <p className="text-body-2 mt-2 text-ink-2">{step.subtitle}</p>
       </div>
 
       {/* 옵션 */}
-      <div key={`o-${stepIndex}`} className="animate-fade-up mt-5">
+      <div key={`o-${stepIndex}`} className="animate-fade-up">
         <StepOptions step={step} selected={selected} onToggle={toggle} />
       </div>
 
-      <div className="mt-auto" />
-
-      {/* 카운트 + CTA */}
-      <div className="pt-5">
-        <p className="mb-3 text-center text-caption text-ink-3">
-          선택 {selected.length}개{step.multi ? ` · 최소 ${step.min}개` : ""}
-        </p>
-        <Button variant="primary" size="lg" block disabled={!met} onClick={goNext}>
+      {/* CTA — 하단 고정 그라데이션 바(정본 14/20/30, 프레임 바닥 핀). 바는 클릭 통과, 버튼만 활성. */}
+      <div className="absolute right-0 bottom-0 left-0 z-[7] px-5 pt-[14px] pb-[30px] [background:linear-gradient(to_top,var(--color-paper)_62%,transparent)] [pointer-events:none]">
+        <Button
+          variant="primary"
+          size="lg"
+          block
+          disabled={!met}
+          onClick={goNext}
+          className="[pointer-events:auto]"
+        >
           {isLast ? "취향 분석 시작" : "다음"}
-          {!isLast && <Icon name="arrow-right" size={16} />}
+          <Icon name="arrow-right" size={16} />
         </Button>
+        <p className="mt-2 text-center text-caption text-ink-3">
+          {selected.length > 0
+            ? `${selected.length}개 선택됨${step.multi ? ` · 최소 ${step.min}개` : ""}`
+            : step.multi
+              ? `최소 ${step.min}개 선택해주세요`
+              : "하나 선택해주세요"}
+        </p>
       </div>
     </div>
   );
@@ -151,27 +162,10 @@ function StepOptions({
   selected: string[];
   onToggle: (id: string) => void;
 }) {
+  // 텍스트 칩: 정본 커스텀 버튼(13×18·r8·13.5px). 일반 Chip(6/10)보다 큼.
   if (step.kind === "chip") {
     return (
       <div className="flex flex-wrap gap-2">
-        {step.options.map((o) => (
-          <Chip
-            key={o.id}
-            variant={selected.includes(o.id) ? "selected" : "default"}
-            size="md"
-            aria-pressed={selected.includes(o.id)}
-            onClick={() => onToggle(o.id)}
-          >
-            {o.label}
-          </Chip>
-        ))}
-      </div>
-    );
-  }
-
-  if (step.kind === "color") {
-    return (
-      <div className="grid grid-cols-2 gap-3">
         {step.options.map((o) => {
           const on = selected.includes(o.id);
           return (
@@ -180,16 +174,47 @@ function StepOptions({
               type="button"
               aria-pressed={on}
               onClick={() => onToggle(o.id)}
-              className="flex cursor-pointer flex-col gap-2"
+              className={cn(
+                "rounded-btn px-[18px] py-[13px] text-[13.5px] font-medium transition-colors",
+                on ? "bg-ink text-paper" : "bg-paper-2 text-ink",
+              )}
+            >
+              {o.label}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // 컬러 스와치: aspect 1/1, gap 10, r8, 라벨 아래.
+  if (step.kind === "color") {
+    return (
+      <div className="grid grid-cols-2 gap-2.5">
+        {step.options.map((o) => {
+          const on = selected.includes(o.id);
+          return (
+            <button
+              key={o.id}
+              type="button"
+              aria-pressed={on}
+              onClick={() => onToggle(o.id)}
+              className="cursor-pointer text-left"
             >
               <span
                 className={cn(
-                  "h-16 w-full rounded-image ring-inset transition",
-                  on ? "ring-2 ring-ink" : "ring-1 ring-line",
+                  "relative block aspect-square w-full overflow-hidden rounded-btn ring-inset transition",
+                  on && "ring-2 ring-ink",
                 )}
                 style={{ background: o.swatch }}
-              />
-              <span className={cn("text-body-2", on ? "font-semibold text-ink" : "text-ink-2")}>
+              >
+                {on && (
+                  <span className="absolute top-2 right-2 flex size-[22px] items-center justify-center rounded-full bg-ink text-paper">
+                    <Icon name="check" size={13} />
+                  </span>
+                )}
+              </span>
+              <span className={cn("mt-2 block pl-0.5 text-[13px] text-ink", on && "font-semibold")}>
                 {o.label}
               </span>
             </button>
@@ -199,29 +224,33 @@ function StepOptions({
     );
   }
 
-  // image: 룩북 스트라이프 플레이스홀더(실제 사진 전) + 선택 체크
+  // 이미지 카드: aspect 3/4·gap 10·r8, 좌상단 태그 + 하단 그라데이션 라벨 + 선택 badge 22.
+  const tag = step.key === "category" ? "ITEM" : "MOOD";
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 gap-2.5">
       {step.options.map((o) => {
         const on = selected.includes(o.id);
         return (
-          <button
-            key={o.id}
-            type="button"
-            aria-pressed={on}
-            onClick={() => onToggle(o.id)}
-            className={cn(
-              "relative flex aspect-[4/3] cursor-pointer items-end overflow-hidden rounded-card p-3 ring-inset transition",
-              on ? "ring-2 ring-ink" : "ring-1 ring-line",
-            )}
-            style={{ background: STRIPE }}
-          >
-            <span className={cn("text-h3", on ? "text-ink" : "text-ink-2")}>{o.label}</span>
-            {on && (
-              <span className="absolute top-2 right-2 flex size-6 items-center justify-center rounded-full bg-ink text-paper">
-                <Icon name="check" size={14} />
+          <button key={o.id} type="button" aria-pressed={on} onClick={() => onToggle(o.id)}>
+            <span
+              className={cn(
+                "relative block aspect-[3/4] overflow-hidden rounded-btn ring-inset transition",
+                on && "ring-2 ring-ink",
+              )}
+              style={{ background: STRIPE }}
+            >
+              <span className="absolute top-2 left-2 font-mono text-[9px] tracking-[0.08em] text-ink-3">
+                {tag}
               </span>
-            )}
+              <span className="absolute inset-x-0 bottom-0 bg-[linear-gradient(transparent,rgba(58,54,51,0.16))] px-2.5 pt-5 pb-[9px] text-left">
+                <span className="text-[13.5px] font-semibold text-ink">{o.label}</span>
+              </span>
+              {on && (
+                <span className="absolute top-2 right-2 flex size-[22px] items-center justify-center rounded-full bg-ink text-paper">
+                  <Icon name="check" size={13} />
+                </span>
+              )}
+            </span>
           </button>
         );
       })}
@@ -233,7 +262,8 @@ function StepOptions({
 function Welcome({ onStart, onSkip }: { onStart: () => void; onSkip: () => void }) {
   return (
     <div className="flex h-full flex-col overflow-y-auto px-5 pt-[54px] pb-[30px] [scrollbar-width:none]">
-      <div className="flex items-center justify-end pt-2">
+      <div className="flex items-center justify-between pt-3">
+        <MoodyfitLogo size={17} gap={8} />
         <button
           type="button"
           onClick={onSkip}
@@ -243,11 +273,25 @@ function Welcome({ onStart, onSkip }: { onStart: () => void; onSkip: () => void 
         </button>
       </div>
 
-      {/* 룩북 플레이스홀더 히어로 */}
+      {/* 룩북 플레이스홀더 히어로 (4/5, LOOKBOOK 라벨 + 무드 칩) */}
       <div
-        className="animate-fade-up mt-4 h-56 w-full rounded-card ring-1 ring-line ring-inset"
+        className="animate-fade-up relative mt-[18px] aspect-[4/5] w-full overflow-hidden rounded-[14px]"
         style={{ background: STRIPE }}
-      />
+      >
+        <span className="absolute top-3 left-3 font-mono text-[9.5px] tracking-[0.1em] text-ink-3">
+          LOOKBOOK · 1080×1350
+        </span>
+        <div className="absolute bottom-3 left-3 flex gap-1">
+          {["미니멀", "베이지", "내추럴"].map((t) => (
+            <span
+              key={t}
+              className="rounded-chip bg-paper/90 px-2 py-1 text-[10px] font-medium text-ink"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
 
       <div className="animate-fade-up mt-7">
         <h1
@@ -291,19 +335,19 @@ function Analyzing({ onDone }: { onDone: () => void }) {
     return () => window.clearInterval(id);
   }, [onDone]);
 
-  const r = 52;
+  const r = 63;
   const circ = 2 * Math.PI * r;
   const status =
     ANALYZING_STATUS[Math.min(ANALYZING_STATUS.length - 1, Math.floor((pct / 100) * 3))];
 
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-7 px-5">
-      <div className="relative size-[140px]">
-        <svg width="140" height="140" viewBox="0 0 120 120" className="-rotate-90">
-          <circle cx="60" cy="60" r={r} fill="none" stroke="var(--color-paper-3)" strokeWidth="6" />
+    <div className="flex h-full flex-col items-center justify-center gap-7 px-5 pb-[60px]">
+      <div className="relative size-[132px]">
+        <svg width="132" height="132" viewBox="0 0 132 132" className="-rotate-90">
+          <circle cx="66" cy="66" r={r} fill="none" stroke="var(--color-paper-3)" strokeWidth="6" />
           <circle
-            cx="60"
-            cy="60"
+            cx="66"
+            cy="66"
             r={r}
             fill="none"
             stroke="var(--color-ink)"
@@ -314,12 +358,12 @@ function Analyzing({ onDone }: { onDone: () => void }) {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="font-mono text-h2 text-ink">{pct}%</span>
+          <span className="font-mono text-[26px] font-bold text-ink">{pct}%</span>
         </div>
-        {/* 링을 도는 스파클 (정본 §4 "sparkle orbiting"). reduced-motion에선 전역 가드로 정지. */}
+        {/* 링을 도는 스파클(정본 ob-spin: 22 원 + 흰 sparkle). reduced-motion 전역 가드로 정지. */}
         <div className="absolute inset-0 animate-[spin_6s_linear_infinite]">
-          <span className="absolute -top-1 left-1/2 -translate-x-1/2 text-ink">
-            <Icon name="sparkle" size={20} />
+          <span className="absolute -top-[2px] left-1/2 flex size-[22px] -translate-x-1/2 items-center justify-center rounded-full bg-ink text-paper">
+            <Icon name="sparkle" size={12} />
           </span>
         </div>
       </div>
@@ -340,26 +384,30 @@ function Summary({ profile, onComplete }: { profile: TasteProfile; onComplete: (
   }, []);
 
   return (
-    <div className="flex h-full flex-col overflow-y-auto px-5 pt-[54px] pb-[30px] [scrollbar-width:none]">
-      <div className="animate-fade-up mt-6 flex flex-col items-center text-center">
-        <span className="flex size-14 items-center justify-center rounded-full bg-ink text-paper">
+    <div className="h-full overflow-y-auto px-5 pt-[54px] pb-[120px] [scrollbar-width:none]">
+      <div className="animate-fade-up mt-7">
+        <span className="mb-[18px] flex size-[52px] items-center justify-center rounded-full bg-ink text-paper">
           <Icon name="check" size={26} />
         </span>
-        <h1 className="text-h1 mt-4 text-ink">취향 분석 완료!</h1>
-        <p className="text-body-2 mt-2 text-ink-2">{name}님의 취향을 이렇게 파악했어요.</p>
+        <h1 className="text-display text-ink">취향 분석 완료!</h1>
+        <p className="text-body-2 mt-2 text-ink-2">
+          {name}님의 취향을 이렇게 파악했어요. 이 기준으로 추천을 시작할게요.
+        </p>
       </div>
 
       {/* 취향 키워드 카드 (매치% 는 표시용 더미) */}
-      <div className="animate-fade-up mt-7 grid grid-cols-2 gap-3">
+      <div className="animate-fade-up mt-6 grid grid-cols-2 gap-2.5">
         {top.map((t, i) => {
           const match = DUMMY_MATCH[i] ?? 80;
           return (
-            <div key={t.tag} className="rounded-card bg-paper-2 p-3.5 shadow-card">
+            <div key={t.tag} className="rounded-card bg-paper-2 px-3.5 pt-3.5 pb-4">
               <div className="flex items-baseline justify-between">
-                <span className="text-h3 text-ink">{t.tag}</span>
-                <span className="text-caption text-ink-2">AI {match}%</span>
+                <span className="text-[14px] font-semibold tracking-[-0.3px] text-ink">
+                  {t.tag}
+                </span>
+                <span className="font-mono text-[11px] text-ink-2">{match}%</span>
               </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-3">
+              <div className="mt-2.5 h-[5px] overflow-hidden rounded-full bg-paper-3">
                 <div
                   className="h-full rounded-full bg-ink transition-[width] duration-700 ease-out"
                   style={{ width: revealed ? `${match}%` : "0%" }}
@@ -370,15 +418,16 @@ function Summary({ profile, onComplete }: { profile: TasteProfile; onComplete: (
         })}
       </div>
 
-      <div className="animate-fade-up mt-4 rounded-card bg-accent-soft p-3.5">
+      <div className="animate-fade-up mt-6 flex items-center gap-2.5 rounded-card bg-accent-soft p-3.5">
+        <Icon name="sparkle" size={16} color="var(--color-ink)" />
         <p className="text-body-2 text-ink">
-          오늘의 픽부터 이 취향을 반영해 보여드릴게요. 쓸수록 더 정확해져요.
+          이 취향에 맞춰 <strong className="font-semibold">오늘의 픽</strong>을 준비했어요. 보면서
+          좋아요로 알려주면 더 정확해져요.
         </p>
       </div>
 
-      <div className="mt-auto" />
-
-      <div className="pt-5">
+      {/* CTA — 하단 고정 그라데이션 바 */}
+      <div className="absolute right-0 bottom-0 left-0 z-[7] px-5 pt-[14px] pb-[30px] [background:linear-gradient(to_top,var(--color-paper)_62%,transparent)]">
         <Button variant="primary" size="lg" block onClick={onComplete}>
           내게 꼭 맞는 추천템 보러가기
           <Icon name="arrow-right" size={16} />
