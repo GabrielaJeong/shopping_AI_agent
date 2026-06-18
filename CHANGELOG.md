@@ -17,7 +17,7 @@
 - 문서 하네스 부트스트랩: `CLAUDE.md`, `docs/`(CONVENTIONS·LESSONS·DECISIONS·CURRENT_STATE·SESSION_CHECKLIST·SECURITY), `CHANGELOG.md`, `memory/MEMORY.md` 생성.
 - 설계 결정 기록: `docs/DECISIONS.md` D-001~D-012 (스택, UI먼저·로직mock, DB=PostgreSQL, 추천 파이프라인 단계전환, 콜드스타트, 제품명 Moodyfit, Next 15 고정, 디자인 토큰=Tailwind v4 @theme, 앱 구조=단일 루트 상태 머신, 취향 벡터 구조, app 셸 상태 분리, 추천 경계 getHomeFeed). 각 결정에 PRD F1~F6 연결.
 - **디자인 토큰 매핑**: 프로토타입 `styles.css` 토큰을 `globals.css` `@theme`로 1:1 이식(색·타이포 스케일·radius·shadow). Pretendard 동적 서브셋 CDN을 `layout.tsx`에서 로드(Geist 제거, lang=ko, metadata=Moodyfit). 빌드 CSS에 유틸리티 생성 확인. 토큰 미리보기는 `/foundation`으로 이동.
-- **런치 파운데이션**: 단일 루트 상태 머신(`lib/app-state`) + mock 영속화(`lib/persistence`, moodyfit_onboarded). 공통 프리미티브(`Icon`/`MudifitMark·Logo`/`Button`/`Chip`/`Card`/`ProductImg`/`cn` 헬퍼) — atoms.jsx 재현. **Splash** 실제 구현(1.8s 자동 전환), intro/login/onboarding/app은 전이 검증 플레이스홀더. splash-in/fade-up 애니메이션 + reduced-motion 가드.
+- **런치 파운데이션**: 단일 루트 상태 머신(`lib/app-state`) + mock 영속화(`lib/persistence`, moodyfit_onboarded). 공통 프리미티브(`Icon`/`MoodyfitMark·Logo`/`Button`/`Chip`/`Card`/`ProductImg`/`cn` 헬퍼) — atoms.jsx 재현. **Splash** 실제 구현(1.8s 자동 전환), intro/login/onboarding/app은 전이 검증 플레이스홀더. splash-in/fade-up 애니메이션 + reduced-motion 가드.
 - **데이터 모델 포팅**: `types/`(Product·TasteKeyword·TrendingTerm·AiReply 등 — match·reason·delta를 "추천 엔진 F2~F6이 계산할 더미"로 타입/주석 명시) + `data/`(샘플 카탈로그·취향·검색·챗, 한국어 보존) + 헬퍼 `format`/`byId`. `ProductImgColors`를 `@/types`로 일원화.
 - **Intro 캐러셀**: 3슬라이드(취향 추천 / 학습 루프 / 찜·컬렉션) + 미니 목업(MockReco·MockFeedback·MockSaved, 프리미티브·샘플 데이터로 축소 재현), 점 인디케이터, 건너뛰기·다음·시작하기. AppRoot 연결(intro 플레이스홀더 대체).
 - **Login 화면**: 브랜드+히어로 카피, 상품 티저 3-up, 이메일/Apple/카카오/둘러보기 버튼 + 약관 캡션. Button에 `secondary` 변형(paper-2) 추가. AppRoot 연결(login 플레이스홀더 대체). Apple·카카오는 모노 플레이스홀더(실 SDK 이후).
@@ -63,3 +63,4 @@
 - CLAUDE.md Red Flags 보유: L-001(pnpm 빌드 차단), L-003(dev 중 build로 .next 손상), L-005(작업 전 브랜치), L-006(레이아웃/포커스 변경 후 흐름 점검 + 전역 동작 grep 전수확인), L-007(시각 버그는 추측 말고 측정·실제 적용 확인).
 - 설계 결정 추가: D-016(시트 상태 별도 컨텍스트 분리 — 시트 열림 시 화면 재렌더 방지).
 - 제품명 표기 Moodyfit / `moodyfit_` 통일은 D-006. 화면 구현 시 프로토타입의 `mudifit_` 키를 일괄 치환.
+- **브랜드 컴포넌트 리네임**: `MudifitMark`/`MudifitLogo` → `MoodyfitMark`/`MoodyfitLogo`(brand.tsx + splash/intro/login 사용처). 옛 명칭의 마지막 잔재 정리 — D-006(명칭 통일) 코드까지 마무리. 시각/동작 변경 없음.

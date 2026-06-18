@@ -11,7 +11,7 @@
 - [x] Prettier 도입(eslint 무충돌, endOfLine auto) + 검증 명령 `format:check`.
 - [x] 디자인 토큰 → Tailwind v4 `@theme` 매핑 (색·타이포·radius·shadow, `globals.css`). Pretendard CDN 연결, `layout.tsx` Geist 제거·lang=ko. 빌드 CSS에 유틸리티 생성 확인 (→ D-008). 토큰 미리보기는 `/foundation`.
 - [x] 상태 머신 + mock 영속화 (D-009): `lib/app-state`(stage 머신), `lib/persistence`(moodyfit_onboarded 추상화). 루트(`/`)에서 마운트.
-- [x] 공통 프리미티브 (`components/`): `Icon`, `MudifitMark/Logo`, `ui/Button`, `ui/Chip`, `ui/Card`, `ProductImg`, `cn` 헬퍼. (atoms.jsx 구조 참고·재현)
+- [x] 공통 프리미티브 (`components/`): `Icon`, `MoodyfitMark/Logo`, `ui/Button`, `ui/Chip`, `ui/Card`, `ProductImg`, `cn` 헬퍼. (atoms.jsx 구조 참고·재현)
 - [x] **Splash** 화면 (실제 구현, 1.8s 자동 전환).
 - [x] 데이터 모델 포팅: `types/`(Product/TasteKeyword/TrendingTerm/AiReply 등, 더미 필드 명시) + `data/`(샘플 카탈로그·취향·검색·챗, 한국어 보존) + 헬퍼 `format`/`byId`. match·reason·delta는 **정적 더미**(F2~F6가 계산할 자리)로 타입·주석에 명시.
 - [x] **Intro** 캐러셀 (3슬라이드 + 미니 목업 MockReco/MockFeedback/MockSaved, 점 인디케이터, 건너뛰기/다음/시작하기). AppRoot에 연결.

@@ -8,7 +8,7 @@
 
 import { useState } from "react";
 import { Icon, type IconName } from "@/components/icon";
-import { MudifitLogo, MudifitMark } from "@/components/brand";
+import { MoodyfitLogo, MoodyfitMark } from "@/components/brand";
 import { ProductImg } from "@/components/product-img";
 import { Button } from "@/components/ui/button";
 import { byId } from "@/data";
@@ -19,7 +19,7 @@ function MiniFrame({ label, children }: { label: string; children: React.ReactNo
     <div className="rounded-2xl bg-paper-2 p-4 shadow-card">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          <MudifitMark size={16} />
+          <MoodyfitMark size={16} />
           <span className="text-xs font-semibold tracking-[-0.2px]">{label}</span>
         </div>
         <div className="flex gap-1">
@@ -154,7 +154,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
     <div className="flex h-full flex-col overflow-y-auto px-5 pt-[54px] pb-[30px] [scrollbar-width:none]">
       {/* 상단 바 */}
       <div className="flex items-center justify-between pt-3">
-        <MudifitLogo size={17} gap={8} />
+        <MoodyfitLogo size={17} gap={8} />
         <button
           type="button"
           onClick={onDone}

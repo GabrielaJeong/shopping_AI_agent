@@ -4,13 +4,13 @@
   Moodyfit 브랜드 마크/로고.
   마크 = 얇은 ring 안의 crescent("mood phase") — 채운 원에서 오프셋 원을 mask로 빼서 표현.
   currentColor 기반: 부모의 text-* 로 색을 제어한다 (예: splash는 text-paper).
-  구조 참고: docs/prototype-handoff/design_files/launch.jsx (MudifitMark/MudifitLogo).
+  구조 참고: launch.jsx의 마크/로고(프로토타입은 옛 'Mudifit' 명칭) — 여기선 Moodyfit*로 통일(D-006).
 */
 
 import { useId } from "react";
 import { cn } from "@/lib/cn";
 
-export function MudifitMark({ size = 30, className }: { size?: number; className?: string }) {
+export function MoodyfitMark({ size = 30, className }: { size?: number; className?: string }) {
   const maskId = useId();
   return (
     <svg
@@ -34,7 +34,7 @@ export function MudifitMark({ size = 30, className }: { size?: number; className
   );
 }
 
-export function MudifitLogo({
+export function MoodyfitLogo({
   size = 24,
   stack = false,
   gap = 11,
@@ -51,7 +51,7 @@ export function MudifitLogo({
       className={cn("flex items-center", stack ? "flex-col" : "flex-row", className)}
       style={{ gap }}
     >
-      <MudifitMark size={Math.round(size * 1.5)} />
+      <MoodyfitMark size={Math.round(size * 1.5)} />
       <span
         className="font-brand font-bold"
         style={{ fontSize: size, letterSpacing: "-0.4px", lineHeight: 1 }}
