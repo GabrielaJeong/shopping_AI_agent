@@ -106,7 +106,7 @@ function PushPlaceholder({ title, subtitle }: { title: string; subtitle: string 
           type="button"
           onClick={shell.back}
           aria-label="뒤로"
-          className="-ml-1.5 flex size-9 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
+          className="-ml-1.5 flex size-[38px] cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
         >
           <Icon name="back" size={22} />
         </button>
@@ -172,8 +172,8 @@ function SheetContainer() {
         aria-modal="true"
         aria-label={label}
         tabIndex={-1}
-        className={`absolute right-0 bottom-0 left-0 z-30 flex flex-col rounded-t-[18px] bg-paper px-5 pb-8 shadow-sheet transition-transform duration-300 outline-none ${
-          expanded ? "max-h-[92%]" : "max-h-[88%]"
+        className={`absolute right-0 bottom-0 left-0 z-30 flex flex-col rounded-t-[18px] bg-paper px-5 pb-[30px] shadow-sheet transition-transform duration-300 outline-none ${
+          expanded ? "max-h-[96%]" : "max-h-[88%]"
         } ${shown ? "translate-y-0" : "translate-y-full"}`}
       >
         {/* 드래그 핸들(중앙) */}
@@ -185,7 +185,7 @@ function SheetContainer() {
           type="button"
           onClick={shell.closeSheet}
           aria-label="닫기"
-          className="absolute top-2 right-3 flex size-9 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
+          className="absolute top-2 right-3 flex size-[38px] cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
         >
           <Icon name="close" size={20} />
         </button>

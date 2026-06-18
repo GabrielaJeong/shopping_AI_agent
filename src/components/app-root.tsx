@@ -18,8 +18,10 @@ export function AppRoot() {
 
   return (
     // 모바일: 풀-블리드 폰 화면. 큰 화면(sm↑): 레터박스 배경 위 가운데 정렬된 디바이스 프레임.
+    // 프레임 = 정본 캔버스 390×844 (README §34 "designed at 390 × 844"). 폭을 420→390으로
+    // 맞춰야 좌우 패딩 비율·"오늘의 픽" 카드 peek 등 전 화면이 원본 디자인과 정합한다.
     <div className="flex min-h-dvh flex-col items-center bg-paper sm:justify-center sm:bg-[#e8e4dc]">
-      <div className="relative flex h-dvh w-full max-w-[420px] flex-col overflow-hidden bg-paper sm:h-[844px] sm:max-h-[calc(100dvh_-_3rem)] sm:rounded-[2rem] sm:shadow-elev">
+      <div className="relative flex h-dvh w-full max-w-[390px] flex-col overflow-hidden bg-paper sm:h-[844px] sm:max-h-[calc(100dvh_-_3rem)] sm:rounded-[48px] sm:shadow-elev">
         {s.stage === "splash" && <Splash onDone={s.finishSplash} />}
         {s.stage === "intro" && <Intro onDone={s.finishIntro} />}
         {s.stage === "login" && <Login onLogin={s.login} />}

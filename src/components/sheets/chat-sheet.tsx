@@ -108,13 +108,13 @@ export function ChatSheet({ productId, seed }: { productId: string | null; seed:
           m.role === "user" ? (
             <div
               key={m.id}
-              className="max-w-[80%] self-end rounded-[16px_16px_4px_16px] bg-ink px-3.5 py-2.5 text-[13px] text-paper"
+              className="max-w-[80%] self-end rounded-[16px_16px_4px_16px] bg-ink px-3.5 py-3 text-[13px] text-paper"
             >
               {m.text}
             </div>
           ) : (
             <div key={m.id} className="flex max-w-[88%] flex-col gap-2 self-start">
-              <div className="rounded-[16px_16px_16px_4px] bg-paper-3 px-3.5 py-2.5 text-[13px] text-ink">
+              <div className="rounded-[16px_16px_16px_4px] bg-paper-3 px-[18px] py-4 text-[13px] text-ink">
                 {m.text}
               </div>
               {m.products && m.products.length > 0 && (

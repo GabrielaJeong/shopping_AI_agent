@@ -30,7 +30,7 @@ export function Explore() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="sticky top-0 z-10 bg-paper px-5 pt-[56px] pb-3">
+      <header className="sticky top-0 z-10 bg-paper px-5 pt-[70px] pb-5">
         <h1 className="text-h1 text-ink">탐색</h1>
       </header>
 
@@ -63,22 +63,22 @@ export function Explore() {
         ))}
       </div>
 
-      {/* 정렬 토글 */}
-      <div className="flex items-center gap-4 px-5 pb-3">
+      {/* 정렬 토글 — 정본(explore.jsx)대로 칩 스타일(선택=sel, 비선택=outline) */}
+      <div className="flex items-center gap-1.5 px-5 pb-3">
         {(
           [
             ["ai", "AI 추천순"],
             ["price", "가격순"],
           ] as const
         ).map(([key, label]) => (
-          <button
+          <Chip
             key={key}
-            type="button"
+            variant={sort === key ? "selected" : "outline"}
+            size="tiny"
             onClick={() => setSort(key)}
-            className={`text-[13px] ${sort === key ? "font-semibold text-ink" : "text-ink-3"}`}
           >
             {label}
-          </button>
+          </Chip>
         ))}
       </div>
 

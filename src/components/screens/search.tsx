@@ -7,13 +7,30 @@
   ⚠️ 랭킹·추천어·최근어는 mock(더미). 실시간 집계/검색 엔진은 범위 밖. back → home.
 */
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Icon } from "@/components/icon";
 import { Chip } from "@/components/ui/chip";
 import { useAppShell } from "@/lib/app-shell-state";
 import { getList } from "@/lib/recommend";
 import { AI_SEARCHES, PRODUCTS, RECENT, TRENDING } from "@/data";
-import type { TrendChange } from "@/types";
+import type { TrendingTerm, TrendChange } from "@/types";
+
+/*
+  ⚠️ mock 연출: "실시간 인기"가 살아있게 보이도록 주기적으로 순위를 미세 변동시킨다(인접 swap).
+  실제 집계/실시간 검색 엔진은 범위 밖 — 이 함수는 화면 연출일 뿐(추천 경계와 무관).
+  change/delta는 이전 순위 대비 이동량으로 재계산한다.
+*/
+function mockRefresh(prev: TrendingTerm[]): TrendingTerm[] {
+  const items = [...prev];
+  const i = Math.floor(Math.random() * (items.length - 1));
+  [items[i], items[i + 1]] = [items[i + 1], items[i]]; // 인접 두 항목 자리 교환
+  return items.map((it, idx) => {
+    const old = prev.findIndex((p) => p.term === it.term);
+    const diff = old - idx; // +면 순위 상승
+    const change: TrendChange = diff > 0 ? "up" : diff < 0 ? "down" : "same";
+    return { ...it, change, delta: Math.abs(diff) };
+  });
+}
 
 // 자동완성 후보 풀(중복 제거). 검색어 소스일 뿐 추천 데이터 아님.
 const SUGGEST_POOL = Array.from(
@@ -29,8 +46,16 @@ export function Search() {
   const shell = useAppShell();
   const [query, setQuery] = useState("");
   const [recent, setRecent] = useState<string[]>(RECENT);
+  const [trending, setTrending] = useState<TrendingTerm[]>(TRENDING);
 
   const q = query.trim();
+
+  // 실시간 인기 자동 갱신 연출(약 3.5s 주기). 입력 중(자동완성)엔 멈춤.
+  useEffect(() => {
+    if (q) return;
+    const id = window.setInterval(() => setTrending((prev) => mockRefresh(prev)), 3500);
+    return () => window.clearInterval(id);
+  }, [q]);
 
   const suggestions = useMemo(() => {
     if (!q) return [];
@@ -53,12 +78,12 @@ export function Search() {
   return (
     <div className="flex flex-1 flex-col">
       {/* 검색 바 */}
-      <header className="sticky top-0 z-10 flex items-center gap-2 bg-paper px-3 pt-[56px] pb-3">
+      <header className="sticky top-0 z-10 flex items-center gap-2 bg-paper px-3 pt-[62px] pb-4">
         <button
           type="button"
           onClick={shell.back}
           aria-label="뒤로"
-          className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
+          className="flex size-[38px] shrink-0 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3"
         >
           <Icon name="back" size={22} />
         </button>
@@ -121,12 +146,12 @@ export function Search() {
                   실시간 인기
                 </span>
               </div>
-              {TRENDING.map((t, i) => (
+              {trending.map((t, i) => (
                 <button
                   key={t.term}
                   type="button"
                   onClick={() => submit(t.term)}
-                  className="flex items-center gap-3.5 rounded-btn px-1 py-2.5 text-left hover:bg-paper-3"
+                  className="flex items-center gap-3.5 rounded-btn px-1 py-2.5 text-left transition-colors hover:bg-paper-3"
                 >
                   <span
                     className={`w-4 shrink-0 text-center text-[15px] font-bold tracking-[-0.5px] ${
