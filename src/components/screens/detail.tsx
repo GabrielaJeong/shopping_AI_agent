@@ -107,6 +107,14 @@ export function Detail({ productId }: { productId: string }) {
           </span>
           <Reason html={reason} className="text-[12.5px] leading-relaxed text-ink" />
         </div>
+        {/* 이 추천 더 묻기 → 챗 시트 (정본 §12 트리거) */}
+        <button
+          type="button"
+          onClick={() => shell.openSheet({ mode: "chat", productId: product.id })}
+          className="mt-2 inline-flex items-center gap-1 text-[12px] font-medium text-ink-2"
+        >
+          <Icon name="sparkle" size={13} />이 추천 더 묻기
+        </button>
       </div>
 
       {/* 옵션: 컬러 */}
