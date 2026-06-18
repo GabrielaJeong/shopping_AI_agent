@@ -208,17 +208,19 @@ function HeroSlider({ picks, onOpen }: { picks: Recommendation[]; onOpen: (id: s
   const n = picks.length;
   const loop = n > 1 ? [picks[n - 1], ...picks, picks[0]] : picks;
 
-  const stride = () => {
-    const el = ref.current;
-    return el ? el.clientWidth - 30 : 1;
-  };
+  // 카드 폭이 calc(100%-40px)라 stride를 clientWidth로 추정하면 스냅점과 어긋난다 →
+  // 실제 DOM offsetLeft로 중앙 판정/워프. clone↔real 거리는 정확히 n×stride라 상대 이동이 seamless.
+  const cardEls = () => Array.from(ref.current?.children ?? []) as HTMLElement[];
+  const centerLeft = (c: HTMLElement, el: HTMLElement) =>
+    c.offsetLeft - (el.clientWidth - c.offsetWidth) / 2;
 
-  // 마운트 시 첫 실제 슬라이드(index 1)로 위치.
+  // 마운트 시 첫 실제 슬라이드(loop index 1)를 중앙에.
   useEffect(() => {
     const el = ref.current;
     if (!el || n <= 1) return;
     const id = requestAnimationFrame(() => {
-      el.scrollLeft = stride();
+      const c = el.children[1] as HTMLElement | undefined;
+      if (c) el.scrollLeft = centerLeft(c, el);
     });
     return () => cancelAnimationFrame(id);
   }, [n]);
@@ -226,15 +228,27 @@ function HeroSlider({ picks, onOpen }: { picks: Recommendation[]; onOpen: (id: s
   const onScroll = () => {
     const el = ref.current;
     if (!el || n <= 1) return;
-    const s = stride();
-    const raw = Math.round(el.scrollLeft / s); // 0..n+1 (clone 포함)
-    const live = (((raw - 1) % n) + n) % n; // 점 인디케이터용 실제 index
+    const cs = cardEls();
+    const viewCenter = el.scrollLeft + el.clientWidth / 2;
+    // 화면 중앙에 가장 가까운 카드(loop index j)
+    let j = 0;
+    let best = Infinity;
+    cs.forEach((c, k) => {
+      const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - viewCenter);
+      if (d < best) {
+        best = d;
+        j = k;
+      }
+    });
+    const live = (((j - 1) % n) + n) % n; // 점 인디케이터용 실제 index
     if (live !== idx) setIdx(live);
-    // 스크롤이 멎으면 clone 경계를 가로질러 워프(끊김 없이).
+    // 스크롤이 멎으면 clone 경계를 가로질러 워프. 상대 이동(거리=clone↔real offsetLeft 차)이라
+    // 정확히 스냅점에 떨어져 시각적 점프가 없다.
     window.clearTimeout(settle.current);
     settle.current = window.setTimeout(() => {
-      if (raw === 0) el.scrollTo({ left: s * n, behavior: "auto" });
-      else if (raw === n + 1) el.scrollTo({ left: s, behavior: "auto" });
+      const c = cardEls();
+      if (j === 0 && c[n]) el.scrollLeft += c[n].offsetLeft - c[0].offsetLeft;
+      else if (j === n + 1 && c[1]) el.scrollLeft += c[1].offsetLeft - c[n + 1].offsetLeft;
     }, 140);
   };
 
