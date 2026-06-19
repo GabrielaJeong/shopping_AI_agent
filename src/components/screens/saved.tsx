@@ -1,9 +1,14 @@
 "use client";
 
 /*
-  Saved(찜) 탭 — 저장한 상품 + AI 컬렉션 제안. 구조 참고: saved.jsx / README §7.
-  전역 savedIds 그대로 사용(하트 토글로 해제 → 그리드 갱신). 추천 경계 불필요(이미 저장한 것 표시).
-  ⚠️ 컬렉션 자동 분류는 현재 mock(저장 상품 태그 빈도). 이후 취향 벡터/태그 기반 클러스터링이 들어올 자리.
+  Saved(찜) 탭 — 저장 상품 + 컬렉션 칩 + AI 컬렉션 제안. 정본 saved.jsx / README §7.
+  - 전역 savedIds가 "전체"의 출처. 컬렉션은 app-shell-state(영속 D-003) — 탭 전환/리로드에도 유지.
+  - AI 컬렉션 제안: 저장 상품을 무드로 묶자고 제안(다크 카드) → "컬렉션 만들기"가 사용자 컬렉션 칩을 생성.
+  - 컬렉션 카운트/그리드는 savedSet과 교차(해제된 항목은 제외) — savedIds를 단일 출처로 일관.
+  ⚠️ "어떤 무드로 묶을지"의 실제 클러스터링은 이후 F2/F3·취향 벡터가 산출할 자리.
+     지금은 베이지 계열 태그(베이지/오트밀/카멜) 매칭 mock — 데이터상 p01·p02·p04·p07 = 4개.
+  레이아웃(정본): 앱바 16/20/20 · 좌우 20 · 칩 6×10(gap6, count opacity .55) · AI카드 다크 16/r10 ·
+    썸네일 1:1 gap4 r6 · 버튼 11×16 / 11×14 · 섹션헤더 mt8 mb16 · 그리드 gap 20·10 · showMatch=false.
 */
 
 import { useMemo, useState } from "react";
@@ -11,65 +16,76 @@ import { Icon } from "@/components/icon";
 import { Chip } from "@/components/ui/chip";
 import { ProductCard } from "@/components/product-card";
 import { useAppShell } from "@/lib/app-shell-state";
-import { useToast } from "@/lib/toast";
 import { byId } from "@/data";
 import type { Product } from "@/types";
 
-interface Collection {
-  name: string;
-  ids: string[];
-}
-
-/** ⚠️ mock 클러스터링: 저장 상품 태그 빈도로 묶음(2개 이상). 이후 취향 벡터 기반으로 대체. */
-function deriveCollections(products: Product[]): Collection[] {
-  const byTag = new Map<string, string[]>();
-  for (const p of products) {
-    for (const tag of p.tags) {
-      const ids = byTag.get(tag) ?? [];
-      ids.push(p.id);
-      byTag.set(tag, ids);
-    }
-  }
-  return [...byTag.entries()]
-    .filter(([, ids]) => ids.length >= 2)
-    .sort((a, b) => b[1].length - a[1].length)
-    .slice(0, 4)
-    .map(([name, ids]) => ({ name, ids }));
-}
+// AI 제안 mock — 베이지 무드 클러스터. 이후 취향 벡터 기반 클러스터링으로 대체(F2/F3).
+const MOOD_TAGS = ["베이지", "오트밀", "카멜"];
+const MOOD_NAME = "베이지 데일리";
 
 export function Saved() {
   const shell = useAppShell();
-  const { toast } = useToast();
-  const products = useMemo(
+  const savedSet = useMemo(() => new Set(shell.savedIds), [shell.savedIds]);
+  const savedProducts = useMemo(
     () => shell.savedIds.map((id) => byId(id)).filter((p): p is Product => Boolean(p)),
     [shell.savedIds],
   );
-  const collections = useMemo(() => deriveCollections(products), [products]);
 
-  const [selected, setSelected] = useState<string | null>(null); // 컬렉션 필터(null=전체)
+  const [selected, setSelected] = useState<string | null>(null); // null=전체, else 컬렉션 id
   const [dismissed, setDismissed] = useState(false);
-  const [extra, setExtra] = useState<Collection[]>([]); // 사용자가 만든 컬렉션(mock, 세션 한정)
 
-  const allCollections = useMemo(() => [...collections, ...extra], [collections, extra]);
-  const activeCollection = allCollections.find((c) => c.name === selected);
-  const shown = activeCollection
-    ? products.filter((p) => activeCollection.ids.includes(p.id))
-    : products;
+  // AI 제안 후보(mock): 저장 상품 중 무드 태그 매칭. 2개 이상 & 아직 안 만들었을 때만 제안.
+  const moodItems = useMemo(
+    () => savedProducts.filter((p) => p.tags.some((t) => MOOD_TAGS.includes(t))),
+    [savedProducts],
+  );
+  const alreadyMade = shell.collections.some((c) => c.name === MOOD_NAME);
+  const showSuggestion = !dismissed && !alreadyMade && moodItems.length >= 2;
 
-  const suggestion =
-    collections.length >= 2
-      ? `${collections[0].name} ${collections[1].name}`
-      : collections[0]?.name;
+  // 컬렉션 칩(저장된 항목만 카운트)
+  const chips = useMemo(
+    () =>
+      shell.collections.map((c) => ({
+        id: c.id,
+        name: c.name,
+        count: c.productIds.filter((id) => savedSet.has(id)).length,
+      })),
+    [shell.collections, savedSet],
+  );
+
+  const active = shell.collections.find((c) => c.id === selected);
+  const shown = active
+    ? savedProducts.filter((p) => active.productIds.includes(p.id))
+    : savedProducts;
+
+  const createFromView = () => {
+    const name = `컬렉션 ${shell.collections.length + 1}`;
+    setSelected(
+      shell.createCollection(
+        name,
+        shown.map((p) => p.id),
+      ),
+    );
+  };
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="sticky top-0 z-10 flex items-baseline gap-2 bg-paper px-5 pt-[70px] pb-5">
-        <h1 className="text-h1 text-ink">찜</h1>
-        <span className="text-caption text-ink-3">{products.length}개</span>
+      {/* 앱바 */}
+      <header className="sticky top-0 z-10 flex items-center justify-between bg-paper px-5 pt-[70px] pb-5">
+        <h1 className="text-h1 text-ink">찜한 상품</h1>
+        <button
+          type="button"
+          onClick={createFromView}
+          aria-label="새 컬렉션"
+          disabled={savedProducts.length === 0}
+          className="flex size-[38px] shrink-0 cursor-pointer items-center justify-center rounded-full text-ink hover:bg-paper-3 disabled:cursor-default disabled:opacity-40"
+        >
+          <Icon name="plus" size={22} />
+        </button>
       </header>
 
-      {products.length === 0 ? (
-        <div className="flex flex-1 flex-col items-center justify-center gap-2 px-5 pt-16 text-center">
+      {savedProducts.length === 0 ? (
+        <div className="flex flex-1 flex-col items-center justify-center gap-2 px-5 pb-16 text-center">
           <Icon name="heart" size={28} color="var(--color-ink-soft)" />
           <p className="text-body-2 text-ink-2">아직 찜한 상품이 없어요.</p>
           <button
@@ -81,87 +97,116 @@ export function Saved() {
           </button>
         </div>
       ) : (
-        <div className="flex flex-col gap-4 px-5 pb-2">
-          {/* AI 컬렉션 제안 */}
-          {suggestion && !dismissed && (
-            <div className="rounded-card bg-ink p-4 text-paper">
-              <div className="mb-1.5 flex items-center gap-1.5">
-                <Icon name="sparkle" size={13} color="var(--color-paper-3)" />
-                <span className="text-[10px] font-semibold tracking-[0.08em] text-paper-3 uppercase">
-                  AI 컬렉션 제안
-                </span>
-              </div>
-              <p className="text-body text-paper">&ldquo;{suggestion}&rdquo;로 묶을까요?</p>
-              <div className="mt-3 flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelected(collections[0]?.name ?? null); // mock: 제안 컬렉션으로 필터
-                    setDismissed(true);
-                    toast(`"${suggestion}" 컬렉션을 만들었어요`);
-                  }}
-                  className="rounded-btn bg-paper px-3.5 py-2 text-[13px] font-semibold text-ink"
-                >
-                  만들기
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setDismissed(true)}
-                  className="rounded-btn px-3.5 py-2 text-[13px] font-medium text-paper-3"
-                >
-                  닫기
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* 컬렉션 필터 칩 */}
-          {allCollections.length > 0 && (
-            <div className="flex gap-1.5 overflow-x-auto [scrollbar-width:none]">
+        <>
+          {/* 컬렉션 칩 */}
+          <div className="mb-4 flex gap-1.5 overflow-x-auto px-5 [scrollbar-width:none]">
+            <Chip
+              variant={selected === null ? "selected" : "default"}
+              onClick={() => setSelected(null)}
+            >
+              전체<span className="opacity-[0.55]">{savedProducts.length}</span>
+            </Chip>
+            {chips.map((c) => (
               <Chip
-                variant={selected === null ? "selected" : "default"}
-                onClick={() => setSelected(null)}
+                key={c.id}
+                variant={selected === c.id ? "selected" : "default"}
+                onClick={() => setSelected(c.id)}
               >
-                전체
+                {c.name}
+                <span className="opacity-[0.55]">{c.count}</span>
               </Chip>
-              {allCollections.map((c) => (
-                <Chip
-                  key={c.name}
-                  variant={selected === c.name ? "selected" : "default"}
-                  onClick={() => setSelected(c.name)}
-                >
-                  {c.name}
-                </Chip>
-              ))}
-              {/* 새 컬렉션 생성: 현재 보기를 스냅샷해 새 컬렉션으로(mock, 세션 한정). */}
-              <Chip
-                variant="outline"
-                onClick={() => {
-                  const name = `컬렉션 ${collections.length + extra.length + 1}`;
-                  setExtra((e) => [...e, { name, ids: shown.map((p) => p.id) }]);
-                  setSelected(name);
-                  toast(`"${name}"을 만들었어요`);
-                }}
-              >
-                + 새 컬렉션
-              </Chip>
-            </div>
-          )}
-
-          {/* 저장 그리드 */}
-          <div className="grid grid-cols-2 gap-x-3 gap-y-5 pt-1">
-            {shown.map((p) => (
-              <ProductCard
-                key={p.id}
-                rec={{ product: p, match: p.match, reason: p.reason }}
-                size="auto"
-                saved
-                onToggleSaved={() => shell.toggleSaved(p.id)}
-                onClick={() => shell.openDetail(p.id)}
-              />
             ))}
+            <Chip variant="outline" onClick={createFromView}>
+              + 새 컬렉션
+            </Chip>
           </div>
-        </div>
+
+          {/* AI 컬렉션 제안 (다크) */}
+          {showSuggestion && (
+            <div className="mb-6 px-5">
+              <div className="rounded-card bg-ink p-4 text-paper">
+                <div className="mb-1 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <Icon name="sparkle" size={14} color="var(--color-paper-3)" />
+                    <span className="text-label text-paper-3 uppercase">AI 컬렉션 제안</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setDismissed(true)}
+                    aria-label="제안 닫기"
+                    className="flex size-6 cursor-pointer items-center justify-center rounded-full text-paper-3 hover:bg-paper/10"
+                  >
+                    <Icon name="close" size={14} />
+                  </button>
+                </div>
+                <p className="text-h2 text-paper">&ldquo;{MOOD_NAME}&rdquo;로 묶을까요?</p>
+                <p className="text-body-2 mt-1 text-paper-3">
+                  저장한 {moodItems.length}개 상품이 비슷한 무드예요
+                </p>
+                <div className="mt-3.5 flex gap-1">
+                  {moodItems.slice(0, 4).map((p) => (
+                    <span
+                      key={p.id}
+                      className="aspect-square flex-1 rounded-image"
+                      style={{
+                        background: `linear-gradient(160deg, ${p.img.light}, ${p.img.dark})`,
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="mt-3.5 flex gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelected(
+                        shell.createCollection(
+                          MOOD_NAME,
+                          moodItems.map((p) => p.id),
+                        ),
+                      );
+                      setDismissed(true);
+                    }}
+                    className="rounded-btn flex-1 bg-paper px-4 py-[11px] text-[13px] font-semibold text-ink"
+                  >
+                    컬렉션 만들기
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDismissed(true)}
+                    className="rounded-btn shrink-0 px-3.5 py-[11px] text-[13px] font-medium text-paper-3"
+                  >
+                    나중에
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 섹션 헤더 */}
+          <div className="mt-2 mb-4 flex items-baseline justify-between px-5">
+            <h2 className="text-h2 text-ink">{active ? active.name : "최근 저장한 상품"}</h2>
+            <span className="text-caption text-ink-3">{shown.length}개</span>
+          </div>
+
+          {/* 2열 그리드 (행 20 · 열 10) */}
+          {shown.length > 0 ? (
+            <div className="grid grid-cols-2 gap-x-2.5 gap-y-5 px-5 pb-6">
+              {shown.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  rec={{ product: p, match: p.match, reason: p.reason }}
+                  size="auto"
+                  showMatch={false}
+                  saved
+                  onToggleSaved={() => shell.toggleSaved(p.id)}
+                  onClick={() => shell.openDetail(p.id)}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-body-2 px-5 py-10 text-center text-ink-2">이 컬렉션은 비어있어요</p>
+          )}
+        </>
       )}
     </div>
   );

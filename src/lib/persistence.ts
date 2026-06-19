@@ -4,7 +4,7 @@
   나중에 서버/DB로 교체할 때 이 파일의 구현만 갈아끼우면 된다(메서드는 async로 둠).
 */
 
-import type { TasteProfile } from "@/types";
+import type { Collection, TasteProfile } from "@/types";
 
 export interface PersistenceStore {
   /** 온보딩 완료 여부 (런치 게이트). */
@@ -16,11 +16,15 @@ export interface PersistenceStore {
   /** 찜한 상품 id 목록(전역 saved 상태). 없으면 빈 배열. */
   getSavedIds(): Promise<string[]>;
   setSavedIds(ids: string[]): Promise<void>;
+  /** 찜 컬렉션 목록(사용자가 만든 묶음). 없으면 빈 배열. */
+  getCollections(): Promise<Collection[]>;
+  setCollections(collections: Collection[]): Promise<void>;
 }
 
 const ONBOARDED_KEY = "moodyfit_onboarded";
 const TASTE_KEY = "moodyfit_taste_profile";
 const SAVED_KEY = "moodyfit_saved_ids";
+const COLLECTIONS_KEY = "moodyfit_collections";
 
 /** 클라이언트 전용. SSR/비브라우저 환경에서는 안전하게 기본값을 반환한다. */
 const localStorageStore: PersistenceStore = {
@@ -71,6 +75,24 @@ const localStorageStore: PersistenceStore = {
     if (typeof window === "undefined") return;
     try {
       window.localStorage.setItem(SAVED_KEY, JSON.stringify(ids));
+    } catch {
+      /* 쓰기 실패 무시 */
+    }
+  },
+  async getCollections() {
+    if (typeof window === "undefined") return [];
+    try {
+      const raw = window.localStorage.getItem(COLLECTIONS_KEY);
+      const parsed: unknown = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? (parsed as Collection[]) : [];
+    } catch {
+      return [];
+    }
+  },
+  async setCollections(collections) {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(COLLECTIONS_KEY, JSON.stringify(collections));
     } catch {
       /* 쓰기 실패 무시 */
     }

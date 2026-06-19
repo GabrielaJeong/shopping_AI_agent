@@ -14,6 +14,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { persistence } from "./persistence";
 import { useToast } from "./toast";
+import type { Collection } from "@/types";
 
 export type Tab = "home" | "explore" | "saved" | "my";
 export type Screen = "home" | "detail" | "list" | "search";
@@ -51,6 +52,11 @@ export interface AppShellState {
   /** 전역 찜 토글(영속). */
   toggleSaved: (id: string) => void;
 
+  /** 찜 컬렉션 목록(영속). 탭 전환/리로드에도 유지. */
+  collections: Collection[];
+  /** 컬렉션 생성(영속) → 생성된 id 반환(생성 직후 해당 컬렉션으로 필터하려고). */
+  createCollection: (name: string, productIds: string[]) => string;
+
   openSheet: (sheet: {
     mode: Exclude<SheetMode, null>;
     productId?: string;
@@ -75,12 +81,16 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
   const [listKeyword, setListKeyword] = useState<string | null>(null);
   const [sheet, setSheet] = useState<SheetState>(CLOSED_SHEET);
   const [savedIds, setSavedIds] = useState<Set<string>>(() => new Set());
+  const [collections, setCollections] = useState<Collection[]>([]);
 
-  // 초기 1회: 영속화에서 찜 목록 로드.
+  // 초기 1회: 영속화에서 찜 목록·컬렉션 로드.
   useEffect(() => {
     let alive = true;
     persistence.getSavedIds().then((ids) => {
       if (alive) setSavedIds(new Set(ids));
+    });
+    persistence.getCollections().then((cols) => {
+      if (alive) setCollections(cols);
     });
     return () => {
       alive = false;
@@ -130,6 +140,20 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
     [savedIds, toast],
   );
 
+  const createCollection = useCallback(
+    (name: string, productIds: string[]): string => {
+      const id = `col-${Date.now()}`;
+      setCollections((prev) => {
+        const next = [...prev, { id, name, productIds }];
+        void persistence.setCollections(next); // 영속화(레이어 경유)
+        return next;
+      });
+      toast(`'${name}' 컬렉션을 만들었어요`);
+      return id;
+    },
+    [toast],
+  );
+
   const openSheet = useCallback(
     (s: { mode: Exclude<SheetMode, null>; productId?: string; chatPrompt?: string }) => {
       setSheet({ mode: s.mode, productId: s.productId ?? null, chatPrompt: s.chatPrompt ?? null });
@@ -157,6 +181,8 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
       back,
       isSaved,
       toggleSaved,
+      collections,
+      createCollection,
       openSheet,
       closeSheet,
     }),
@@ -175,6 +201,8 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
       back,
       isSaved,
       toggleSaved,
+      collections,
+      createCollection,
       openSheet,
       closeSheet,
     ],
