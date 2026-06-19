@@ -3,6 +3,19 @@
 > 현재 상태 스냅샷. 다음 세션 시작 시 빠른 파악용.
 > 최종 업데이트: 2026-06-19
 
+## ★ 다음 진입점 (다음 세션 — 여기부터)
+
+**실제 엔진/DB 연동: F2(후보 생성)부터 추천 엔진 본체 구현 — 모든 mock 경계 함수 "속"을 채운다.**
+지금까지는 UI + 교체 가능한 mock 경계까지(화면 정합 일단락). 다음은 **화면은 안 건드리고(시그니처 유지)** 경계 함수 내부만 실제 로직으로:
+
+- **F2 후보 생성 → F3 랭킹** (`lib/recommend.ts`): `getHomeFeed`·`getExplore`·`getList`·`getSimilar`·`getMoreFromBrand`·`getProductDetail` — 취향 벡터↔태그 콘텐츠 유사도 후보 + 가중합 랭킹으로 `match`·`reason`을 **실제 산출**(상품에 박힌 정적 더미 대체). (D-012)
+- **F4 챗 재랭킹** (`lib/chat-rerank.ts`): `parseReorderIntent`(발화→조건; 현 키워드 mock → LLM 의도 파싱)·`rerank`(조건→결과). (D-014)
+- **F6 피드백 루프** (`lib/feedback.ts`): `applyFeedback` 정규화·감쇠·신호 가중치 보강(현 단순 ±delta). (D-013)
+- **DB 연동 검토** (`lib/persistence.ts`, D-003): localStorage → 서버/DB. 인터페이스 `PersistenceStore`는 그대로, 구현만 교체.
+
+**2번 백로그는 이때 같이 풀린다**(전부 F6/F2 경계): My 취향 키워드 델타(F6) · 컬렉션 무드 클러스터링(현 베이지 태그 mock → F2) · 상품 실제 이미지(데이터). → 아래 "알려진 이슈 / 백로그".
+**1번 화면 점검**은 사용자가 직접 한 바퀴 도는 것으로 갈음(이번 세션 일단락).
+
 ## 구현 완료
 
 - [x] 문서 하네스 부트스트랩 (CLAUDE.md, docs 스켈레톤, CHANGELOG, memory 인덱스, SECURITY)
