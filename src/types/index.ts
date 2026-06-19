@@ -46,6 +46,8 @@ export interface Product {
   tags: string[];
   /** 컬러 스와치 hex 목록. */
   colors: string[];
+  /** 주 소재(상세 "상품 정보" 표기용). ⚠️ 데모 카탈로그값. */
+  material: string;
   img: ProductImgColors;
   match: MatchScore;
   reason: ReasonHtml;
