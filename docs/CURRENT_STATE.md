@@ -1,12 +1,12 @@
 # CURRENT_STATE.md
 
 > 현재 상태 스냅샷. 다음 세션 시작 시 빠른 파악용.
-> 최종 업데이트: 2026-06-17
+> 최종 업데이트: 2026-06-19
 
 ## 구현 완료
 
 - [x] 문서 하네스 부트스트랩 (CLAUDE.md, docs 스켈레톤, CHANGELOG, memory 인덱스, SECURITY)
-- [x] 핵심 설계 결정 기록 (DECISIONS D-001~D-016: …·추천경계·피드백반영경계·챗봇재랭킹경계·스크롤위치(D-015, #35 대기)·시트 상태 별도 컨텍스트(D-016))
+- [x] 핵심 설계 결정 기록 (DECISIONS D-001~D-019: …·추천경계·피드백반영경계·챗봇재랭킹경계·스크롤위치(D-015)·시트 상태 별도 컨텍스트(D-016)·찜 컬렉션 영속(D-017)·검색 결과 인라인(D-018)·상품 스펙 파생(D-019))
 - [x] 앱 스캐폴드 (Next.js 15.5.19 + React 19.1 + TypeScript + Tailwind v4 + App Router + src/, pnpm via corepack). 베이스라인 검증 green: typecheck / lint / build 통과.
 - [x] Prettier 도입(eslint 무충돌, endOfLine auto) + 검증 명령 `format:check`.
 - [x] 디자인 토큰 → Tailwind v4 `@theme` 매핑 (색·타이포·radius·shadow, `globals.css`). Pretendard CDN 연결, `layout.tsx` Geist 제거·lang=ko. 빌드 CSS에 유틸리티 생성 확인 (→ D-008). 토큰 미리보기는 `/foundation`.
@@ -21,19 +21,20 @@
 - [x] **app 셸 + 하단 내비 + 전역 saved** (→ D-011): `lib/app-shell-state`(tab/screen/sheet/savedIds), `BottomNav`(4탭, list=home 하이라이트), `AppShell`. savedIds 전역+영속(`moodyfit_saved_ids`).
 - [x] **추천 경계** (→ D-012): `lib/recommend.ts` `getHomeFeed(tasteProfile)` 진입 함수(현재 정적 mock, F2·F3 교체 지점). 화면은 이 함수만 소비. `Recommendation{product,match,reason}`.
 - [x] **Home 탭** 실제 화면(정본 home.jsx/README §5 충실 재현): 앱바(인사+검색아이콘+벨/토스트) · AI 큐레이션 배너(문장+액션칩→chat) · **오늘의 픽 가로 슬라이더**(썸네일+브랜드/이름/가격/태그칩/자세히보기+reason+점 인디케이터) · **내 취향 키워드 바(실제 tasteProfile)** · 오늘의 추천(카테고리 칩 필터+가로스크롤, 전체보기→list) · AI가 찾은 새 취향(넓은 카드). 프리미티브 `ProductCard`·`Reason`. `getHomeFeed` 반환형을 heroPicks/today/discoveries로 재구성(경계 형태만, mock 유지).
-- [x] **Detail** 푸시 화면: 이미지 히어로(back·인디케이터)·썸네일·메타·match%·reason·옵션(컬러/사이즈)·피드백 4버튼. 데이터는 `getProductDetail(id)` 경계(D-012). 좋아요→저장 추가+feedback 시트, 저장→토글, 비슷한→chat 시트, **별로예요→`recordFeedback(dislike)`로 취향 벡터 −delta 실제 반영(F6 음수 경로 활성) + 토스트**. 좋아요 하트는 outline+accent-soft. (handoff 'planned' 이유 피커는 이후)
+- [x] **Detail** 푸시 화면(정본 §11 전면 정합, #46): **풀블리드 히어로 4:5**(back 14·인디케이터) + 썸네일 행 + 메타(이름 t-h1·가격 20/700·**AI 매치 칩**·태그) + **AI 이유 카드**(왜 이 상품?+reason+더 물어보기) + 옵션(컬러28/사이즈44×38, XL 취소선) + **피드백 4열**("이 추천 어떠세요?") + **상품 정보 스펙** + **비슷한 무드/브랜드 다른 상품 가로스크롤**. 경계 `getProductDetail`/`getSimilar`/`getMoreFromBrand`(D-012). 좋아요→저장+feedback 시트, **별로예요→`recordFeedback(dislike)` −delta+토스트**, 비슷한→chat, 저장→토글. 스펙은 `Product.material`+`productSpec` 파생(D-019). (handoff 'planned' 이유 피커는 이후)
 - [x] **전역 토스터**: `lib/toast`(`ToastProvider`/`useToast`/`Toaster`) — **루트(AppRoot)에 두어 stage 전환에도 유지**. 연결: 찜 토글(`toggleSaved` 중앙), 컬렉션 만들기, 별로예요(−delta), 알림(없음), 로그아웃·취향 재설정(화면 떠나도 보임). 규칙은 CONVENTIONS 「UI 알림(토스트)」.
 - [x] **피드백 시트** (F5/F6, → D-013): `lib/feedback.applyFeedback`(부호 델타 like/save/dislike/hide)로 **취향 벡터 실제 갱신·영속**, `app-state.recordFeedback`. 성공 히어로(pulse) + "학습 변화" 바(=실제 before→after) + 비슷한 상품 3-up(`getSimilar`) + CTA(더 묻기→chat / 계속 둘러보기). 시트 오버레이를 열릴 때만 마운트+슬라이드업으로 정리.
 - [x] **AI 챗 시트** (F4, → D-014): 두 경계 `lib/chat-rerank`(`parseReorderIntent`=발화→조건, `rerank`=조건→결과). 큐레이터 헤더·유저/AI 버블·인라인 ProductCard·타이핑 연출·빠른답변 칩·입력창. 발화→parse→rerank→결과 카드. 프로토타입 키워드-고정응답 라우팅은 부활 안 함(조건 산출 구조).
 - [x] **핵심 루프 골격 완성**: 런치(Splash·Intro·Login·Onboarding) + app(Home·Detail) + 두 핵심 시트(Feedback·Chat). F1(취향 시드)·F4(재랭킹)·F5/F6(피드백 반영) 표면이 mock 경계 위에 동작.
-- [x] **List/Search 푸시 화면**: List(헤더+검색진입+2-col 그리드, `getList(keyword)` 경계 D-012). Search(검색 필드+clear · 실시간 인기 랭킹(up/down/same/new) · AI 추천 검색어 · 최근 검색어 개별/전체 삭제 · 자동완성 substring 볼드). 선택→list, 결과 없음→chat. back→home. 랭킹/검색 데이터는 mock.
-- [x] **Saved(찜) 탭**: 전역 savedIds 그리드(하트로 해제) + AI 컬렉션 제안 카드(만들기/닫기) + 컬렉션 필터 칩 + 빈 상태. `app-shell-state`에 `savedIds: string[]` 노출. 컬렉션 자동분류는 mock(태그 빈도, 클러스터링 자리 주석).
-- [x] **Explore(탐색) 탭**: 2-col 그리드 + 정렬(AI추천순/가격순) + 카테고리 인스크린 필터 + "AI 발견" 칩→list. 추천 경계 `getExplore()`(D-012). 임시 SavedSummary 플레이스홀더 제거.
+- [x] **List/Search 푸시 화면**(정본 정합, #44·#47): **List**=정본 ListView(헤더 '키워드 추천' + **AI 요약 배너** + 카테고리 칩 + 정렬 3종 + 매칭 우선 2열 그리드) — 탐색 'AI 발견 배너'가 여는 화면. **Search**=결과를 **페이지 내 인라인**(D-018): AI 추천 검색어→최근 칩→실시간 LIVE 랭킹 / 입력 시 자동완성 + AI 요약 말풍선 + 2열 그리드, 무결과→chat. 칩·랭킹·제안=setQuery. 경계 `getList`만 소비(D-012). 랭킹/검색어는 mock.
+- [x] **Saved(찜) 탭**(정본 §7 정합 + 컬렉션, #45 → D-017): 앱바(찜한 상품+새 컬렉션) + **컬렉션 칩**(전체/사용자 컬렉션 count) + **AI 컬렉션 제안**(다크 카드: 무드 묶기 제안→'컬렉션 만들기') + 섹션 헤더 + 2열 그리드(showMatch=false). 컬렉션은 `Collection` 타입 + persistence 영속(탭 전환/리로드 유지), savedIds 단일 출처(카운트 교차). AI 클러스터링은 mock(베이지 태그). 데모 시드 없음.
+- [x] **Explore(탐색) 탭**(정본 §6 정합, #43): 제목 + **AI 발견 배너 카드**(추천 화면=List로) + 카테고리 필터 + 정렬(칩) + 2열 그리드(gap 20·10) + 하단 'AI에게 묻기' 배너. 추천 경계 `getExplore()`(D-012).
 - [x] **My(마이) 탭**: 취향 학습 링 + **취향 키워드 바(실제 tasteProfile.vector)** + 학습 추세 스파크라인 + 설정행(알림 토글 · 계정 · 취향 다시 설정→onboarding · 로그아웃→login). 키워드 탭→list. 링%·추세·키워드 델타는 더미(학습률 산출 자리 주석). AppShell 전 탭 실제 화면화 완료(TabPlaceholder 제거).
 - [x] **모든 핵심 화면 구현 완료**: 런치(Splash·Intro·Login·Onboarding) + app 4탭(Home·Explore·Saved·My) + 푸시(Detail·List·Search) + 시트(Feedback·Chat). UI 골격 + mock 경계.
 
 - [x] **폴리시**: Home 정본 충실도 재현 · 토스트 전역화+액션 연결 · 접근성(시트 Esc·포커스 이동/복원·aria, ProductCard 중첩 분리) · **반응형**(모바일 풀-블리드, 큰 화면 sm↑은 레터박스 배경 위 가운데 디바이스 프레임 h-844/rounded/shadow; 런치 화면 `min-h-dvh`→`h-full`+스크롤).
 - [x] **시트 열림 점프·끊김 해결**(#31·#36, 사용자 dev 확인): 챗 시트 점프 근본원인=scrollIntoView가 시트 화면 밖 순간 조상(프레임/윈도우)을 강제 스크롤 → 리스트 컨테이너 직접 스크롤로 대체(6개 챗 진입점 전부 점프 없음). 시트 열림 jank=시트 open이 화면 재렌더 유발 → 시트 상태 별도 컨텍스트 분리(D-016). 진단·교훈은 L-006(근본원인 교정)·L-007(측정 규율).
+- [x] **정본 고충실도 2차 — 화면 전면 정합**(#39~#47, 디자인 정본/전달 패딩 스펙대로): Home 오늘의 픽 **무한 루프 슬라이더**(#39) · 브랜드명 **Moodyfit** 통일(#40, D-006) · **My**(#41) · **Onboarding**(#42) · **Explore** AI 발견 배너(#43) · **List/AI 발견 화면**(#44) · **Saved + AI 컬렉션**(#45) · **Detail**(#46) · **Search 인라인**(#47). 프레임 캔버스 390×844. 순수 UI/연출/경계형태 — 추천 엔진 본체(F2·F3·F6) 미변경. 검증은 production build + curl(L-008).
 
 ## 미구현 / 진행 중
 
