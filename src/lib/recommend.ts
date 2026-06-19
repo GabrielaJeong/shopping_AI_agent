@@ -82,6 +82,18 @@ export function getSimilar(id: string, n = 3): Recommendation[] {
 }
 
 /**
+ * "브랜드의 다른 상품"(detail 하단). 경계 유지(D-012).
+ * ⚠️ 현재 mock: 같은 브랜드 필터. (샘플 카탈로그는 브랜드가 모두 유일해 보통 빈 배열 → 섹션 자동 숨김)
+ */
+export function getMoreFromBrand(id: string, n = 8): Recommendation[] {
+  const base = byId(id);
+  if (!base) return [];
+  return PRODUCTS.filter((p) => p.brand === base.brand && p.id !== id)
+    .slice(0, n)
+    .map((product) => ({ product, match: product.match, reason: product.reason }));
+}
+
+/**
  * 홈 추천 피드. 취향 프로필을 입력으로 받는다(이 시그니처가 F2~F3 교체의 경계).
  * 현재는 정적 mock — taste는 사용하지 않으며 빈 벡터에도 안전.
  * 반환 형태(heroPicks/today/discoveries)는 Home 디자인(home.jsx/README §5)에 맞춘 것.

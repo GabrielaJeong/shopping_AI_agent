@@ -1,6 +1,7 @@
 /*
   샘플 상품 카탈로그 (가상의 한국어 패션 카탈로그). 출처 참고: prototype-handoff/design_files/data.js
   ⚠️ match·reason 은 정적 더미다 — 실제로는 랭킹 모델(PRD F3)이 계산할 자리. (types/index.ts 참고)
+  ⚠️ material 은 상세 "상품 정보"용 데모 카탈로그값(각 상품 종류에 맞춘 것).
 */
 
 import type { Product } from "@/types";
@@ -14,6 +15,7 @@ export const PRODUCTS: Product[] = [
     category: "top",
     tags: ["미니멀", "베이지", "오버사이즈"],
     colors: ["#E8DFCB", "#3A3633", "#9FA89B"],
+    material: "100% 면 (워싱 가공)",
     img: { light: "#E8DDC4", base: "#D6C8A4", dark: "#A89070" },
     reason: "평소 좋아하시는 <strong>내추럴·미니멀</strong> 무드 + 베이지 톤이 잘 맞아요.",
     match: 96,
@@ -26,6 +28,7 @@ export const PRODUCTS: Product[] = [
     category: "outer",
     tags: ["클래식", "카멜", "아우터"],
     colors: ["#9F7A4F", "#3A3633", "#5E4A38"],
+    material: "코튼 개버딘",
     img: { light: "#C9A576", base: "#9F7A4F", dark: "#6E5333" },
     reason: "최근 본 <strong>카멜 톤 아우터</strong> 3개와 유사한 실루엣이에요.",
     match: 91,
@@ -38,6 +41,7 @@ export const PRODUCTS: Product[] = [
     category: "bottom",
     tags: ["미니멀", "차콜", "데일리"],
     colors: ["#4A4640", "#7A746D", "#3A3633"],
+    material: "폴리에스터 혼방",
     img: { light: "#605A52", base: "#454039", dark: "#2E2A26" },
     reason: "저장하신 <strong>차콜·미니멀</strong> 상품과 같은 분위기예요.",
     match: 89,
@@ -50,6 +54,7 @@ export const PRODUCTS: Product[] = [
     category: "top",
     tags: ["오트밀", "레이어드", "니트"],
     colors: ["#E5DABD", "#C9A576", "#857865"],
+    material: "캐시미어 100%",
     img: { light: "#EFE6D0", base: "#DACEAF", dark: "#A89678" },
     reason: "이번 주 <strong>베이지 톤 레이어드</strong> 조합을 자주 보셨어요.",
     match: 85,
@@ -62,6 +67,7 @@ export const PRODUCTS: Product[] = [
     category: "bag",
     tags: ["가죽", "다크브라운", "에브리데이"],
     colors: ["#5C4632", "#3A3633", "#8A6E50"],
+    material: "소가죽 (베지터블 태닝)",
     img: { light: "#7D5F44", base: "#5C4632", dark: "#3E2E1F" },
     reason: "<strong>가죽 소품</strong> 카테고리 첫 추천이에요.",
     match: 82,
@@ -74,6 +80,7 @@ export const PRODUCTS: Product[] = [
     category: "shoes",
     tags: ["화이트", "미니멀", "슈즈"],
     colors: ["#EFECE4", "#3A3633", "#9FA89B"],
+    material: "캔버스 · 고무 아웃솔",
     img: { light: "#F4F0E6", base: "#E2DCC9", dark: "#B5AC93" },
     reason: "미니멀 무드의 <strong>데일리 슈즈</strong> 후보예요.",
     match: 78,
@@ -86,6 +93,7 @@ export const PRODUCTS: Product[] = [
     category: "acc",
     tags: ["카멜", "울", "액세서리"],
     colors: ["#9F7A4F", "#E5DABD", "#5E4A38"],
+    material: "울 90% · 캐시미어 10%",
     img: { light: "#C49870", base: "#9F7A4F", dark: "#6E5333" },
     reason: "곧 추워져요. <strong>카멜 머플러</strong>는 평소 컬러 팔레트랑 잘 어울려요.",
     match: 76,
@@ -98,6 +106,7 @@ export const PRODUCTS: Product[] = [
     category: "bottom",
     tags: ["데님", "미디엄 워시", "와이드"],
     colors: ["#7A8A9F", "#5A6A7D", "#3A3633"],
+    material: "코튼 데님",
     img: { light: "#9AAABD", base: "#7A8A9F", dark: "#56657A" },
     reason: "와이드 실루엣을 좋아하셔서요.",
     match: 73,
