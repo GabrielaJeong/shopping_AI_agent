@@ -6,11 +6,15 @@
 
 ### Changed
 
+- **정본 고충실도 2차 — 화면 전면 정합(#39~#47)**: 디자인 정본/전달 패딩 스펙대로 화면을 재구성. ① **Home** 오늘의 픽 **무한 루프 슬라이더**(loop+warp, DOM 중심 측정) + 카드/패딩 정밀화(#39). ② **브랜드명** Mudifit→**Moodyfit** 통일(#40, D-006). ③ **My** 프로필·다크 학습카드·취향 키워드·설정 정본화(#41). ④ **Onboarding** welcome·steps·analyzing·summary 패딩/진행바/CTA 정합(#42). ⑤ **Explore** 제목 + **AI 발견 배너 카드**(→추천 화면) + 카테고리/정렬 + 그리드(#43). ⑥ **List(AI 발견 화면)** 정본 ListView로 — AI 요약 배너 + 카테고리 칩 + 정렬 3종 + 매칭 우선 그리드(#44). ⑦ **Saved** 정본화 + **AI 컬렉션 제안 흐름**(#45, → D-017). ⑧ **Detail** 전면 재구성 — 풀블리드 히어로·썸네일·메타(AI매치칩·태그)·이유카드·옵션·피드백 4열·상품정보·가로스크롤 추천(#46). ⑨ **Search** 정본화 + **결과 페이지 내 인라인 표시**(#47, → D-018). 프레임 캔버스 390×844. 모두 순수 UI/연출/경계형태 — 추천 엔진(F2·F3·F6) 본체 미변경. 검증은 production build + curl(L-008).
 - **정본 시각/연출 정합(대조 후속)**: ① Explore 정렬을 텍스트 버튼 → **칩 스타일**(선택=sel/비선택=outline, explore.jsx 정본). ② Search **"실시간 인기" 자동 갱신 연출**(약 3.5s 주기 인접 swap mock, 입력 중 정지 — 집계/검색 엔진은 범위 밖). ③ Onboarding analyzing **스파클이 링을 도는 궤도 회전**(정본 §4, reduced-motion 전역 가드로 정지). ④ Saved **"+ 새 컬렉션" 동작 연결**(현재 보기를 스냅샷한 컬렉션 생성+선택+토스트, 세션 한정 mock) + 제안 카피 "묶어드릴까요"→**"묶을까요"**(정본 §7). ⑤ Detail **"이 추천 더 묻기" 챗 트리거 추가**(정본 §12). ⑥ **디바이스 프레임 폭 420→390**(정본 캔버스 390×844, README §34) — 30px 넓던 프레임 탓에 좌우 패딩 비율·"오늘의 픽" 카드 peek이 원본과 어긋나 보이던 것 정합(슬라이더 CSS 자체는 정본 styles.css와 동일했음, 프레임 폭이 근본 원인). 모두 순수 시각/연출 — 추천 엔진(F2·F3·F6) 미변경. 미루기 항목(My 키워드 델타=F6 / Detail 이미지 캐러셀=실사진 / feedback 바 TasteBars 통일)은 CURRENT_STATE 백로그.
 - **Home 충실도 재현(폴리시)**: 정본(home.jsx/README §5)대로 재구성 — 앱바(인사+검색아이콘+벨) · AI 큐레이션 배너(문장+액션칩) · **오늘의 픽 가로 슬라이더**(썸네일+브랜드/이름/가격/태그칩/자세히보기 + reason + 점 인디케이터) · **내 취향 키워드 바(실제 tasteProfile)** · 오늘의 추천(카테고리 칩 필터를 이 섹션으로) · AI가 찾은 새 취향. `getHomeFeed` 반환형을 `heroPicks/today/discoveries`로 재구성(경계 형태만 변경, mock 본체·match·reason 더미는 그대로). 이전의 단순 단일 히어로/일반 섹션 버전을 대체.
 
 ### Added
 
+- **찜 컬렉션**(#45, → D-017): `Collection` 타입 + `persistence.get/setCollections` + `app-shell-state.createCollection`(영속). AI 컬렉션 제안(저장 상품 베이지 무드 클러스터 mock) → "컬렉션 만들기" → 사용자 컬렉션 칩 생성·자동 선택·필터. 탭 전환/리로드에도 유지, savedIds 단일 출처(카운트 교차). 데모 시드(데일리/출근룩) 없음.
+- **상품 정보 스펙 + 브랜드 추천**(#46, → D-019): `Product.material` 필드(8개) + `data.productSpec`(소재=카탈로그값, 실루엣/컬러=태그·이름 파생). `recommend.getMoreFromBrand` 경계 추가(브랜드의 다른 상품).
+- **검색 결과 인라인**(#47, → D-018): 검색 페이지에서 결과를 바로 표시(AI 요약 말풍선 + 2열 그리드, 무결과→챗). 칩·랭킹·제안 클릭 = setQuery. 경계 `getList`만 소비.
 - **반응형(폴리시)**: 모바일은 풀-블리드 폰 화면 유지, 큰 화면(sm↑)은 레터박스 배경(#e8e4dc) 위 가운데 정렬된 **디바이스 프레임**(h-844 캡=`calc(100dvh-3rem)`, rounded-[2rem], shadow-elev)으로 — 내비/시트/토스트가 창 바닥이 아닌 프레임 바닥에 옴. 런치 화면(intro/login/onboarding 4)·셸 `min-h-dvh`→`h-dvh`/`h-full`+필요시 overflow 스크롤로 프레임 높이와 정합.
 - **접근성(폴리시)**: 시트 — Esc로 닫기 + 열릴 때 시트로 포커스 이동·닫힐 때 직전 포커스 복원 + `aria-label`/`aria-modal`/`tabIndex=-1`. ProductCard — 열기 영역(role=button)과 찜 버튼을 **형제로 분리**(중첩 인터랙티브 제거) + 찜 `aria-pressed`/`aria-label`.
 - **토스트 확대(폴리시) + 전역화**: 토스터를 `lib/toast`(`ToastProvider`/`useToast`/`Toaster`)로 분리해 **루트(AppRoot)로 승격** — stage 전환(로그아웃·취향 재설정)에도 보이게. 액션 연결: 찜 토글(`toggleSaved` 중앙: 찜했어요/해제), 컬렉션 만들기, 별로예요(−delta), 홈 알림, 로그아웃·취향 재설정. (이전 `app-shell-state`의 toast/Toaster는 제거 — useToast로 일원화). CONVENTIONS 규칙도 `useToast()`로 갱신.
