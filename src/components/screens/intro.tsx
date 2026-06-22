@@ -80,7 +80,7 @@ function MockFeedback() {
           <div className="h-[5px] overflow-hidden rounded-full bg-paper-3">
             <div className="h-full w-[64%] rounded-full bg-ink" />
           </div>
-          <div className="font-mono text-[10px] text-ink-2">취향 학습 +8% → 64%</div>
+          <div className="text-[10px] text-ink-2">취향 학습 +8% → 64%</div>
         </div>
       </div>
       <div className="mt-3 flex gap-1.5">

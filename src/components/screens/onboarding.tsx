@@ -239,7 +239,7 @@ function StepOptions({
               )}
               style={{ background: STRIPE }}
             >
-              <span className="absolute top-2 left-2 font-mono text-[9px] tracking-[0.08em] text-ink-3">
+              <span className="absolute top-2 left-2 text-[9px] tracking-[0.08em] text-ink-3">
                 {tag}
               </span>
               <span className="absolute inset-x-0 bottom-0 bg-[linear-gradient(transparent,rgba(58,54,51,0.16))] px-2.5 pt-5 pb-[9px] text-left">
@@ -278,7 +278,7 @@ function Welcome({ onStart, onSkip }: { onStart: () => void; onSkip: () => void 
         className="animate-fade-up relative mt-[18px] aspect-[4/5] w-full overflow-hidden rounded-[14px]"
         style={{ background: STRIPE }}
       >
-        <span className="absolute top-3 left-3 font-mono text-[9.5px] tracking-[0.1em] text-ink-3">
+        <span className="absolute top-3 left-3 text-[9.5px] tracking-[0.1em] text-ink-3">
           LOOKBOOK · 1080×1350
         </span>
         <div className="absolute bottom-3 left-3 flex gap-1">
@@ -358,7 +358,7 @@ function Analyzing({ onDone }: { onDone: () => void }) {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="font-mono text-[26px] font-bold text-ink">{pct}%</span>
+          <span className="text-[26px] font-bold text-ink">{pct}%</span>
         </div>
         {/* 링을 도는 스파클(정본 ob-spin: 22 원 + 흰 sparkle). reduced-motion 전역 가드로 정지. */}
         <div className="absolute inset-0 animate-[spin_6s_linear_infinite]">
@@ -405,7 +405,7 @@ function Summary({ profile, onComplete }: { profile: TasteProfile; onComplete: (
                 <span className="text-[14px] font-semibold tracking-[-0.3px] text-ink">
                   {t.tag}
                 </span>
-                <span className="font-mono text-[11px] text-ink-2">{match}%</span>
+                <span className="text-[11px] text-ink-2">{match}%</span>
               </div>
               <div className="mt-2.5 h-[5px] overflow-hidden rounded-full bg-paper-3">
                 <div
