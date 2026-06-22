@@ -68,7 +68,7 @@ function AppShellInner() {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className={`flex min-h-0 flex-1 flex-col overflow-y-auto ${showNav ? "pb-[100px]" : "pb-8"}`}
+        className={`flex min-h-0 flex-1 flex-col overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${showNav ? "pb-[100px]" : "pb-8"}`}
       >
         {shell.screen === "home" &&
           (shell.tab === "home" ? (
