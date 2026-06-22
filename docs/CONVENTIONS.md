@@ -41,6 +41,7 @@
 ## 포맷팅 (Prettier)
 
 - 포맷은 **Prettier 단독** 담당, ESLint는 코드 품질만 본다 (`eslint-config-prettier/flat`로 포맷 규칙 비활성 → 충돌 없음).
+- **린트 게이트는 `pnpm lint`(flat config `eslint.config.mjs`) 한 곳으로 일원화.** Next 빌드 내부 ESLint는 **끈다**(`next.config.ts` `eslint.ignoreDuringBuilds: true`) — `eslint-config-next`의 `react-hooks` 플러그인이 pnpm 엄격 모드에서 빌드-린트 러너의 require 경로로 해석 안 돼 빌드 로그에 ⨯가 찍히기 때문(코드는 `pnpm lint`로 이미 깨끗). **린트를 끈 게 아니라 한 곳으로 모은 것** — 린트는 `pnpm lint`로 계속 돌린다. **타입체크(tsc)는 빌드에서 계속 수행**된다(`typescript.ignoreBuildErrors`는 켜지 않음).
 - 설정: `.prettierrc.json` (semi, double-quote, printWidth 100, tabWidth 2, trailingComma all, **endOfLine auto**). 무시: `.prettierignore` (빌드 산출물·lock·프로토타입 레퍼런스·바이너리).
 - `endOfLine: "auto"`는 Windows의 git autocrlf로 working tree가 CRLF가 돼도 `format:check`가 실패하지 않게 한다 (→ L-002).
 - 명령: 정리 `corepack pnpm format` / 검증 `corepack pnpm format:check`. 커밋 전 `format:check` 통과를 기본으로 한다.
