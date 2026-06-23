@@ -6,7 +6,7 @@
   구성: 앱바 → AI 배너 → 오늘의 픽 슬라이더 → 내 취향 키워드(실제 벡터) → 오늘의 추천(카테고리 필터) → AI가 찾은 새 취향.
 */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/icon";
 import { Chip } from "@/components/ui/chip";
 import { Tag } from "@/components/ui/tag";
@@ -167,44 +167,74 @@ function BannerChip({ onClick, children }: { onClick: () => void; children: Reac
   );
 }
 
-/* 가로 스크롤 카드 row. wide=발견 섹션(넓은 카드). */
+/* 가로 스크롤 카드 row. wide=발견 섹션(넓은 카드). 마우스 기기엔 반투명 화살표(페이지 단위 스크롤). */
 function Row({ items, wide = false }: { items: Recommendation[]; wide?: boolean }) {
   const shell = useAppShell();
+  const ref = useRef<HTMLDivElement>(null);
+  const page = (dir: 1 | -1) => {
+    const el = ref.current;
+    if (el) el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
+  };
   return (
-    <div className="flex gap-2.5 overflow-x-auto px-5 [scrollbar-width:none]">
-      {items.map((r) =>
-        wide ? (
-          <div key={r.product.id} className="w-[190px] shrink-0">
+    <div className="relative">
+      <div ref={ref} className="flex gap-2.5 overflow-x-auto px-5 [scrollbar-width:none]">
+        {items.map((r) =>
+          wide ? (
+            <div key={r.product.id} className="w-[190px] shrink-0">
+              <ProductCard
+                rec={r}
+                size="auto"
+                saved={shell.isSaved(r.product.id)}
+                onToggleSaved={() => shell.toggleSaved(r.product.id)}
+                onClick={() => shell.openDetail(r.product.id)}
+              />
+            </div>
+          ) : (
             <ProductCard
+              key={r.product.id}
               rec={r}
-              size="auto"
+              size="md"
               saved={shell.isSaved(r.product.id)}
               onToggleSaved={() => shell.toggleSaved(r.product.id)}
               onClick={() => shell.openDetail(r.product.id)}
             />
-          </div>
-        ) : (
-          <ProductCard
-            key={r.product.id}
-            rec={r}
-            size="md"
-            saved={shell.isSaved(r.product.id)}
-            onToggleSaved={() => shell.toggleSaved(r.product.id)}
-            onClick={() => shell.openDetail(r.product.id)}
-          />
-        ),
+          ),
+        )}
+      </div>
+      {items.length > 2 && (
+        <>
+          <SliderArrow dir="prev" onClick={() => page(-1)} />
+          <SliderArrow dir="next" onClick={() => page(1)} />
+        </>
       )}
     </div>
   );
 }
 
+/* 가로 슬라이더 반투명 화살표 — 마우스(hover 가능) 기기에서만 노출(터치는 스와이프 그대로). */
+function SliderArrow({ dir, onClick }: { dir: "prev" | "next"; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-label={dir === "prev" ? "이전" : "다음"}
+      onClick={onClick}
+      className={`absolute top-1/2 z-10 hidden size-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-ink/35 text-paper backdrop-blur-sm transition hover:bg-ink/60 [@media(hover:hover)]:flex ${
+        dir === "prev" ? "left-2.5" : "right-2.5"
+      }`}
+    >
+      <Icon name={dir === "prev" ? "back" : "chevron-right"} size={20} />
+    </button>
+  );
+}
+
 /* 오늘의 픽 — 가로 스냅 슬라이더 + 무한 루프(정본 home.jsx).
    loop=[clone(last), ...real, clone(first)]: 첫 실제 슬라이드에서도 양쪽 peek이 보인다.
-   stride=clientWidth-30(정본값). 마운트 시 첫 실제 슬라이드로 위치, 경계(clone)서 워프. */
+   마운트 시 첫 실제 슬라이드로 위치, 경계(clone)서 워프. 자동 넘김(호버/터치/reduced-motion 시 정지) + 반투명 화살표(마우스 기기). */
 function HeroSlider({ picks, onOpen }: { picks: Recommendation[]; onOpen: (id: string) => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const settle = useRef<number | undefined>(undefined);
   const [idx, setIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
   const n = picks.length;
   const loop = n > 1 ? [picks[n - 1], ...picks, picks[0]] : picks;
 
@@ -224,6 +254,42 @@ function HeroSlider({ picks, onOpen }: { picks: Recommendation[]; onOpen: (id: s
     });
     return () => cancelAnimationFrame(id);
   }, [n]);
+
+  // 한 칸 이동(화살표/자동 넘김) — 중앙 카드 기준 dir칸. clone로 가도 onScroll 워프가 seamless로 되돌린다.
+  const go = useCallback(
+    (dir: 1 | -1) => {
+      const el = ref.current;
+      if (!el || n <= 1) return;
+      const cs = Array.from(el.children) as HTMLElement[];
+      const viewCenter = el.scrollLeft + el.clientWidth / 2;
+      let j = 0;
+      let best = Infinity;
+      cs.forEach((c, k) => {
+        const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - viewCenter);
+        if (d < best) {
+          best = d;
+          j = k;
+        }
+      });
+      const t = cs[j + dir];
+      if (t)
+        el.scrollTo({
+          left: t.offsetLeft - (el.clientWidth - t.offsetWidth) / 2,
+          behavior: "smooth",
+        });
+    },
+    [n],
+  );
+
+  // 자동 넘김(4.5s). 호버/터치(paused)·비가시 탭·reduced-motion 시 정지.
+  useEffect(() => {
+    if (n <= 1 || paused) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const id = window.setInterval(() => {
+      if (!document.hidden) go(1);
+    }, 4500);
+    return () => window.clearInterval(id);
+  }, [n, paused, go]);
 
   const onScroll = () => {
     const el = ref.current;
@@ -255,49 +321,62 @@ function HeroSlider({ picks, onOpen }: { picks: Recommendation[]; onOpen: (id: s
   return (
     <>
       <div
-        ref={ref}
-        onScroll={onScroll}
-        className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 [scrollbar-width:none]"
+        className="relative"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
       >
-        {loop.map((r, i) => (
-          <div
-            key={i}
-            className="flex w-[calc(100%-40px)] shrink-0 snap-center flex-col gap-3.5 rounded-[12px] bg-paper-2 p-4"
-          >
-            <div className="flex items-stretch gap-3">
-              <div className="w-[130px] shrink-0">
-                <ProductImg colors={r.product.img} brand={r.product.brand} shape="tall" />
-              </div>
-              <div className="flex min-w-0 flex-1 flex-col justify-between">
-                <div>
-                  <div className="text-label text-ink-2 uppercase">{r.product.brand}</div>
-                  <div className="text-h3 mt-1 line-clamp-2 text-ink">{r.product.name}</div>
-                  <div className="text-price mt-2 text-ink">{format(r.product.price)}</div>
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {r.product.tags.slice(0, 2).map((t) => (
-                      <Tag key={t}>{t}</Tag>
-                    ))}
-                  </div>
+        <div
+          ref={ref}
+          onScroll={onScroll}
+          onPointerDown={() => setPaused(true)}
+          className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 [scrollbar-width:none]"
+        >
+          {loop.map((r, i) => (
+            <div
+              key={i}
+              className="flex w-[calc(100%-40px)] shrink-0 snap-center flex-col gap-3.5 rounded-[12px] bg-paper-2 p-4"
+            >
+              <div className="flex items-stretch gap-3">
+                <div className="w-[130px] shrink-0">
+                  <ProductImg colors={r.product.img} brand={r.product.brand} shape="tall" />
                 </div>
-                <Button
-                  variant="primary"
-                  block
-                  className="mt-3"
-                  onClick={() => onOpen(r.product.id)}
-                >
-                  자세히 보기
-                  <Icon name="arrow-right" size={16} />
-                </Button>
+                <div className="flex min-w-0 flex-1 flex-col justify-between">
+                  <div>
+                    <div className="text-label text-ink-2 uppercase">{r.product.brand}</div>
+                    <div className="text-h3 mt-1 line-clamp-2 text-ink">{r.product.name}</div>
+                    <div className="text-price mt-2 text-ink">{format(r.product.price)}</div>
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {r.product.tags.slice(0, 2).map((t) => (
+                        <Tag key={t}>{t}</Tag>
+                      ))}
+                    </div>
+                  </div>
+                  <Button
+                    variant="primary"
+                    block
+                    className="mt-3"
+                    onClick={() => onOpen(r.product.id)}
+                  >
+                    자세히 보기
+                    <Icon name="arrow-right" size={16} />
+                  </Button>
+                </div>
+              </div>
+              <div className="rounded-btn bg-accent-soft px-3.5 py-3">
+                <span className="mr-1.5 inline-block rounded bg-paper px-1.5 py-0.5 text-[9px] font-semibold tracking-[0.1em] text-ink uppercase">
+                  AI {r.match}%
+                </span>
+                <Reason html={r.reason} className="text-[12.5px] leading-relaxed text-ink" />
               </div>
             </div>
-            <div className="rounded-btn bg-accent-soft px-3.5 py-3">
-              <span className="mr-1.5 inline-block rounded bg-paper px-1.5 py-0.5 text-[9px] font-semibold tracking-[0.1em] text-ink uppercase">
-                AI {r.match}%
-              </span>
-              <Reason html={r.reason} className="text-[12.5px] leading-relaxed text-ink" />
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        {n > 1 && (
+          <>
+            <SliderArrow dir="prev" onClick={() => go(-1)} />
+            <SliderArrow dir="next" onClick={() => go(1)} />
+          </>
+        )}
       </div>
       <div className="mt-3.5 flex justify-center gap-1.5">
         {picks.map((_, i) => (
