@@ -203,22 +203,41 @@ function Row({ items, wide = false }: { items: Recommendation[]; wide?: boolean 
       </div>
       {items.length > 2 && (
         <>
-          <SliderArrow dir="prev" onClick={() => page(-1)} />
-          <SliderArrow dir="next" onClick={() => page(1)} />
+          {/* 이미지 중앙(=카드폭×4/3 ÷ 2)에 맞춤: md(160)→107px, wide(190)→127px. 캡션 길이와 무관. */}
+          <SliderArrow
+            dir="prev"
+            onClick={() => page(-1)}
+            top={wide ? "top-[127px]" : "top-[107px]"}
+          />
+          <SliderArrow
+            dir="next"
+            onClick={() => page(1)}
+            top={wide ? "top-[127px]" : "top-[107px]"}
+          />
         </>
       )}
     </div>
   );
 }
 
-/* 가로 슬라이더 반투명 화살표 — 마우스(hover 가능) 기기에서만 노출(터치는 스와이프 그대로). */
-function SliderArrow({ dir, onClick }: { dir: "prev" | "next"; onClick: () => void }) {
+/* 가로 슬라이더 반투명 화살표 — 마우스(hover 가능) 기기에서만 노출(터치는 스와이프 그대로).
+   top: 카드 형태에 맞춘 세로 위치(기본 top-1/2=컨테이너 중앙). z-index 없음 →
+   카드 위에는 DOM 순서로 뜨되, sticky 헤더(z-10)가 스크롤 시 화살표를 덮는다(헤더 위로 안 올라옴). */
+function SliderArrow({
+  dir,
+  onClick,
+  top = "top-1/2",
+}: {
+  dir: "prev" | "next";
+  onClick: () => void;
+  top?: string;
+}) {
   return (
     <button
       type="button"
       aria-label={dir === "prev" ? "이전" : "다음"}
       onClick={onClick}
-      className={`absolute top-1/2 z-10 hidden size-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-ink/35 text-paper backdrop-blur-sm transition hover:bg-ink/60 [@media(hover:hover)]:flex ${
+      className={`absolute ${top} hidden size-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-ink/35 text-paper backdrop-blur-sm transition hover:bg-ink/60 [@media(hover:hover)]:flex ${
         dir === "prev" ? "left-2.5" : "right-2.5"
       }`}
     >
